@@ -23,8 +23,7 @@ public class AddressService {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public void updateAddress(Address address, Long addressId) {
-        address.setId(addressId);
+    public void updateAddress(Address address) {
         addressRepository.save(address);
     }
 

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,6 +65,7 @@ public class PartnerController {
         List<Link> slotsLinks = partner.getSlots().stream().map(
                 slot -> Link.of("/partners/" + partner.getId() + "/slots/" + slot.getId())
         ).collect(Collectors.toList());
+        List<Link> slotsLinks = Collections.emptyList();
         List<Link> workingHoursLinks = partner.getWorkingHours().stream().map(
                 workingHour -> Link.of("/partners/" + partner.getId() + "/workinghours/" + workingHour.getId())
         ).collect(Collectors.toList());
