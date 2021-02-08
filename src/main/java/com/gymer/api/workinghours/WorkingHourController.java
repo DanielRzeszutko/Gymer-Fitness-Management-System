@@ -1,6 +1,8 @@
 package com.gymer.api.workinghours;
 
 import com.gymer.api.employee.entity.Employee;
+import com.gymer.api.partner.PartnerService;
+import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import com.gymer.api.workinghours.entity.WorkingHourDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,31 +11,34 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/partners/{partnerId}")
 public class WorkingHourController {
 
 	private final WorkingHourService workingHourService;
+	private final PartnerService partnerService;
 
 	@Autowired
-	public WorkingHourController(WorkingHourService workingHourService) {
+	public WorkingHourController(WorkingHourService workingHourService, PartnerService partnerService) {
 		this.workingHourService = workingHourService;
+		this.partnerService = partnerService;
 	}
-
 
 	@GetMapping("/workingHours")
 	public Iterable<WorkingHour> getPartnerWorkingHoursById(@PathVariable Long partnerId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
-		return partner.getWorkingHoursList();
+		return partner.getWorkingHours();
 	}
 
 	@PutMapping("/workingHours/{workingHourId}")
 	public void updatePartnerWorkingHours(@RequestBody WorkingHourDTO workingHourDTO,
 										  @PathVariable Long partnerId, @PathVariable Long workingHourId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
-		List<WorkingHour> workingHoursList = partner.getWorkingHoursList();
+		List<WorkingHour> workingHoursList = partner.getWorkingHours();
 		WorkingHour workingHour = convertToWorkingHour(workingHourDTO);
 		if (!workingHoursList.contains(workingHour)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -52,7 +57,7 @@ public class WorkingHourController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 
-		return employee.getWorkingHoursList();
+		return employee.getWorkingHours();
 	}
 
 	@PutMapping("/employees/{employeeId}/workingHours/{workingHourId}")
@@ -61,7 +66,7 @@ public class WorkingHourController {
 		Partner partner = partnerService.getPartnerById(partnerId);
 		List<Employee> employeesList = partner.getEmployees();
 		Employee employee = employeeService.getEmployeeById(employeeId);
-		List<WorkingHour> workingHoursList = partner.getWorkingHoursList();
+		List<WorkingHour> workingHoursList = partner.getWorkingHours();
 		WorkingHour workingHour = convertToWorkingHour(workingHourDTO);
 
 		if (!workingHoursList.contains(workingHour) && !employeesList.contains(employee)) {
@@ -73,16 +78,20 @@ public class WorkingHourController {
 
 
 	private WorkingHourDTO convertToWorkingHourDTO(WorkingHour workingHour) {
-		return new WorkingHourDTO(workingHour.getId(),
+		return new WorkingHourDTO(
+				workingHour.getId(),
 				workingHour.getDay(),
 				workingHour.getStartHour(),
-				workingHour.getEndHour());
+				workingHour.getEndHour()
+		);
 	}
 
 	private WorkingHour convertToWorkingHour(WorkingHourDTO workingHourDTO) {
-		return new WorkingHour(workingHourDTO.getId(),
+		return new WorkingHour(
+				workingHourDTO.getId(),
 				workingHourDTO.getDay(),
 				workingHourDTO.getStartHour(),
-				workingHourDTO.getEndHour());
+				workingHourDTO.getEndHour()
+		);
 	}
 }
