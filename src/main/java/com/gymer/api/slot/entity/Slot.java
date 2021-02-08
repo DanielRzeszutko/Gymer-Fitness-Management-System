@@ -27,6 +27,7 @@ public class Slot {
 
 	@NotNull
 	private Time startTime;
+
 	@NotNull
 	private Time endTime;
 

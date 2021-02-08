@@ -5,13 +5,13 @@ import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
+import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.workinghours.entity.Day;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.ManyToMany;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Collections;
@@ -57,9 +57,12 @@ public class SampleDataGenerator {
 
     private Slot getRandomSlot(Employee employee) {
         int startHour = new Random().nextInt(12) + 6;
+        int endHour = startHour + 1;
+        String startHourString = startHour < 10 ? "0" + startHour : Integer.toString(startHour);
+        String endHourString = endHour < 10 ? "0" + endHour : Integer.toString(endHour);
         return new Slot(
-                0L, Date.valueOf("10.02.2021"), Time.valueOf(startHour + ":00"),
-                Time.valueOf(startHour + 1 + ":00"), Collections.emptyList(), employee, startHour < 12);
+                0L, Date.valueOf("2021-02-10"), Time.valueOf(startHourString + ":00:00"),
+                Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, startHour < 12);
     }
 
     private List<Employee> getRandomEmployees(int howMuch) {
@@ -74,8 +77,11 @@ public class SampleDataGenerator {
         List<WorkingHour> workingHours = new LinkedList<>();
         for (int i = 0; i < Day.values().length; i++) {
             int startHour = new Random().nextInt(12) + 7;
+            int endHour = startHour + 8;
             if (startHour >= 18) continue;
-            workingHours.add(new WorkingHour(0L, Day.values()[i], Time.valueOf(startHour + ":00"), Time.valueOf(startHour + 8 + ":00")));
+            String startHourString = startHour < 10 ? "0" + startHour : Integer.toString(startHour);
+            String endHourString = endHour < 10 ? "0" + endHour : Integer.toString(endHour);
+            workingHours.add(new WorkingHour(0L, Day.values()[i], Time.valueOf(startHourString + ":00:00"), Time.valueOf(endHourString + ":00:00")));
         }
         return workingHours;
     }

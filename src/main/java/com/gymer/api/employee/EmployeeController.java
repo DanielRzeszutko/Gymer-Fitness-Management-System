@@ -4,14 +4,13 @@ import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.employee.entity.EmployeeDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.partner.entity.PartnerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -73,9 +72,9 @@ public class EmployeeController {
     }
 
     private EmployeeDTO convertToEmployeeDTO(Employee employee) {
-        List<Link> workingHoursLinks = employee.getWorkingHours().stream().map(
+        Links workingHoursLinks = Links.of(employee.getWorkingHours().stream().map(
                 workingHour -> Link.of("/partners/" + employee.getId() + "/workinghours/" + workingHour.getId())
-        ).collect(Collectors.toList());
+        ).collect(Collectors.toList()));
         return new EmployeeDTO(
                 employee.getId(),
                 employee.getFirstName(),

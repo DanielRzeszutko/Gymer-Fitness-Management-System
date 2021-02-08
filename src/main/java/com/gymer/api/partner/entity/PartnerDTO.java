@@ -3,8 +3,7 @@ package com.gymer.api.partner.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.hateoas.Link;
-
-import java.util.List;
+import org.springframework.hateoas.Links;
 
 @Data
 @AllArgsConstructor
@@ -17,8 +16,8 @@ public class PartnerDTO {
     private String website;
     private Link credential;
     private Link address;
-    private List<Link> employees;
-    private List<Link> slots;
-    private List<Link> workingHours;
+    private Links employees;
+    private Links slots;
+    private Links workingHours;
 
 }

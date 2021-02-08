@@ -4,11 +4,11 @@ import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.partner.entity.PartnerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,18 +57,18 @@ public class PartnerController {
     }
 
     private PartnerDTO convertToPartnerDTO(Partner partner) {
+        Links employeeLinks = Links.of(partner.getEmployees().stream().map(
+                employee -> Link.of("/partners/" + partner.getId() + "/employees/" + employee.getId())
+        ).collect(Collectors.toList()));
+        Links slotsLinks = Links.of(partner.getSlots().stream().map(
+                slot -> Link.of("/partners/" + partner.getId() + "/slots/" + slot.getId())
+        ).collect(Collectors.toList()));
+        Links workingHoursLinks = Links.of(partner.getWorkingHours().stream().map(
+                workingHour -> Link.of("/partners/" + partner.getId() + "/workinghours/" + workingHour.getId())
+        ).collect(Collectors.toList()));
         Link credentialLink = Link.of("/partners/" + partner.getId() + "/credentials/" + partner.getCredential().getId());
         Link addressLink = Link.of("/partners/" + partner.getId() + "/addresses/" + partner.getAddress().getId());
-        List<Link> employeeLinks = partner.getEmployees().stream().map(
-                employee -> Link.of("/partners/" + partner.getId() + "/employees/" + employee.getId())
-        ).collect(Collectors.toList());
-        List<Link> slotsLinks = partner.getSlots().stream().map(
-                slot -> Link.of("/partners/" + partner.getId() + "/slots/" + slot.getId())
-        ).collect(Collectors.toList());
-        List<Link> slotsLinks = Collections.emptyList();
-        List<Link> workingHoursLinks = partner.getWorkingHours().stream().map(
-                workingHour -> Link.of("/partners/" + partner.getId() + "/workinghours/" + workingHour.getId())
-        ).collect(Collectors.toList());
+
         return new PartnerDTO(
                 partner.getId(),
                 partner.getName(),

@@ -5,6 +5,7 @@ import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.workinghours.entity.WorkingHour;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,17 +23,22 @@ public class Partner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String name;
+
     private String logo;
     private String description;
     private String website;
 
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Credential credential;
 
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
+    @NotNull
     @OneToMany(cascade = CascadeType.ALL)
     private List<Employee> employees;
 

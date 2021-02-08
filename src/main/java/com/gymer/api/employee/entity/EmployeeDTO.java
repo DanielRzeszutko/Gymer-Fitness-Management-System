@@ -2,9 +2,7 @@ package com.gymer.api.employee.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.hateoas.Link;
-
-import java.util.List;
+import org.springframework.hateoas.Links;
 
 @Data
 @AllArgsConstructor
@@ -16,6 +14,6 @@ public class EmployeeDTO {
     private String lastName;
     private String description;
     private String image;
-    private List<Link> workingHours;
+    private Links workingHours;
 
 }
