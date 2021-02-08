@@ -1,5 +1,6 @@
 package com.gymer.api.workinghours;
 
+import com.gymer.api.employee.EmployeeService;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
@@ -21,11 +22,13 @@ public class WorkingHourController {
 
 	private final WorkingHourService workingHourService;
 	private final PartnerService partnerService;
+	private final EmployeeService employeeService;
 
 	@Autowired
-	public WorkingHourController(WorkingHourService workingHourService, PartnerService partnerService) {
+	public WorkingHourController(WorkingHourService workingHourService, PartnerService partnerService, EmployeeService employeeService) {
 		this.workingHourService = workingHourService;
 		this.partnerService = partnerService;
+		this.employeeService = employeeService;
 	}
 
 	@GetMapping("/workingHours")
@@ -57,7 +60,7 @@ public class WorkingHourController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 
-		return convertToWorkingHourDTO(employee.getWorkingHours());
+		return employee.getWorkingHours().stream().map(this::convertToWorkingHourDTO).collect(Collectors.toList());
 	}
 
 	@PutMapping("/employees/{employeeId}/workingHours/{workingHourId}")

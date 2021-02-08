@@ -1,18 +1,17 @@
-package com.gymer.api.employee.entity;
+package com.gymer.api.user.entity;
 
-import com.gymer.api.workinghours.entity.WorkingHour;
+import com.gymer.api.credential.entity.Credential;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
-@Entity
+@Entity(name = "user_account")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +19,8 @@ public class Employee {
 
     private String firstName;
     private String lastName;
-    private String description;
-    private String image;
 
-    @ManyToMany
-    private List<WorkingHour> workingHours;
+    @OneToOne
+    private Credential credential;
 
 }

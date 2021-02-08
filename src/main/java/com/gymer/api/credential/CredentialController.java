@@ -4,6 +4,8 @@ import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
+import com.gymer.api.user.UserService;
+import com.gymer.api.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
