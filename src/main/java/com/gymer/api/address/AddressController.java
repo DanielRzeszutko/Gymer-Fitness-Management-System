@@ -2,6 +2,8 @@ package com.gymer.api.address;
 
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.address.entity.AddressDTO;
+import com.gymer.api.partner.PartnerService;
+import com.gymer.api.partner.entity.Partner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -38,16 +40,27 @@ public class AddressController {
     @GetMapping("/api/partners/{partnerId}/addresses/{addressId}")
     public AddressDTO getPartnerAddressById(@PathVariable Long partnerId, @PathVariable Long addressId) {
         Partner partner = partnerService.getPartnerById(partnerId);
-        if (!partner.getAddress.getId().equals(addressId)) {
+        if (!partner.getAddress().getId().equals(addressId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         return convertToAddressDTO(addressService.getAddressById(addressId));
     }
 
+    @PutMapping("/api/partners/{partnerId}/addresses")
+    public void addNewAddress(@RequestBody AddressDTO addressDTO, @PathVariable Long partnerId, @PathVariable Long addressId) {
+        Partner partner = partnerService.getPartnerById(partnerId);
+        if (!partner.getAddress().getId().equals(addressId)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        Address address = convertToAddress(addressDTO);
+        partner.setAddress(address);
+        partnerService.updatePartner(partner);
+    }
+
     @PutMapping("/api/partners/{partnerId}/addresses/{addressId}")
     public void updateAddress(@RequestBody AddressDTO addressDTO, @PathVariable Long partnerId, @PathVariable Long addressId) {
         Partner partner = partnerService.getPartnerById(partnerId);
-        if (!partner.getAddress.getId().equals(addressId)) {
+        if (!partner.getAddress().getId().equals(addressId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         Address address = convertToAddress(addressDTO);
@@ -60,7 +73,8 @@ public class AddressController {
                 addressDTO.getCity(),
                 addressDTO.getStreet(),
                 addressDTO.getNumber(),
-                addressDTO.getZipCode());
+                addressDTO.getZipCode()
+        );
     }
 
     private AddressDTO convertToAddressDTO(Address address) {
@@ -69,7 +83,8 @@ public class AddressController {
                 address.getCity(),
                 address.getStreet(),
                 address.getNumber(),
-                address.getZipCode());
+                address.getZipCode()
+        );
     }
 
 }

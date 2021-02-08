@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-class AddressService {
+public class AddressService {
 
     private final AddressRepository addressRepository;
 
@@ -19,11 +19,6 @@ class AddressService {
     }
 
     public Address getAddressById(Long addressId) {
-        return addressRepository.findById(addressId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    public Address getPartnerAddressById(Long addressId) {
         return addressRepository.findById(addressId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
