@@ -64,7 +64,7 @@ public class AddressController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         Address address = convertToAddress(addressDTO);
-        addressService.updateAddress(address, addressId);
+        addressService.updateAddress(address);
     }
 
     private Address convertToAddress(AddressDTO addressDTO) {
