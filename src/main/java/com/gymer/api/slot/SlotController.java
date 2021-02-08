@@ -6,6 +6,7 @@ import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.slot.entity.SlotDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Links;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,15 +37,15 @@ public class SlotController {
 	//todo implement other endpoints
 
 	private SlotDTO convertToSlotDTO(Slot slot) {
-		List<Link> usersLinks = slot.getUsers().stream().map(
-				user -> Link.of("/users/" + user.getId())).collect(Collectors.toList());
-
+		Links usersLinks = Links.of(slot.getUsers().stream().map(
+				user -> Link.of("/users/" + user.getId())).collect(Collectors.toList()));
+		Link employeeLink = Link.of("/partners/" + "{id}" + "/employees/" + slot.getEmployee().getId());
 		return new SlotDTO(slot.getId(),
 				slot.getDate(),
 				slot.getStartTime(),
 				slot.getEndTime(),
 				usersLinks,
-				slot.getEmployee(),
+				employeeLink,
 				slot.isPrivate()
 
 		);

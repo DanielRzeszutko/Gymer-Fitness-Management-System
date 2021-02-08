@@ -29,13 +29,13 @@ public class WorkingHourController {
 		this.employeeService = employeeService;
 	}
 
-	@GetMapping("/workingHours")
+	@GetMapping("/workinghours")
 	public Iterable<WorkingHourDTO> getPartnerWorkingHoursById(@PathVariable Long partnerId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
 		return partner.getWorkingHours().stream().map(this::convertToWorkingHourDTO).collect(Collectors.toList());
 	}
 
-	@PutMapping("/workingHours/{workingHourId}")
+	@PutMapping("/workinghours/{workingHourId}")
 	public void updatePartnerWorkingHours(@RequestBody WorkingHourDTO workingHourDTO,
 										  @PathVariable Long partnerId, @PathVariable Long workingHourId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
@@ -49,7 +49,7 @@ public class WorkingHourController {
 	}
 
 
-	@GetMapping("/employees/{employeeId}/workingHours")
+	@GetMapping("/employees/{employeeId}/workinghours")
 	public Iterable<WorkingHourDTO> getEmployeeWorkingHoursById(@PathVariable Long partnerId, @PathVariable Long employeeId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
 		List<Employee> employeesList = partner.getEmployees();
@@ -57,11 +57,10 @@ public class WorkingHourController {
 		if (!employeesList.contains(employee)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
-
 		return employee.getWorkingHours().stream().map(this::convertToWorkingHourDTO).collect(Collectors.toList());
 	}
 
-	@PutMapping("/employees/{employeeId}/workingHours/{workingHourId}")
+	@PutMapping("/employees/{employeeId}/workinghours/{workingHourId}")
 	public void updateEmployeeWorkingHours(@RequestBody WorkingHourDTO workingHourDTO, @PathVariable Long partnerId,
 										   @PathVariable Long employeeId, @PathVariable Long workingHourId) {
 		Partner partner = partnerService.getPartnerById(partnerId);

@@ -73,7 +73,7 @@ public class EmployeeController {
 
     private EmployeeDTO convertToEmployeeDTO(Employee employee) {
         Links workingHoursLinks = Links.of(employee.getWorkingHours().stream().map(
-                workingHour -> Link.of("/partners/" + employee.getId() + "/workinghours/" + workingHour.getId())
+                workingHour -> Link.of("/partners/" + employee.getId() + "/employees/" + employee.getId() + "/workinghours/" + workingHour.getId())
         ).collect(Collectors.toList()));
         return new EmployeeDTO(
                 employee.getId(),
