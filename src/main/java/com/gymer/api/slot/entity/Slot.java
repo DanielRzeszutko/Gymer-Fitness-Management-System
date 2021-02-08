@@ -35,6 +35,7 @@ public class Slot {
 	@ManyToMany
 	private List<User> users;
 
+	@NotNull
 	@OneToOne
 	private Employee employee;
 

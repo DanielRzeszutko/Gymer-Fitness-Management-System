@@ -58,16 +58,16 @@ public class PartnerController {
 
     private PartnerDTO convertToPartnerDTO(Partner partner) {
         Links employeeLinks = Links.of(partner.getEmployees().stream().map(
-                employee -> Link.of("/partners/" + partner.getId() + "/employees/" + employee.getId())
+                employee -> Link.of("/partners/" + partner.getId() + "/employees/" + employee.getId(), "employees")
         ).collect(Collectors.toList()));
         Links slotsLinks = Links.of(partner.getSlots().stream().map(
-                slot -> Link.of("/partners/" + partner.getId() + "/slots/" + slot.getId())
+                slot -> Link.of("/partners/" + partner.getId() + "/slots/" + slot.getId(), "slots")
         ).collect(Collectors.toList()));
         Links workingHoursLinks = Links.of(partner.getWorkingHours().stream().map(
-                workingHour -> Link.of("/partners/" + partner.getId() + "/workinghours/" + workingHour.getId())
+                workingHour -> Link.of("/partners/" + partner.getId() + "/workinghours/" + workingHour.getId(), "workinghours")
         ).collect(Collectors.toList()));
-        Link credentialLink = Link.of("/partners/" + partner.getId() + "/credentials/" + partner.getCredential().getId());
-        Link addressLink = Link.of("/partners/" + partner.getId() + "/addresses/" + partner.getAddress().getId());
+        Link credentialLink = Link.of("/partners/" + partner.getId() + "/credentials/" + partner.getCredential().getId(), "credentials");
+        Link addressLink = Link.of("/partners/" + partner.getId() + "/addresses/" + partner.getAddress().getId(), "addresses");
 
         return new PartnerDTO(
                 partner.getId(),
