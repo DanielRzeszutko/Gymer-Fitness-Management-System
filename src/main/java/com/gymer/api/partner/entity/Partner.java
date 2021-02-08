@@ -3,6 +3,7 @@ package com.gymer.api.partner.entity;
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.employee.entity.Employee;
+import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import lombok.AllArgsConstructor;
 import lombok.Data;
