@@ -29,9 +29,9 @@ public class WorkingHourController {
 	}
 
 	@GetMapping("/workingHours")
-	public Iterable<WorkingHour> getPartnerWorkingHoursById(@PathVariable Long partnerId) {
+	public Iterable<WorkingHourDTO> getPartnerWorkingHoursById(@PathVariable Long partnerId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
-		return partner.getWorkingHours();
+		return partner.getWorkingHours().stream().map(this::convertToWorkingHourDTO).collect(Collectors.toList());
 	}
 
 	@PutMapping("/workingHours/{workingHourId}")
@@ -49,7 +49,7 @@ public class WorkingHourController {
 
 
 	@GetMapping("/employees/{employeeId}/workingHours")
-	public Iterable<WorkingHour> getEmployeeWorkingHoursById(@PathVariable Long partnerId, @PathVariable Long employeeId) {
+	public Iterable<WorkingHourDTO> getEmployeeWorkingHoursById(@PathVariable Long partnerId, @PathVariable Long employeeId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
 		List<Employee> employeesList = partner.getEmployees();
 		Employee employee = employeeService.getEmployeeById(employeeId);
@@ -57,7 +57,7 @@ public class WorkingHourController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 
-		return employee.getWorkingHours();
+		return convertToWorkingHourDTO(employee.getWorkingHours());
 	}
 
 	@PutMapping("/employees/{employeeId}/workingHours/{workingHourId}")
