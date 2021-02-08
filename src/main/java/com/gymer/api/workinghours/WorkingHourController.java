@@ -69,7 +69,7 @@ public class WorkingHourController {
 		List<WorkingHour> workingHoursList = partner.getWorkingHours();
 		WorkingHour workingHour = convertToWorkingHour(workingHourDTO);
 
-		if (!workingHoursList.contains(workingHour) && !employeesList.contains(employee)) {
+		if (!workingHoursList.contains(workingHour) || !employeesList.contains(employee)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 
