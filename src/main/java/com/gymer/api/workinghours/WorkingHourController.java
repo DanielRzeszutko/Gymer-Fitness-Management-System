@@ -44,6 +44,14 @@ public class WorkingHourController {
 		partnerService.updatePartner(partner);
 	}
 
+	@GetMapping("/workinghours/{workingHourId}")
+	public WorkingHourDTO getWorkingHourById(@PathVariable Long partnerId, @PathVariable Long workingHourId) {
+		Partner partner = partnerService.getPartnerById(partnerId);
+		WorkingHour workingHour = workingHourService.getWorkingHourById(workingHourId);
+		if (!partner.getWorkingHours().contains(workingHour)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		return convertToWorkingHourDTO(workingHour);
+	}
+
 	@DeleteMapping("/workinghours/{workingHourId}")
 	public void deleteWorkingHourFromPartner(@PathVariable Long partnerId, @PathVariable Long workingHourId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
@@ -67,7 +75,7 @@ public class WorkingHourController {
 	}
 
 
-	@GetMapping("/employees/{employeeId}/workinghours")
+	@GetMapping("/employees/{employeeId}/workinghours/")
 	public Iterable<WorkingHourDTO> getEmployeeWorkingHoursById(@PathVariable Long partnerId, @PathVariable Long employeeId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
 		List<Employee> employeesList = partner.getEmployees();
