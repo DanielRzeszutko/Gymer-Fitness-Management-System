@@ -2,7 +2,6 @@ package com.gymer.api.employee.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.hateoas.Links;
 import org.springframework.hateoas.RepresentationModel;
 
 @Data
