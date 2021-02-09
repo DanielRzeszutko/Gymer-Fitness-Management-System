@@ -7,11 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class EmployeeService {
 
@@ -37,6 +32,10 @@ public class EmployeeService {
 
     public void deleteEmployee(Employee employee) {
         employeeRepository.delete(employee);
+    }
+
+    public Iterable<Employee> getEmployeesContaining(String details, Sort sort) {
+        return employeeRepository.findAllByFirstNameContainingOrLastNameContaining(details, details, sort);
     }
 
 }

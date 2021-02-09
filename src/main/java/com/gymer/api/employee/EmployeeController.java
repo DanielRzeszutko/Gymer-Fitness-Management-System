@@ -4,7 +4,6 @@ import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.employee.entity.EmployeeDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.slot.entity.Slot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
@@ -30,7 +29,11 @@ public class EmployeeController {
     }
 
     @GetMapping("/api/employees")
-    public CollectionModel<EmployeeDTO> getAllEmployeesAndSort(Sort sort) {
+    public CollectionModel<EmployeeDTO> getAllEmployeesAndSort(Sort sort, @RequestParam(required = false, name = "contains") String details) {
+        if (details != null) {
+            return CollectionModel.of(((List<Employee>) employeeService.getEmployeesContaining(details, sort))
+                    .stream().map(this::convertToEmployeeDTO).collect(Collectors.toList()));
+        }
         List<Employee> employees = (List<Employee>) employeeService.getEmployeesAndSort(sort);
         return CollectionModel.of(employees.stream().map(this::convertToEmployeeDTO).collect(Collectors.toList()));
     }

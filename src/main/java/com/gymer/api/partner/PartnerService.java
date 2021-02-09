@@ -36,8 +36,8 @@ public class PartnerService {
         partnerRepository.save(partner);
     }
 
-    public Iterable<Partner> findAllContaining(String name) {
-        return partnerRepository.findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(name, name, name);
+    public Iterable<Partner> findAllContaining(String name, Sort sort) {
+        return partnerRepository.findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(name, name, name, sort);
     }
 
     public Partner findPartnerContainingSlot(Slot slot) {

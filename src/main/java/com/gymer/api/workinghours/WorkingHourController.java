@@ -75,7 +75,7 @@ public class WorkingHourController {
 	}
 
 
-	@GetMapping("/employees/{employeeId}/workinghours/")
+	@GetMapping("/employees/{employeeId}/workinghours")
 	public Iterable<WorkingHourDTO> getEmployeeWorkingHoursById(@PathVariable Long partnerId, @PathVariable Long employeeId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
 		List<Employee> employeesList = partner.getEmployees();
