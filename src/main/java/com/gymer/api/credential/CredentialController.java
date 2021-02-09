@@ -71,6 +71,7 @@ public class CredentialController {
                 credentialDTO.getEmail(),
                 credentialDTO.getPassword(),
                 credentialDTO.getPhoneNumber(),
+                credentialDTO.getRole(),
                 credentialDTO.isActive()
         );
     }
@@ -81,6 +82,7 @@ public class CredentialController {
                 credential.getEmail(),
                 credential.getPassword(),
                 credential.getPhoneNumber(),
+                credential.getRole(),
                 credential.isActive()
         );
     }
