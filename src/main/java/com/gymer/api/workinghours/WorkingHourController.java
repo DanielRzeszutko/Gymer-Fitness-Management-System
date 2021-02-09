@@ -36,6 +36,23 @@ public class WorkingHourController {
 		return CollectionModel.of(partner.getWorkingHours().stream().map(this::convertToWorkingHourDTO).collect(Collectors.toList()));
 	}
 
+	@PostMapping("/workinghours")
+	public void addNewWorkingHourToPartner(@RequestBody WorkingHourDTO workingHourDTO, @PathVariable Long partnerId) {
+		Partner partner = partnerService.getPartnerById(partnerId);
+		WorkingHour newWorkingHour = convertToWorkingHour(workingHourDTO);
+		partner.getWorkingHours().add(newWorkingHour);
+		partnerService.updatePartner(partner);
+	}
+
+	@DeleteMapping("/workinghours/{workingHourId}")
+	public void deleteWorkingHourFromPartner(@PathVariable Long partnerId, @PathVariable Long workingHourId) {
+		Partner partner = partnerService.getPartnerById(partnerId);
+		WorkingHour workingHour = workingHourService.getWorkingHourById(workingHourId);
+		if (!partner.getWorkingHours().contains(workingHour)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		partner.getWorkingHours().remove(workingHour);
+		partnerService.updatePartner(partner);
+	}
+
 	@PutMapping("/workinghours/{workingHourId}")
 	public void updatePartnerWorkingHours(@RequestBody WorkingHourDTO workingHourDTO,
 										  @PathVariable Long partnerId, @PathVariable Long workingHourId) {
@@ -59,6 +76,29 @@ public class WorkingHourController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 		return employee.getWorkingHours().stream().map(this::convertToWorkingHourDTO).collect(Collectors.toList());
+	}
+
+	@PostMapping("/employees/{employeeId}/workinghours")
+	public void addNewWorkingHourToEmployee(@RequestBody WorkingHourDTO workingHourDTO,
+											@PathVariable Long partnerId, @PathVariable Long employeeId) {
+		Partner partner = partnerService.getPartnerById(partnerId);
+		Employee employee = employeeService.getEmployeeById(employeeId);
+		if (!partner.getEmployees().contains(employee)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		WorkingHour newWorkingHour = convertToWorkingHour(workingHourDTO);
+		employee.getWorkingHours().add(newWorkingHour);
+		employeeService.updateEmployee(employee);
+	}
+
+	@DeleteMapping("/employees/{employeeId}/workinghours/{workingHourId}")
+	public void deleteWorkingHourFromEmployee(@PathVariable Long partnerId, @PathVariable Long employeeId,
+											@PathVariable Long workingHourId) {
+		Partner partner = partnerService.getPartnerById(partnerId);
+		Employee employee = employeeService.getEmployeeById(employeeId);
+		if (!partner.getEmployees().contains(employee)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		WorkingHour workingHour = workingHourService.getWorkingHourById(workingHourId);
+		if (!employee.getWorkingHours().contains(workingHour)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		employee.getWorkingHours().remove(workingHour);
+		employeeService.updateEmployee(employee);
 	}
 
 	@GetMapping("/employees/{employeeId}/workinghours/{workingHourId}")
