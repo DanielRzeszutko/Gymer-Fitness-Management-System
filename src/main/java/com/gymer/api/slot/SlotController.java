@@ -29,7 +29,7 @@ public class SlotController {
 	}
 
 	@GetMapping("/api/slots")
-	public CollectionModel<SlotDTO> getAllSlots(Sort sort, @RequestParam(required = false, name = "employee") String details) {
+	public CollectionModel<SlotDTO> getAllSlots(Sort sort, @RequestParam(required = false, name = "employeeContains") String details) {
 		List<Slot> slots;
 		if (details != null) {
 			slots = details.matches("-?(0|[1-9]\\d*)")

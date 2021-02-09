@@ -26,7 +26,7 @@ public class PartnerController {
     }
 
     @GetMapping
-    public CollectionModel<PartnerDTO> getAllPartners(Sort sort, @RequestParam(required = false, name = "address") String details) {
+    public CollectionModel<PartnerDTO> getAllPartners(Sort sort, @RequestParam(required = false, name = "addressContains") String details) {
         if (details != null) {
             return CollectionModel.of(((List<Partner>) partnerService.findAllContaining(details))
                     .stream().map(this::convertToPartnerDTO).collect(Collectors.toList()));
