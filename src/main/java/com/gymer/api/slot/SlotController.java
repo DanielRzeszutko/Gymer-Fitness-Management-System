@@ -79,17 +79,25 @@ public class SlotController {
 	}
 
 	private SlotDTO convertToSlotDTO(Slot slot) {
-		Links usersLinks = Links.of(slot.getUsers().stream().map(
-				user -> Link.of("/users/" + user.getId())).collect(Collectors.toList()));
-		Link employeeLink = Link.of("/partners/" + "{id}" + "/employees/" + slot.getEmployee().getId());
-		return new SlotDTO(slot.getId(),
+		SlotDTO slotDTO = new SlotDTO(slot.getId(),
 				slot.getDate(),
 				slot.getStartTime(),
 				slot.getEndTime(),
-				usersLinks,
-				employeeLink,
 				slot.isPrivate()
 		);
+
+		Link selfLink = Link.of("/partners/" + "{id}" + "/employees/" + slot.getEmployee().getId() + "/slots/" + slot.getId()).withSelfRel();
+
+		Links usersLinks = Links.of(slot.getUsers().stream().map(
+				user -> Link.of("/users/" + user.getId()).withRel("users")).collect(Collectors.toList()));
+
+		Link employeeLink = Link.of("/partners/" + "{id}" + "/employees/" + slot.getEmployee().getId()).withRel("employees");
+
+		slotDTO.add(selfLink);
+		slotDTO.add(usersLinks);
+		slotDTO.add(employeeLink);
+
+		return slotDTO;
 	}
 
 	private Slot convertToSlot(SlotDTO slotDTO) {

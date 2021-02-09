@@ -45,13 +45,19 @@ public class UserController {
     }
 
     private UserDTO convertToUserDTO(User user) {
-        Link credentialLink = Link.of("/users/" + user.getId() + "/credentials/" + user.getCredential().getId());
-        return new UserDTO(
+        UserDTO userDTO = new UserDTO(
                 user.getId(),
                 user.getFirstName(),
-                user.getLastName(),
-                credentialLink
+                user.getLastName()
         );
+
+        Link selfLink = Link.of("/users/" + user.getId()).withSelfRel();
+
+        Link credentialLink = Link.of("/users/" + user.getId() + "/credentials/" + user.getCredential().getId()).withRel("credentials");
+
+        userDTO.add(selfLink, credentialLink);
+
+        return userDTO;
     }
 
 }

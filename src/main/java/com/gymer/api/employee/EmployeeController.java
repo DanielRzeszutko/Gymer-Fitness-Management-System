@@ -5,6 +5,7 @@ import com.gymer.api.employee.entity.EmployeeDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
@@ -72,17 +73,23 @@ public class EmployeeController {
     }
 
     private EmployeeDTO convertToEmployeeDTO(Employee employee) {
-        Links workingHoursLinks = Links.of(employee.getWorkingHours().stream().map(
-                workingHour -> Link.of("/partners/" + employee.getId() + "/employees/" + employee.getId() + "/workinghours/" + workingHour.getId())
-        ).collect(Collectors.toList()));
-        return new EmployeeDTO(
+        EmployeeDTO employeeDTO = new EmployeeDTO(
                 employee.getId(),
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getDescription(),
-                employee.getDescription(),
-                workingHoursLinks
+                employee.getDescription()
         );
+
+        Link selfLink = Link.of("/partners/" + employee.getId() + "/employees/" + employee.getId()).withSelfRel();
+
+        Links workingHoursLinks = Links.of(employee.getWorkingHours().stream().map(
+                workingHour -> Link.of("/partners/" + employee.getId() + "/employees/" + employee.getId() + "/workinghours/" + workingHour.getId()).withRel("workinghours")
+        ).collect(Collectors.toList()));
+
+        employeeDTO.add(selfLink);
+        employeeDTO.add(workingHoursLinks);
+        return employeeDTO;
     }
 
 }

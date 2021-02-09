@@ -60,6 +60,23 @@ public class WorkingHourController {
 		return employee.getWorkingHours().stream().map(this::convertToWorkingHourDTO).collect(Collectors.toList());
 	}
 
+	@GetMapping("/employees/{employeeId}/workinghours/{workingHourId}")
+	public WorkingHourDTO getEmployeeWorkingHourById(@PathVariable Long partnerId,
+										   @PathVariable Long employeeId,
+										   @PathVariable Long workingHourId) {
+		Partner partner = partnerService.getPartnerById(partnerId);
+		for (Employee employee : partner.getEmployees()) {
+			if (employee.getId().equals(employeeId)) {
+				for (WorkingHour workingHour : employee.getWorkingHours()) {
+					if (workingHour.getId().equals(workingHourId)) {
+						return convertToWorkingHourDTO(workingHour);
+					}
+				}
+			}
+		}
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	}
+
 	@PutMapping("/employees/{employeeId}/workinghours/{workingHourId}")
 	public void updateEmployeeWorkingHours(@RequestBody WorkingHourDTO workingHourDTO, @PathVariable Long partnerId,
 										   @PathVariable Long employeeId, @PathVariable Long workingHourId) {

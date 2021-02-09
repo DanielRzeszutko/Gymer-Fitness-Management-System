@@ -3,10 +3,11 @@ package com.gymer.api.employee.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.hateoas.Links;
+import org.springframework.hateoas.RepresentationModel;
 
 @Data
 @AllArgsConstructor
-public class EmployeeDTO {
+public class EmployeeDTO extends RepresentationModel<EmployeeDTO> {
 
     private Long id;
 
@@ -14,6 +15,5 @@ public class EmployeeDTO {
     private String lastName;
     private String description;
     private String image;
-    private Links workingHours;
 
 }
