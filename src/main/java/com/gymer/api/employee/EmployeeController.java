@@ -4,6 +4,7 @@ import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.employee.entity.EmployeeDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
+import com.gymer.api.slot.entity.Slot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -58,6 +60,18 @@ public class EmployeeController {
         for (Employee employee : partner.getEmployees()) {
             if (employee.getId().equals(employeeId)) {
                 employeeService.updateEmployee(convertToEmployee(employeeDTO));
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/{employeeId}")
+    public void deleteEmployee(@PathVariable Long partnerId, @PathVariable Long employeeId) {
+        Partner partner = partnerService.getPartnerById(partnerId);
+        List<Employee> employees = partner.getEmployees();
+        for (Employee employee : employees) {
+            if (employee.getId().equals(employeeId)){
+                employeeService.deleteEmployee(employee);
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
