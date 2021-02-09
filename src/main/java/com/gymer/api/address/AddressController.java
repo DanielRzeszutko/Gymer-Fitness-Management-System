@@ -5,6 +5,7 @@ import com.gymer.api.address.entity.AddressDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +27,8 @@ public class AddressController {
     }
 
     @GetMapping("/api/addresses")
-    public CollectionModel<AddressDTO> getAllAddresses() {
-        List<Address> addresses = (List<Address>) addressService.getAllAddresses();
+    public CollectionModel<AddressDTO> getAllAddresses(Sort sort) {
+        List<Address> addresses = (List<Address>) addressService.getAllAddresses(sort);
         return CollectionModel.of(addresses.stream()
                 .map(this::convertToAddressDTO)
                 .collect(Collectors.toList()));

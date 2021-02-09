@@ -1,6 +1,7 @@
 package com.gymer.api.address;
 
 import com.gymer.api.address.entity.Address;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,7 +15,7 @@ public class AddressService {
         this.addressRepository = addressRepository;
     }
 
-    public Iterable<Address> getAllAddresses() {
+    public Iterable<Address> getAllAddresses(Sort sort) {
         return addressRepository.findAll();
     }
 

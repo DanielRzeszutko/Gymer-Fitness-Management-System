@@ -3,6 +3,7 @@ package com.gymer.api.partner;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.partner.entity.PartnerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Links;
@@ -25,8 +26,8 @@ public class PartnerController {
     }
 
     @GetMapping
-    public CollectionModel<PartnerDTO> getAllPartners() {
-        List<Partner> partners = (List<Partner>) partnerService.getAllPartners();
+    public CollectionModel<PartnerDTO> getAllPartners(Sort sort) {
+        List<Partner> partners = (List<Partner>) partnerService.getAllPartnersAndSort(sort);
         return CollectionModel.of(partners.stream().map(this::convertToPartnerDTO).collect(Collectors.toList()));
     }
 

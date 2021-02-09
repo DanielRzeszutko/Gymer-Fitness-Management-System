@@ -9,24 +9,24 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class SlotService {
 
-	private final SlotRepository slotRepository;
+    private final SlotRepository slotRepository;
 
-	@Autowired
-	public SlotService(SlotRepository slotRepository) {
-		this.slotRepository = slotRepository;
-	}
+    @Autowired
+    public SlotService(SlotRepository slotRepository) {
+        this.slotRepository = slotRepository;
+    }
 
-	public Slot getSlotById(Long slotId) {
-		return slotRepository.findById(slotId).orElseThrow(
-				() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-	}
+    public Slot getSlotById(Long slotId) {
+        return slotRepository.findById(slotId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
 
-	public void updateSlot(Slot slot) {
-		slotRepository.save(slot);
-	}
+    public void updateSlot(Slot slot) {
+        slotRepository.save(slot);
+    }
 
-	public void deleteSlot(Slot slot){
-		slotRepository.delete(slot);
-	}
+    public void deleteSlot(Slot slot) {
+        slotRepository.delete(slot);
+    }
 
 }

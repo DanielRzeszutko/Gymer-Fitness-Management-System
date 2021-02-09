@@ -2,6 +2,7 @@ package com.gymer.api.partner;
 
 import com.gymer.api.partner.entity.Partner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,8 +17,8 @@ public class PartnerService {
         this.partnerRepository = partnerRepository;
     }
 
-    public Iterable<Partner> getAllPartners() {
-        return partnerRepository.findAll();
+    public Iterable<Partner> getAllPartnersAndSort(Sort sort) {
+        return partnerRepository.findAll(sort);
     }
 
     public Partner getPartnerById(Long partnerId) {
