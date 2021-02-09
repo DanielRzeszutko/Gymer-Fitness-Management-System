@@ -30,7 +30,7 @@ public class SlotController {
 	@GetMapping
 	public Iterable<SlotDTO> getAllSlots(@PathVariable Long partnerId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
-		return partner.getSlots().stream().map(this::convertToSlotDTO).collect(Collectors.toList());
+		return partner.getSlots().stream().map(slot -> convertToSlotDTO(slot, partnerId)).collect(Collectors.toList());
 	}
 
 	@PostMapping
@@ -46,7 +46,7 @@ public class SlotController {
 		List<Slot> slots = partner.getSlots();
 		for (Slot slot : slots) {
 			if (slot.getId().equals(slotId)){
-				return convertToSlotDTO(slot);
+				return convertToSlotDTO(slot, partnerId);
 			}
 		}
 		throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -78,7 +78,7 @@ public class SlotController {
 		throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 	}
 
-	private SlotDTO convertToSlotDTO(Slot slot) {
+	private SlotDTO convertToSlotDTO(Slot slot, Long partnerId) {
 		SlotDTO slotDTO = new SlotDTO(slot.getId(),
 				slot.getDate(),
 				slot.getStartTime(),
@@ -86,12 +86,12 @@ public class SlotController {
 				slot.isPrivate()
 		);
 
-		Link selfLink = Link.of("/partners/" + "{id}" + "/employees/" + slot.getEmployee().getId() + "/slots/" + slot.getId()).withSelfRel();
+		Link selfLink = Link.of("/partners/" + partnerId + "/employees/" + slot.getEmployee().getId() + "/slots/" + slot.getId()).withSelfRel();
 
 		Links usersLinks = Links.of(slot.getUsers().stream().map(
 				user -> Link.of("/users/" + user.getId()).withRel("users")).collect(Collectors.toList()));
 
-		Link employeeLink = Link.of("/partners/" + "{id}" + "/employees/" + slot.getEmployee().getId()).withRel("employees");
+		Link employeeLink = Link.of("/partners/" + partnerId + "/employees/" + slot.getEmployee().getId()).withRel("employees");
 
 		slotDTO.add(selfLink);
 		slotDTO.add(usersLinks);
@@ -105,6 +105,7 @@ public class SlotController {
 		slot.setDate(slotDTO.getDate());
 		slot.setStartTime(slotDTO.getStartTime());
 		slot.setEndTime(slotDTO.getEndTime());
+		slot.setPrivate(slotDTO.isPrivate());
 		return slot;
 	}
 
