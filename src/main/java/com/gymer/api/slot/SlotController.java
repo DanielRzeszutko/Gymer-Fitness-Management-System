@@ -5,6 +5,7 @@ import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.slot.entity.SlotDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
@@ -28,9 +29,9 @@ public class SlotController {
 	}
 
 	@GetMapping
-	public Iterable<SlotDTO> getAllSlots(@PathVariable Long partnerId) {
+	public CollectionModel<SlotDTO> getAllSlots(@PathVariable Long partnerId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
-		return partner.getSlots().stream().map(slot -> convertToSlotDTO(slot, partnerId)).collect(Collectors.toList());
+		return CollectionModel.of(partner.getSlots().stream().map(slot -> convertToSlotDTO(slot, partnerId)).collect(Collectors.toList()));
 	}
 
 	@PostMapping

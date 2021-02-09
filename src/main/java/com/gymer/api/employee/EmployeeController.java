@@ -5,6 +5,7 @@ import com.gymer.api.employee.entity.EmployeeDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
@@ -27,9 +28,9 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public Iterable<EmployeeDTO> getAllEmployeesByPartnerId(@PathVariable Long partnerId) {
+    public CollectionModel<EmployeeDTO> getAllEmployeesByPartnerId(@PathVariable Long partnerId) {
         Partner partner = partnerService.getPartnerById(partnerId);
-        return partner.getEmployees().stream().map(this::convertToEmployeeDTO).collect(Collectors.toList());
+        return CollectionModel.of(partner.getEmployees().stream().map(this::convertToEmployeeDTO).collect(Collectors.toList()));
     }
 
     @GetMapping("/{employeeId}")

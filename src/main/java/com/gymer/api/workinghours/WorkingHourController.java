@@ -7,6 +7,7 @@ import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import com.gymer.api.workinghours.entity.WorkingHourDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,9 +31,9 @@ public class WorkingHourController {
 	}
 
 	@GetMapping("/workinghours")
-	public Iterable<WorkingHourDTO> getPartnerWorkingHoursById(@PathVariable Long partnerId) {
+	public CollectionModel<WorkingHourDTO> getPartnerWorkingHoursById(@PathVariable Long partnerId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
-		return partner.getWorkingHours().stream().map(this::convertToWorkingHourDTO).collect(Collectors.toList());
+		return CollectionModel.of(partner.getWorkingHours().stream().map(this::convertToWorkingHourDTO).collect(Collectors.toList()));
 	}
 
 	@PutMapping("/workinghours/{workingHourId}")
