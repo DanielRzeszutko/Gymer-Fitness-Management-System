@@ -16,7 +16,7 @@ public class AddressService {
     }
 
     public Iterable<Address> getAllAddresses(Sort sort) {
-        return addressRepository.findAll();
+        return addressRepository.findAll(sort);
     }
 
     public Address getAddressById(Long addressId) {
