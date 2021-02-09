@@ -2,6 +2,7 @@ package com.gymer.api.slot;
 
 import com.gymer.api.slot.entity.Slot;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,6 +28,18 @@ public class SlotService {
 
     public void deleteSlot(Slot slot) {
         slotRepository.delete(slot);
+    }
+
+    public Iterable<Slot> getSlotsByEmployeeId(Long employeeId) {
+        return slotRepository.findAllByEmployee_Id(employeeId);
+    }
+
+    public Iterable<Slot> getSlotsByEmployeeNameOrSurname(String nameOrSurname) {
+        return slotRepository.findAllByEmployee_FirstNameOrEmployee_LastName(nameOrSurname, nameOrSurname);
+    }
+
+    public Iterable<Slot> getSortedSlots(Sort sort) {
+        return slotRepository.findAll(sort);
     }
 
 }

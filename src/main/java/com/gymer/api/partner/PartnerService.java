@@ -1,6 +1,7 @@
 package com.gymer.api.partner;
 
 import com.gymer.api.partner.entity.Partner;
+import com.gymer.api.slot.entity.Slot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,15 @@ public class PartnerService {
     public void deletePartner(Partner partner) {
         partner.getCredential().setActive(false);
         partnerRepository.save(partner);
+    }
+
+    public Iterable<Partner> findAllContaining(String name) {
+        return partnerRepository.findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(name, name, name);
+    }
+
+    public Partner findPartnerContainingSlot(Slot slot) {
+        return partnerRepository.findBySlotsContaining(slot).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
 }

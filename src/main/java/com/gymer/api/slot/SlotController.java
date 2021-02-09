@@ -5,6 +5,7 @@ import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.slot.entity.SlotDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Links;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/partners/{partnerId}/slots")
 public class SlotController {
 
 	private final SlotService slotService;
@@ -28,20 +28,37 @@ public class SlotController {
 		this.partnerService = partnerService;
 	}
 
-	@GetMapping
+	@GetMapping("/api/slots")
+	public CollectionModel<SlotDTO> getAllSlots(Sort sort, @RequestParam(required = false, name = "employee") String details) {
+		List<Slot> slots;
+		if (details != null) {
+			slots = details.matches("-?(0|[1-9]\\d*)")
+					? (List<Slot>) slotService.getSlotsByEmployeeId(Long.parseLong(details))
+					: (List<Slot>) slotService.getSlotsByEmployeeNameOrSurname(details);
+		} else {
+			slots = (List<Slot>) slotService.getSortedSlots(sort);
+		}
+
+		return CollectionModel.of(
+				slots.stream()
+						.map(slot -> convertToSlotDTO(slot, partnerService.findPartnerContainingSlot(slot).getId()))
+						.collect(Collectors.toList()));
+	}
+
+	@GetMapping("/api/partners/{partnerId}/slots")
 	public CollectionModel<SlotDTO> getAllSlots(@PathVariable Long partnerId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
 		return CollectionModel.of(partner.getSlots().stream().map(slot -> convertToSlotDTO(slot, partnerId)).collect(Collectors.toList()));
 	}
 
-	@PostMapping
+	@PostMapping("/api/partners/{partnerId}/slots")
 	public void addSlotToPartner(@RequestBody SlotDTO slotDTO, @PathVariable Long partnerId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
 		partner.getSlots().add(convertToSlot(slotDTO));
 		partnerService.updatePartner(partner);
 	}
 
-	@GetMapping("/{slotId}")
+	@GetMapping("/api/partners/{partnerId}/slots/{slotId}")
 	public SlotDTO getSlotById(@PathVariable Long partnerId, @PathVariable Long slotId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
 		List<Slot> slots = partner.getSlots();
@@ -53,7 +70,7 @@ public class SlotController {
 		throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 	}
 
-	@PutMapping("/{slotId}")
+	@PutMapping("/api/partners/{partnerId}/slots/{slotId}")
 	public void updateSlotById(@RequestBody SlotDTO slotDTO, @PathVariable Long partnerId, @PathVariable Long slotId) {
 		if (!slotDTO.getId().equals(slotId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
 
@@ -67,7 +84,7 @@ public class SlotController {
 		throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 	}
 
-	@DeleteMapping("/{slotId}")
+	@DeleteMapping("/api/partners/{partnerId}/slots/{slotId}")
 	public void deleteSlot(@PathVariable Long partnerId, @PathVariable Long slotId) {
 		Partner partner = partnerService.getPartnerById(partnerId);
 		List<Slot> slots = partner.getSlots();
