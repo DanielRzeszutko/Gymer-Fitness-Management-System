@@ -12,6 +12,7 @@ public class CredentialDTO extends RepresentationModel<CredentialDTO> {
     private String email;
     private String password;
     private String phoneNumber;
+    private Role role;
     private boolean active;
 
 }

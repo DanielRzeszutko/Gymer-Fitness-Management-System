@@ -27,6 +27,10 @@ public class Credential {
     private String phoneNumber;
 
     @NotNull
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
+
+    @NotNull
     @Column(columnDefinition = "boolean default true")
     private boolean active;
 
