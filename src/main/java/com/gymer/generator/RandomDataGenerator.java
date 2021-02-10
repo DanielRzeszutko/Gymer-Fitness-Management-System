@@ -1,5 +1,6 @@
-package com.gymer.api.config;
+package com.gymer.generator;
 
+import com.gymer.GymerApplication;
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.Role;
@@ -12,10 +13,16 @@ import com.gymer.api.user.entity.User;
 import com.gymer.api.workinghours.entity.Day;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.WebProperties;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.*;
@@ -47,13 +54,14 @@ public class RandomDataGenerator {
     }
 
     @PostConstruct
-    public void init() {
-        nameList = readDataFromFile("sampleData/names.txt");
-        surnameList = readDataFromFile("sampleData/surnames.txt");
-        emails = readDataFromFile("sampleData/emails.txt");
-        cities = readDataFromFile("sampleData/cities.txt");
-        streets = readDataFromFile("sampleData/streets.txt");
-        companies = readDataFromFile("ampleData/companies.txt");
+    public void init() throws FileNotFoundException {
+
+        nameList = readDataFromFile("src/main/resources/names.txt");
+        surnameList = readDataFromFile("src/main/resources/surnames.txt");
+        emails = readDataFromFile("src/main/resources/emails.txt");
+        cities = readDataFromFile("src/main/resources/cities.txt");
+        streets = readDataFromFile("src/main/resources/streets.txt");
+        companies = readDataFromFile("src/main/resources/companies.txt");
 
         for (int i = 0; i < 10; i++) {
             partnerService.updatePartner(getRandomPartner());
@@ -61,9 +69,11 @@ public class RandomDataGenerator {
         }
     }
 
-    private List<String> readDataFromFile(String fileName) {
+    private List<String> readDataFromFile(String fileName) throws FileNotFoundException {
         List<String> result = new ArrayList<>();
-        InputStream is = RandomDataGenerator.class.getResourceAsStream(fileName);
+
+        File file = new File(fileName);
+        InputStream is = new FileInputStream(file);
 
         try {
             Scanner scanner = new Scanner(is);
