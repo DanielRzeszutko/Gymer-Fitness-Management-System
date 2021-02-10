@@ -1,40 +1,43 @@
 package com.gymer.api.user;
 
+import com.gymer.api.common.service.AbstractRestApiService;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
 @Service
-public class UserService {
-
-    private final UserRepository userRepository;
+public class UserService extends AbstractRestApiService<User, Long> {
 
     @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserService(UserRepository repository) {
+        super(repository);
     }
 
-    public User getUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<User> findAllContaining(Sort sort, String searchBy) {
+        return ((UserRepository) repository).findAllByFirstNameContainsOrLastNameContains(searchBy, searchBy, sort);
     }
 
-    public void updateUser(User user) {
-        userRepository.save(user);
-    }
-
+    /**
+     * Service method responsible for changing status of user to deactivated
+     */
     public void deleteUser(User user) {
         user.getCredential().setActive(false);
-        userRepository.save(user);
+        repository.save(user);
     }
 
+    /**
+     * Service method responsible for obtaining user by credentials
+     */
     public Optional<User> getByCredentials(Credential credential) {
-        return userRepository.findByCredential(credential);
+        return ((UserRepository) repository).findByCredential(credential);
     }
 
 }

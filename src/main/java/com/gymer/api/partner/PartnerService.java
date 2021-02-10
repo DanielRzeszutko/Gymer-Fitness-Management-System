@@ -1,5 +1,6 @@
 package com.gymer.api.partner;
 
+import com.gymer.api.common.service.AbstractRestApiService;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
@@ -12,44 +13,43 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @Service
-public class PartnerService {
-
-    private final PartnerRepository partnerRepository;
+public class PartnerService extends AbstractRestApiService<Partner, Long> {
 
     @Autowired
-    public PartnerService(PartnerRepository partnerRepository) {
-        this.partnerRepository = partnerRepository;
+    public PartnerService(PartnerRepository repository) {
+        super(repository);
     }
 
-    public Iterable<Partner> getAllPartnersAndSort(Sort sort) {
-        return partnerRepository.findAll(sort);
-    }
-
-    public Partner getPartnerById(Long partnerId) {
-        return partnerRepository.findById(partnerId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    public void updatePartner(Partner partner) {
-        partnerRepository.save(partner);
-    }
-
+    /**
+     * Service method responsible for changing status of partner to deactivated
+     */
     public void deletePartner(Partner partner) {
         partner.getCredential().setActive(false);
-        partnerRepository.save(partner);
+        repository.save(partner);
     }
 
-    public Iterable<Partner> findAllContaining(String name) {
-        return partnerRepository.findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(name, name, name);
-    }
-
-    public Partner findPartnerContainingSlot(Slot slot) {
-        return partnerRepository.findBySlotsContaining(slot).orElseThrow(
+    /**
+     * Service method responsible for obtaining Partner by credential
+     */
+    public Partner getByCredentials(Credential credential) {
+        return ((PartnerRepository) repository).findByCredential(credential).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Optional<Partner> getByCredentials(Credential credential) {
-        return partnerRepository.findByCredential(credential);
+    /**
+     * Service method responsible for obtaining Partner by slot
+     */
+    public Partner findPartnerContainingSlot(Slot slot) {
+        return ((PartnerRepository) repository).findBySlotsContaining(slot).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<Partner> findAllContaining(Sort sort, String searchBy) {
+        return ((PartnerRepository) repository).findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(searchBy, searchBy, searchBy, sort);
     }
 
 }

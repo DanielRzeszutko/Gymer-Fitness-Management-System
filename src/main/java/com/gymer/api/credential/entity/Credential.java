@@ -36,4 +36,13 @@ public class Credential {
     @Column(columnDefinition = "boolean default true")
     private boolean active;
 
+    public Credential(CredentialDTO credentialDTO) {
+        this.id = credentialDTO.getId();
+        this.email = credentialDTO.getEmail();
+        this.password = credentialDTO.getPassword();
+        this.phoneNumber = credentialDTO.getPhoneNumber();
+        this.role = credentialDTO.getRole();
+        this.active = credentialDTO.isActive();
+    }
+
 }

@@ -48,4 +48,12 @@ public class Partner {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<WorkingHour> workingHours;
 
+    public Partner(PartnerDTO partnerDTO) {
+        this.id = partnerDTO.getId();
+        this.name = partnerDTO.getName();
+        this.logo = partnerDTO.getLogo();
+        this.description = partnerDTO.getDescription();
+        this.website = partnerDTO.getWebsite();
+    }
+
 }

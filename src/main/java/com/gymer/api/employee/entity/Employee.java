@@ -31,4 +31,12 @@ public class Employee {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<WorkingHour> workingHours;
 
+    public Employee(EmployeeDTO employeeDTO) {
+        this.id = employeeDTO.getId();
+        this.firstName = employeeDTO.getFirstName();
+        this.lastName = employeeDTO.getLastName();
+        this.description = employeeDTO.getDescription();
+        this.image = employeeDTO.getImage();
+    }
+
 }

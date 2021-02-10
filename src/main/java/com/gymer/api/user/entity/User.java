@@ -23,4 +23,10 @@ public class User {
     @OneToOne
     private Credential credential;
 
+    public User(UserDTO userDTO) {
+        this.id = userDTO.getId();
+        this.firstName = userDTO.getFirstName();
+        this.lastName = userDTO.getLastName();
+    }
+
 }

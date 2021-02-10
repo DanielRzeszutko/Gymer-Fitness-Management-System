@@ -42,4 +42,12 @@ public class Slot {
 	@Column(columnDefinition = "boolean default true")
 	private boolean isPrivate = true;
 
+	public Slot(SlotDTO slotDTO) {
+		this.id = slotDTO.getId();
+		this.date = slotDTO.getDate();
+		this.startTime = slotDTO.getStartTime();
+		this.endTime = slotDTO.getEndTime();
+		this.isPrivate = slotDTO.isPrivate();
+	}
+
 }

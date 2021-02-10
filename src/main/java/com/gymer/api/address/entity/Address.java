@@ -24,4 +24,12 @@ public class Address {
     private String number;
     private String zipCode;
 
+    public Address(AddressDTO addressDTO) {
+        this.id = addressDTO.getId();
+        this.city = addressDTO.getCity();
+        this.street = addressDTO.getStreet();
+        this.number = addressDTO.getNumber();
+        this.zipCode = addressDTO.getZipCode();
+    }
+
 }
