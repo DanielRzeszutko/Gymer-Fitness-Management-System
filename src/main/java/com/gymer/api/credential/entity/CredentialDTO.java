@@ -2,6 +2,7 @@ package com.gymer.api.credential.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.hateoas.RepresentationModel;
 
 @Data
@@ -12,6 +13,7 @@ public class CredentialDTO extends RepresentationModel<CredentialDTO> {
     private String email;
     private String password;
     private String phoneNumber;
+    private Role role;
     private boolean active;
 
 }

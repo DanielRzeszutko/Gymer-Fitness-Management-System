@@ -2,6 +2,7 @@ package com.gymer.api.config;
 
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.credential.entity.Credential;
+import com.gymer.api.credential.entity.Role;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
@@ -95,7 +96,7 @@ public class SampleDataGenerator {
     }
 
     private Credential getRandomCredential() {
-        return new Credential(0L, createRandomWord(12), createRandomWord(8), createRandomNumber(10000000, 90000000), true);
+        return new Credential(0L, createRandomWord(12), createRandomWord(8), createRandomNumber(10000000, 90000000), Role.PARTNER, true);
     }
 
     private String createRandomNumber(int from, int to) {
