@@ -33,7 +33,7 @@ public class SampleDataGenerator {
     @PostConstruct
     public void init() {
         for (int i = 0; i < 10; i++) {
-            partnerService.updatePartner(getRandomPartner());
+            partnerService.updateElement(getRandomPartner());
         }
     }
 

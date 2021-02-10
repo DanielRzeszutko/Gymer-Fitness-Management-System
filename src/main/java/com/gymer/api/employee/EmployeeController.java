@@ -31,19 +31,19 @@ public class EmployeeController {
 
     @GetMapping("/api/employees")
     public CollectionModel<EmployeeDTO> getAllEmployeesAndSort(Sort sort) {
-        List<Employee> employees = (List<Employee>) employeeService.getEmployeesAndSort(sort);
+        List<Employee> employees = (List<Employee>) employeeService.getAllElements(sort);
         return CollectionModel.of(employees.stream().map(this::convertToEmployeeDTO).collect(Collectors.toList()));
     }
 
     @GetMapping("/api/partners/{partnerId}/employees")
     public CollectionModel<EmployeeDTO> getAllEmployeesByPartnerId(@PathVariable Long partnerId) {
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         return CollectionModel.of(partner.getEmployees().stream().map(this::convertToEmployeeDTO).collect(Collectors.toList()));
     }
 
     @GetMapping("/api/partners/{partnerId}/employees/{employeeId}")
     public EmployeeDTO getEmployeeById(@PathVariable Long partnerId, @PathVariable Long employeeId) {
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         for (Employee employee : partner.getEmployees()) {
             if (employee.getId().equals(employeeId)) {
                 return convertToEmployeeDTO(employee);
@@ -54,18 +54,18 @@ public class EmployeeController {
 
     @PostMapping("/api/partners/{partnerId}/employees")
     public void addEmployeeToPartner(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long partnerId) {
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         partner.getEmployees().add(convertToEmployee(employeeDTO));
-        partnerService.updatePartner(partner);
+        partnerService.updateElement(partner);
     }
 
     @PutMapping("/api/partners/{partnerId}/employees/employeeId")
     public void updateEmployee(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long partnerId, @PathVariable Long employeeId) {
         if (!employeeDTO.getId().equals(employeeId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         for (Employee employee : partner.getEmployees()) {
             if (employee.getId().equals(employeeId)) {
-                employeeService.updateEmployee(convertToEmployee(employeeDTO));
+                employeeService.updateElement(convertToEmployee(employeeDTO));
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -73,7 +73,7 @@ public class EmployeeController {
 
     @DeleteMapping("/api/partners/{partnerId}/employees/{employeeId}")
     public void deleteEmployee(@PathVariable Long partnerId, @PathVariable Long employeeId) {
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         List<Employee> employees = partner.getEmployees();
         for (Employee employee : employees) {
             if (employee.getId().equals(employeeId)){
@@ -84,7 +84,7 @@ public class EmployeeController {
     }
 
     private Employee convertToEmployee(EmployeeDTO employeeDTO) {
-        Employee employee = employeeService.getEmployeeById(employeeDTO.getId());
+        Employee employee = employeeService.getElementById(employeeDTO.getId());
         employee.setFirstName(employeeDTO.getFirstName());
         employee.setLastName(employeeDTO.getLastName());
         employee.setImage(employeeDTO.getImage());

@@ -36,7 +36,7 @@ public class SlotController {
 					? (List<Slot>) slotService.getSlotsByEmployeeId(Long.parseLong(details))
 					: (List<Slot>) slotService.getSlotsByEmployeeNameOrSurname(details);
 		} else {
-			slots = (List<Slot>) slotService.getSortedSlots(sort);
+			slots = (List<Slot>) slotService.getAllElements(sort);
 		}
 
 		return CollectionModel.of(
@@ -47,20 +47,20 @@ public class SlotController {
 
 	@GetMapping("/api/partners/{partnerId}/slots")
 	public CollectionModel<SlotDTO> getAllSlots(@PathVariable Long partnerId) {
-		Partner partner = partnerService.getPartnerById(partnerId);
+		Partner partner = partnerService.getElementById(partnerId);
 		return CollectionModel.of(partner.getSlots().stream().map(slot -> convertToSlotDTO(slot, partnerId)).collect(Collectors.toList()));
 	}
 
 	@PostMapping("/api/partners/{partnerId}/slots")
 	public void addSlotToPartner(@RequestBody SlotDTO slotDTO, @PathVariable Long partnerId) {
-		Partner partner = partnerService.getPartnerById(partnerId);
+		Partner partner = partnerService.getElementById(partnerId);
 		partner.getSlots().add(convertToSlot(slotDTO));
-		partnerService.updatePartner(partner);
+		partnerService.updateElement(partner);
 	}
 
 	@GetMapping("/api/partners/{partnerId}/slots/{slotId}")
 	public SlotDTO getSlotById(@PathVariable Long partnerId, @PathVariable Long slotId) {
-		Partner partner = partnerService.getPartnerById(partnerId);
+		Partner partner = partnerService.getElementById(partnerId);
 		List<Slot> slots = partner.getSlots();
 		for (Slot slot : slots) {
 			if (slot.getId().equals(slotId)){
@@ -74,11 +74,11 @@ public class SlotController {
 	public void updateSlotById(@RequestBody SlotDTO slotDTO, @PathVariable Long partnerId, @PathVariable Long slotId) {
 		if (!slotDTO.getId().equals(slotId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
 
-		Partner partner = partnerService.getPartnerById(partnerId);
+		Partner partner = partnerService.getElementById(partnerId);
 		List<Slot> slots = partner.getSlots();
 		for (Slot slot : slots) {
 			if (slot.getId().equals(slotId)){
-				slotService.updateSlot(convertToSlot(slotDTO));
+				slotService.updateElement(convertToSlot(slotDTO));
 			}
 		}
 		throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -86,7 +86,7 @@ public class SlotController {
 
 	@DeleteMapping("/api/partners/{partnerId}/slots/{slotId}")
 	public void deleteSlot(@PathVariable Long partnerId, @PathVariable Long slotId) {
-		Partner partner = partnerService.getPartnerById(partnerId);
+		Partner partner = partnerService.getElementById(partnerId);
 		List<Slot> slots = partner.getSlots();
 		for (Slot slot : slots) {
 			if (slot.getId().equals(slotId)){
@@ -119,7 +119,7 @@ public class SlotController {
 	}
 
 	private Slot convertToSlot(SlotDTO slotDTO) {
-		Slot slot = slotService.getSlotById((slotDTO.getId()));
+		Slot slot = slotService.getElementById((slotDTO.getId()));
 		slot.setDate(slotDTO.getDate());
 		slot.setStartTime(slotDTO.getStartTime());
 		slot.setEndTime(slotDTO.getEndTime());

@@ -28,7 +28,7 @@ public class AddressController {
 
     @GetMapping("/api/addresses")
     public CollectionModel<AddressDTO> getAllAddresses(Sort sort) {
-        List<Address> addresses = (List<Address>) addressService.getAllAddresses(sort);
+        List<Address> addresses = (List<Address>) addressService.getAllElements(sort);
         return CollectionModel.of(addresses.stream()
                 .map(this::convertToAddressDTO)
                 .collect(Collectors.toList()));
@@ -36,37 +36,37 @@ public class AddressController {
 
     @GetMapping("/api/addresses/{addressId}")
     public AddressDTO getAddressById(@PathVariable Long addressId) {
-        return convertToAddressDTO(addressService.getAddressById(addressId));
+        return convertToAddressDTO(addressService.getElementById(addressId));
     }
 
     @GetMapping("/api/partners/{partnerId}/addresses/{addressId}")
     public AddressDTO getPartnerAddressById(@PathVariable Long partnerId, @PathVariable Long addressId) {
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         if (!partner.getAddress().getId().equals(addressId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        return convertToAddressDTO(addressService.getAddressById(addressId));
+        return convertToAddressDTO(addressService.getElementById(addressId));
     }
 
     @PutMapping("/api/partners/{partnerId}/addresses")
     public void addNewAddress(@RequestBody AddressDTO addressDTO, @PathVariable Long partnerId, @PathVariable Long addressId) {
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         if (!partner.getAddress().getId().equals(addressId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         Address address = convertToAddress(addressDTO);
         partner.setAddress(address);
-        partnerService.updatePartner(partner);
+        partnerService.updateElement(partner);
     }
 
     @PutMapping("/api/partners/{partnerId}/addresses/{addressId}")
     public void updateAddress(@RequestBody AddressDTO addressDTO, @PathVariable Long partnerId, @PathVariable Long addressId) {
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         if (!partner.getAddress().getId().equals(addressId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         Address address = convertToAddress(addressDTO);
-        addressService.updateAddress(address);
+        addressService.updateElement(address);
     }
 
     private Address convertToAddress(AddressDTO addressDTO) {

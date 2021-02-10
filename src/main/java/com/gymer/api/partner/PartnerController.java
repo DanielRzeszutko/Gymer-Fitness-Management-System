@@ -31,30 +31,30 @@ public class PartnerController {
             return CollectionModel.of(((List<Partner>) partnerService.findAllContaining(details))
                     .stream().map(this::convertToPartnerDTO).collect(Collectors.toList()));
         }
-        List<Partner> partners = (List<Partner>) partnerService.getAllPartnersAndSort(sort);
+        List<Partner> partners = (List<Partner>) partnerService.getAllElements(sort);
         return CollectionModel.of(partners.stream().map(this::convertToPartnerDTO).collect(Collectors.toList()));
     }
 
     @GetMapping("/{partnerId}")
     public PartnerDTO getPartnerById(@PathVariable Long partnerId) {
-        return convertToPartnerDTO(partnerService.getPartnerById(partnerId));
+        return convertToPartnerDTO(partnerService.getElementById(partnerId));
     }
 
     @PutMapping("/{partnerId}")
     public void updatePartner(@RequestBody PartnerDTO partnerDTO, @PathVariable Long partnerId) {
         if (!partnerDTO.getId().equals(partnerId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
         Partner newPartner = convertToPartner(partnerDTO);
-        partnerService.updatePartner(newPartner);
+        partnerService.updateElement(newPartner);
     }
 
     @DeleteMapping("/{partnerId}")
     public void deletePartner(@PathVariable Long partnerId) {
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         partnerService.deletePartner(partner);
     }
 
     private Partner convertToPartner(PartnerDTO partnerDTO) {
-        Partner partner = partnerService.getPartnerById(partnerDTO.getId());
+        Partner partner = partnerService.getElementById(partnerDTO.getId());
         partner.setName(partnerDTO.getName());
         partner.setDescription(partnerDTO.getDescription());
         partner.setLogo(partnerDTO.getLogo());

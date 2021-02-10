@@ -21,24 +21,24 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public UserDTO getUserById(@PathVariable Long userId) {
-        return convertToUserDTO(userService.getUserById(userId));
+        return convertToUserDTO(userService.getElementById(userId));
     }
 
     @PutMapping("/{userId}")
     public void updateUser(@RequestBody UserDTO userDTO, @PathVariable Long userId) {
         if (!userDTO.getId().equals(userId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
         User newUser = convertToUser(userDTO);
-        userService.updateUser(newUser);
+        userService.updateElement(newUser);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
+        User user = userService.getElementById(userId);
         userService.deleteUser(user);
     }
 
     private User convertToUser(UserDTO userDTO) {
-        User user = userService.getUserById(userDTO.getId());
+        User user = userService.getElementById(userDTO.getId());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         return user;

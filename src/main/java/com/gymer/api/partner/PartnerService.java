@@ -1,5 +1,6 @@
 package com.gymer.api.partner;
 
+import com.gymer.api.common.service.AbstractRestApiService;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
@@ -12,44 +13,29 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @Service
-public class PartnerService {
-
-    private final PartnerRepository partnerRepository;
+public class PartnerService extends AbstractRestApiService<Partner, Long> {
 
     @Autowired
-    public PartnerService(PartnerRepository partnerRepository) {
-        this.partnerRepository = partnerRepository;
-    }
-
-    public Iterable<Partner> getAllPartnersAndSort(Sort sort) {
-        return partnerRepository.findAll(sort);
-    }
-
-    public Partner getPartnerById(Long partnerId) {
-        return partnerRepository.findById(partnerId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    public void updatePartner(Partner partner) {
-        partnerRepository.save(partner);
+    public PartnerService(PartnerRepository repository) {
+        super(repository);
     }
 
     public void deletePartner(Partner partner) {
         partner.getCredential().setActive(false);
-        partnerRepository.save(partner);
+        repository.save(partner);
     }
 
     public Iterable<Partner> findAllContaining(String name) {
-        return partnerRepository.findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(name, name, name);
+        return ((PartnerRepository) repository).findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(name, name, name);
     }
 
     public Partner findPartnerContainingSlot(Slot slot) {
-        return partnerRepository.findBySlotsContaining(slot).orElseThrow(
+        return ((PartnerRepository) repository).findBySlotsContaining(slot).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     public Optional<Partner> getByCredentials(Credential credential) {
-        return partnerRepository.findByCredential(credential);
+        return ((PartnerRepository) repository).findByCredential(credential);
     }
 
 }

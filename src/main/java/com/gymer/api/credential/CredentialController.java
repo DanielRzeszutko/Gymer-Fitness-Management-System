@@ -27,42 +27,42 @@ public class CredentialController {
 
     @GetMapping("/api/partners/{partnerId}/credentials/{credentialId}")
     public CredentialDTO getCredentialFromPartnerById(@PathVariable Long partnerId, @PathVariable Long credentialId) {
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         if (!partner.getCredential().getId().equals(credentialId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return convertToCredentialDTO(credentialService.getCredentialById(credentialId));
+        return convertToCredentialDTO(credentialService.getElementById(credentialId));
     }
 
     @PutMapping("/api/partners/{partnerId}/credentials/{credentialId}")
     public void updateCredentialFromPartnerById(@RequestBody CredentialDTO credentialDTO, @PathVariable Long partnerId, @PathVariable Long credentialId) {
-        Partner partner = partnerService.getPartnerById(partnerId);
+        Partner partner = partnerService.getElementById(partnerId);
         if (!partner.getCredential().getId().equals(credentialId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         Credential credential = convertToCredential(credentialDTO);
         credential.setId(credentialId);
-        credentialService.updateCredentials(credential);
+        credentialService.updateElement(credential);
     }
 
     @GetMapping("/api/users/{userId}/credentials/{credentialId}")
     public CredentialDTO getCredentialFromUserById(@PathVariable Long userId, @PathVariable Long credentialId) {
-        User user = userService.getUserById(userId);
+        User user = userService.getElementById(userId);
         if (!user.getCredential().getId().equals(credentialId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return convertToCredentialDTO(credentialService.getCredentialById(credentialId));
+        return convertToCredentialDTO(credentialService.getElementById(credentialId));
     }
 
     @PutMapping("/api/users/{userId}/credentials/{credentialId}")
     public void updateCredentialFromUserById(@RequestBody CredentialDTO credentialDTO, @PathVariable Long userId, @PathVariable Long credentialId) {
-        User user = userService.getUserById(userId);
+        User user = userService.getElementById(userId);
         if (!user.getCredential().getId().equals(credentialId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         Credential credential = convertToCredential(credentialDTO);
         credential.setId(credentialId);
-        credentialService.updateCredentials(credential);
+        credentialService.updateElement(credential);
     }
 
     private Credential convertToCredential(CredentialDTO credentialDTO) {
