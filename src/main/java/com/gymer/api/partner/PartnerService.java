@@ -49,7 +49,7 @@ public class PartnerService extends AbstractRestApiService<Partner, Long> {
      */
     @Override
     public Iterable<Partner> findAllContaining(Sort sort, String searchBy) {
-        return ((PartnerRepository) repository).findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(searchBy, searchBy, searchBy, sort);
+        return ((PartnerRepository) repository).findAllByNameContainsOrDescriptionContains(searchBy, searchBy, sort);
     }
 
 }

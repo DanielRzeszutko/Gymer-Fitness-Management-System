@@ -14,6 +14,7 @@ import java.sql.Time;
 public class SlotDTO extends RepresentationModel<SlotDTO> {
 
     private Long id;
+    private String description;
     private Date date;
     private Time startTime;
     private Time endTime;
@@ -21,6 +22,7 @@ public class SlotDTO extends RepresentationModel<SlotDTO> {
 
     public SlotDTO(Slot slot) {
         this.id = slot.getId();
+        this.description = slot.getDescription();
         this.date = slot.getDate();
         this.startTime = slot.getStartTime();
         this.endTime = slot.getEndTime();

@@ -64,8 +64,8 @@ public class RandomDataGenerator {
         companies = readDataFromFile("companies.txt");
 
         for (int i = 0; i < 10; i++) {
-            partnerService.updatePartner(getRandomPartner());
-            userService.updateUser(getRandomUser());
+            partnerService.updateElement(getRandomPartner());
+//            userService.updateElement(getRandomUser());
         }
     }
 
@@ -93,9 +93,8 @@ public class RandomDataGenerator {
         for (Employee employee : employees) {
             slots.addAll(getRandomSlots(employee));
         }
-        new Partner();
         String gymName = getRandomGymName();
-        return new Partner(0L, gymName, "logo" + gymName, "Lorem ipsum" + createRandomWord(20),
+        return new Partner(gymName, "logo" + gymName, "Lorem ipsum" + createRandomWord(20),
                 getRandomWebsite(gymName), getRandomCredential(gymName, "business", Role.PARTNER),
                 getRandomAddress(), employees, slots, getRandomWorkingHours());
     }
@@ -103,7 +102,7 @@ public class RandomDataGenerator {
     private User getRandomUser() {
         String name = getRandomName();
         String surname = getRandomSurname();
-        return new User(0L, name, surname, getRandomCredential(name, surname, Role.USER));
+        return new User(name, surname, getRandomCredential(name, surname, Role.USER));
     }
 
 
@@ -121,7 +120,7 @@ public class RandomDataGenerator {
         String startHourString = startHour < 10 ? "0" + startHour : Integer.toString(startHour);
         String endHourString = endHour < 10 ? "0" + endHour : Integer.toString(endHour);
         return new Slot(
-                0L, Date.valueOf("2021-02-10"), Time.valueOf(startHourString + ":00:00"),
+                "Lorem ipsum" + createRandomWord(20), Date.valueOf("2021-02-10"), Time.valueOf(startHourString + ":00:00"),
                 Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, startHour < 12);
     }
 
@@ -141,24 +140,24 @@ public class RandomDataGenerator {
             if (startHour >= 18) continue;
             String startHourString = startHour < 10 ? "0" + startHour : Integer.toString(startHour);
             String endHourString = endHour < 10 ? "0" + endHour : Integer.toString(endHour);
-            workingHours.add(new WorkingHour(0L, Day.values()[i], Time.valueOf(startHourString + ":00:00"), Time.valueOf(endHourString + ":00:00")));
+            workingHours.add(new WorkingHour(Day.values()[i], Time.valueOf(startHourString + ":00:00"), Time.valueOf(endHourString + ":00:00")));
         }
         return workingHours;
     }
 
     private Employee getRandomEmployee() {
-        return new Employee(0L, getRandomName(), getRandomSurname(),
+        return new Employee(getRandomName(), getRandomSurname(),
                 "Lorem Ipsum Lorem Ipsum", "image", getRandomWorkingHours());
     }
 
     private Address getRandomAddress() {
         new Address();
-        return new Address(0L, getRandomCityName(), getRandomStreetName(),
+        return new Address(getRandomCityName(), getRandomStreetName(),
                 String.valueOf(getRandomNumberBetween(1, 200)), getRandomZipcode());
     }
 
     private Credential getRandomCredential(String name, String secondName, Role role) {
-        return new Credential(0L, getRandomEmail(name, secondName), getRandomPassword(), getRandomPhoneNumber(), role, true);
+        return new Credential(getRandomEmail(name, secondName), getRandomPassword(), getRandomPhoneNumber(), role, true);
     }
 
     private String createRandomWord(int length) {

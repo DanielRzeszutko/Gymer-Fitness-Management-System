@@ -14,6 +14,8 @@ public interface PartnerRepository extends PagingAndSortingRepository<Partner, L
 
     Iterable<Partner> findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(String addressName, String cityName, String zipCode, Sort sort);
 
+    Iterable<Partner> findAllByNameContainsOrDescriptionContains(String name, String description, Sort sort);
+
     Optional<Partner> findBySlotsContaining(Slot slot);
 
     Optional<Partner> findByCredential(Credential credential);

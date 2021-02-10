@@ -1,6 +1,5 @@
 package com.gymer.api.workinghours.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,22 +12,27 @@ import java.sql.Time;
 @Data
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 public class WorkingHour {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private Day day;
-	private Time startHour;
-	private Time endHour;
+    private Day day;
+    private Time startHour;
+    private Time endHour;
 
-	public WorkingHour(WorkingHourDTO workingHourDTO) {
-		this.id = workingHourDTO.getId();
-		this.day = workingHourDTO.getDay();
-		this.startHour = workingHourDTO.getStartHour();
-		this.endHour = workingHourDTO.getEndHour();
-	}
+    public WorkingHour(Day day, Time startHour, Time endHour) {
+        this.day = day;
+        this.startHour = startHour;
+        this.endHour = endHour;
+    }
+
+    public WorkingHour(WorkingHourDTO workingHourDTO) {
+        this.id = workingHourDTO.getId();
+        this.day = workingHourDTO.getDay();
+        this.startHour = workingHourDTO.getStartHour();
+        this.endHour = workingHourDTO.getEndHour();
+    }
 
 }

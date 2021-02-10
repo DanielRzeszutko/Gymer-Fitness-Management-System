@@ -28,7 +28,7 @@ public class PartnerController extends AbstractRestApiController<PartnerDTO, Par
      * {@inheritDoc}
      */
     @Override
-    @GetMapping
+    @GetMapping("/api/partners")
     public CollectionModel<PartnerDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
         return super.getAllElementsSortable(sort, searchBy);
     }
