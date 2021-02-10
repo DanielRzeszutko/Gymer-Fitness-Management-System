@@ -13,17 +13,26 @@ public abstract class AbstractRestApiService<T, V> implements RestApiServiceBeha
         this.repository = repository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<T> getAllElements(Sort sort) {
         return repository.findAll(sort);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public T getElementById(V elementId) {
         return repository.findById(elementId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateElement(T element) {
         repository.save(element);
