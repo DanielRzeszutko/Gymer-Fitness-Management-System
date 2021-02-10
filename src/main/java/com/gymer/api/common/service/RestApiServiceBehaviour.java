@@ -25,4 +25,9 @@ public interface RestApiServiceBehaviour<T, V> {
      */
     Iterable<T> findAllContaining(Sort sort, String searchBy);
 
+    /**
+     * Service method responsible for returning true if object exists in databse
+     */
+    boolean isElementExistById(V elementId);
+
 }

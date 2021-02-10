@@ -21,8 +21,19 @@ public class EmployeeService extends AbstractRestApiService<Employee, Long> {
         super(repository);
     }
 
+    /**
+     * Service method responsible for removing employee completely from database
+     */
     public void deleteEmployee(Employee employee) {
         repository.delete(employee);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<Employee> findAllContaining(Sort sort, String searchBy) {
+        return ((EmployeeRepository) repository).findAllByFirstNameContainsOrLastNameContains(searchBy, searchBy, sort);
     }
 
 }

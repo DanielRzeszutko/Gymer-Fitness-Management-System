@@ -1,5 +1,7 @@
 package com.gymer.api.partner;
 
+import com.gymer.api.common.controller.AbstractRestApiController;
+import com.gymer.api.common.service.AbstractRestApiService;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.partner.entity.PartnerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,66 +17,73 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/partners")
-public class PartnerController {
-
-    private final PartnerService partnerService;
+public class PartnerController extends AbstractRestApiController<PartnerDTO, Partner, Long> {
 
     @Autowired
-    public PartnerController(PartnerService partnerService) {
-        this.partnerService = partnerService;
+    public PartnerController(PartnerService service) {
+        super(service);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @GetMapping
-    public CollectionModel<PartnerDTO> getAllPartners(Sort sort, @RequestParam(required = false, name = "addressContains") String details) {
-        if (details != null) {
-            return CollectionModel.of(((List<Partner>) partnerService.findAllContaining(details))
-                    .stream().map(this::convertToPartnerDTO).collect(Collectors.toList()));
-        }
-        List<Partner> partners = (List<Partner>) partnerService.getAllElements(sort);
-        return CollectionModel.of(partners.stream().map(this::convertToPartnerDTO).collect(Collectors.toList()));
+    public CollectionModel<PartnerDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
+        return super.getAllElementsSortable(sort, searchBy);
     }
 
-    @GetMapping("/{partnerId}")
-    public PartnerDTO getPartnerById(@PathVariable Long partnerId) {
-        return convertToPartnerDTO(partnerService.getElementById(partnerId));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @GetMapping("/api/partners/{partnerId}")
+    public PartnerDTO getElementById(@PathVariable Long partnerId) {
+        return super.getElementById(partnerId);
     }
 
-    @PutMapping("/{partnerId}")
+    /**
+     * Endpoint responsible for updating partner details
+     */
+    @PutMapping("/api/partners/{partnerId}")
     public void updatePartner(@RequestBody PartnerDTO partnerDTO, @PathVariable Long partnerId) {
         if (!partnerDTO.getId().equals(partnerId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
-        Partner newPartner = convertToPartner(partnerDTO);
-        partnerService.updateElement(newPartner);
+        Partner newPartner = convertToEntity(partnerDTO);
+        service.updateElement(newPartner);
     }
 
-    @DeleteMapping("/{partnerId}")
+    /**
+     * Endpoint responsible for deleting partner from application by changing status to deactivated
+     */
+    @DeleteMapping("/api/partners/{partnerId}")
     public void deletePartner(@PathVariable Long partnerId) {
-        Partner partner = partnerService.getElementById(partnerId);
-        partnerService.deletePartner(partner);
+        Partner partner = service.getElementById(partnerId);
+        ((PartnerService) service).deletePartner(partner);
     }
 
-    private Partner convertToPartner(PartnerDTO partnerDTO) {
-        Partner partner = partnerService.getElementById(partnerDTO.getId());
-        partner.setName(partnerDTO.getName());
-        partner.setDescription(partnerDTO.getDescription());
-        partner.setLogo(partnerDTO.getLogo());
-        partner.setWebsite(partnerDTO.getWebsite());
-        return partner;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Partner convertToEntity(PartnerDTO partnerDTO) {
+        Partner oldPartner = service.getElementById(partnerDTO.getId());
+        Partner newPartner = new Partner(partnerDTO);
+        newPartner.setAddress(oldPartner.getAddress());
+        newPartner.setEmployees(oldPartner.getEmployees());
+        newPartner.setSlots(oldPartner.getSlots());
+        newPartner.setWorkingHours(oldPartner.getWorkingHours());
+        return newPartner;
     }
 
-    private PartnerDTO convertToPartnerDTO(Partner partner) {
-        PartnerDTO partnerDTO = new PartnerDTO(
-                partner.getId(),
-                partner.getName(),
-                partner.getLogo(),
-                partner.getDescription(),
-                partner.getWebsite()
-        );
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PartnerDTO convertToDTO(Partner partner) {
+        PartnerDTO partnerDTO = new PartnerDTO(partner);
 
         Link selfLink = Link.of("/partners/" + partnerDTO.getId()).withSelfRel();
-
         Link credentialLink = Link.of("/partners/" + partner.getId() + "/credentials/" + partner.getCredential().getId()).withRel("credentials");
-
         Link addressLink = Link.of("/partners/" + partner.getId() + "/addresses/" + partner.getAddress().getId()).withRel("addresses");
 
         Links employeeLinks = Links.of(partner.getEmployees().stream().map(

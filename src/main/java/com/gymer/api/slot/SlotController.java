@@ -1,5 +1,6 @@
 package com.gymer.api.slot;
 
+import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
@@ -13,118 +14,142 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-public class SlotController {
+public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Long> {
 
-	private final SlotService slotService;
-	private final PartnerService partnerService;
+    private final PartnerService partnerService;
 
-	@Autowired
-	public SlotController(SlotService slotService, PartnerService partnerService) {
-		this.slotService = slotService;
-		this.partnerService = partnerService;
-	}
+    @Autowired
+    public SlotController(SlotService service, PartnerService partnerService) {
+        super(service);
+        this.partnerService = partnerService;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+	@Override
 	@GetMapping("/api/slots")
-	public CollectionModel<SlotDTO> getAllSlots(Sort sort, @RequestParam(required = false, name = "employeeContains") String details) {
-		List<Slot> slots;
-		if (details != null) {
-			slots = details.matches("-?(0|[1-9]\\d*)")
-					? (List<Slot>) slotService.getSlotsByEmployeeId(Long.parseLong(details))
-					: (List<Slot>) slotService.getSlotsByEmployeeNameOrSurname(details);
-		} else {
-			slots = (List<Slot>) slotService.getAllElements(sort);
-		}
-
-		return CollectionModel.of(
-				slots.stream()
-						.map(slot -> convertToSlotDTO(slot, partnerService.findPartnerContainingSlot(slot).getId()))
-						.collect(Collectors.toList()));
+	public CollectionModel<SlotDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
+		return super.getAllElementsSortable(sort, searchBy);
 	}
 
-	@GetMapping("/api/partners/{partnerId}/slots")
-	public CollectionModel<SlotDTO> getAllSlots(@PathVariable Long partnerId) {
-		Partner partner = partnerService.getElementById(partnerId);
-		return CollectionModel.of(partner.getSlots().stream().map(slot -> convertToSlotDTO(slot, partnerId)).collect(Collectors.toList()));
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	@GetMapping("/api/slots/{id}")
+	public SlotDTO getElementById(@PathVariable Long id) {
+		return super.getElementById(id);
 	}
 
-	@PostMapping("/api/partners/{partnerId}/slots")
-	public void addSlotToPartner(@RequestBody SlotDTO slotDTO, @PathVariable Long partnerId) {
-		Partner partner = partnerService.getElementById(partnerId);
-		partner.getSlots().add(convertToSlot(slotDTO));
-		partnerService.updateElement(partner);
-	}
+    /**
+     * Endpoint responsible for getting all slots from partner
+     */
+    @GetMapping("/api/partners/{partnerId}/slots")
+    public CollectionModel<SlotDTO> getAllSlots(@PathVariable Long partnerId) {
+        Partner partner = partnerService.getElementById(partnerId);
+        return CollectionModel.of(partner.getSlots().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList()));
+    }
 
-	@GetMapping("/api/partners/{partnerId}/slots/{slotId}")
-	public SlotDTO getSlotById(@PathVariable Long partnerId, @PathVariable Long slotId) {
-		Partner partner = partnerService.getElementById(partnerId);
-		List<Slot> slots = partner.getSlots();
-		for (Slot slot : slots) {
-			if (slot.getId().equals(slotId)){
-				return convertToSlotDTO(slot, partnerId);
-			}
-		}
-		throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-	}
+    /**
+     * Endpoint responsible for adding new slot for partner
+     */
+    @PostMapping("/api/partners/{partnerId}/slots")
+    public void addSlotToPartner(@RequestBody SlotDTO slotDTO, @PathVariable Long partnerId) {
+        Partner partner = partnerService.getElementById(partnerId);
+        partner.getSlots().add(convertToEntity(slotDTO));
+        partnerService.updateElement(partner);
+    }
 
-	@PutMapping("/api/partners/{partnerId}/slots/{slotId}")
-	public void updateSlotById(@RequestBody SlotDTO slotDTO, @PathVariable Long partnerId, @PathVariable Long slotId) {
-		if (!slotDTO.getId().equals(slotId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
+    /**
+     * Endpoint responsible for getting specific slot using slotID from partner
+     */
+    @GetMapping("/api/partners/{partnerId}/slots/{slotId}")
+    public SlotDTO getSlotById(@PathVariable Long partnerId, @PathVariable Long slotId) {
+        Partner partner = partnerService.getElementById(partnerId);
+        List<Slot> slots = partner.getSlots();
+        for (Slot slot : slots) {
+            if (slot.getId().equals(slotId)) {
+                return convertToDTO(slot);
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
 
-		Partner partner = partnerService.getElementById(partnerId);
-		List<Slot> slots = partner.getSlots();
-		for (Slot slot : slots) {
-			if (slot.getId().equals(slotId)){
-				slotService.updateElement(convertToSlot(slotDTO));
-			}
-		}
-		throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-	}
+    /**
+     * Endpoint responsible for updating slot details
+     */
+    @PutMapping("/api/partners/{partnerId}/slots/{slotId}")
+    public void updateSlotById(@RequestBody SlotDTO slotDTO, @PathVariable Long partnerId, @PathVariable Long slotId) {
+        if (!slotDTO.getId().equals(slotId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
 
-	@DeleteMapping("/api/partners/{partnerId}/slots/{slotId}")
-	public void deleteSlot(@PathVariable Long partnerId, @PathVariable Long slotId) {
-		Partner partner = partnerService.getElementById(partnerId);
-		List<Slot> slots = partner.getSlots();
-		for (Slot slot : slots) {
-			if (slot.getId().equals(slotId)){
-				slotService.deleteSlot(slot);
-			}
-		}
-		throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-	}
+        Partner partner = partnerService.getElementById(partnerId);
+        List<Slot> slots = partner.getSlots();
+        for (Slot slot : slots) {
+            if (slot.getId().equals(slotId)) {
+                service.updateElement(convertToEntity(slotDTO));
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
 
-	private SlotDTO convertToSlotDTO(Slot slot, Long partnerId) {
-		SlotDTO slotDTO = new SlotDTO(slot.getId(),
-				slot.getDate(),
-				slot.getStartTime(),
-				slot.getEndTime(),
-				slot.isPrivate()
-		);
+    /**
+     * Endpoint responsible for deleting slot from database completely
+     */
+    @DeleteMapping("/api/partners/{partnerId}/slots/{slotId}")
+    public void deleteSlot(@PathVariable Long partnerId, @PathVariable Long slotId) {
+        Partner partner = partnerService.getElementById(partnerId);
+        List<Slot> slots = partner.getSlots();
+        for (Slot slot : slots) {
+            if (slot.getId().equals(slotId)) {
+				((SlotService) service).deleteSlot(slot);
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
 
-		Link selfLink = Link.of("/partners/" + partnerId + "/employees/" + slot.getEmployee().getId() + "/slots/" + slot.getId()).withSelfRel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Slot convertToEntity(SlotDTO slotDTO) {
+        Slot newSlot = new Slot(slotDTO);
+        if (service.isElementExistById(slotDTO.getId())) {
+            Slot oldSlot = service.getElementById((slotDTO.getId()));
+            newSlot.setEmployee(oldSlot.getEmployee());
+            newSlot.setUsers(oldSlot.getUsers());
+            return newSlot;
+        }
+        newSlot.setEmployee(null);
+        newSlot.setUsers(Collections.emptyList());
+        return newSlot;
+    }
 
-		Links usersLinks = Links.of(slot.getUsers().stream().map(
-				user -> Link.of("/users/" + user.getId()).withRel("users")).collect(Collectors.toList()));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SlotDTO convertToDTO(Slot slot) {
+        Long partnerId = partnerService.findPartnerContainingSlot(slot).getId();
 
-		Link employeeLink = Link.of("/partners/" + partnerId + "/employees/" + slot.getEmployee().getId()).withRel("employees");
+        SlotDTO slotDTO = new SlotDTO(slot);
 
-		slotDTO.add(selfLink);
-		slotDTO.add(usersLinks);
-		slotDTO.add(employeeLink);
+        Link selfLink = Link.of("/partners/" + partnerId + "/employees/" + slot.getEmployee().getId() + "/slots/" + slot.getId()).withSelfRel();
+        Link employeeLink = Link.of("/partners/" + partnerId + "/employees/" + slot.getEmployee().getId()).withRel("employees");
+        Links usersLinks = Links.of(slot.getUsers().stream().map(
+                user -> Link.of("/users/" + user.getId()).withRel("users")).collect(Collectors.toList()));
 
-		return slotDTO;
-	}
+        slotDTO.add(selfLink, employeeLink);
+        slotDTO.add(usersLinks);
 
-	private Slot convertToSlot(SlotDTO slotDTO) {
-		Slot slot = slotService.getElementById((slotDTO.getId()));
-		slot.setDate(slotDTO.getDate());
-		slot.setStartTime(slotDTO.getStartTime());
-		slot.setEndTime(slotDTO.getEndTime());
-		slot.setPrivate(slotDTO.isPrivate());
-		return slot;
-	}
+        return slotDTO;
+    }
 
 }

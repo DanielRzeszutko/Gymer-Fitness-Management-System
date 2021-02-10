@@ -20,22 +20,36 @@ public class PartnerService extends AbstractRestApiService<Partner, Long> {
         super(repository);
     }
 
+    /**
+     * Service method responsible for changing status of partner to deactivated
+     */
     public void deletePartner(Partner partner) {
         partner.getCredential().setActive(false);
         repository.save(partner);
     }
 
-    public Iterable<Partner> findAllContaining(String name) {
-        return ((PartnerRepository) repository).findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(name, name, name);
+    /**
+     * Service method responsible for obtaining Partner by credential
+     */
+    public Partner getByCredentials(Credential credential) {
+        return ((PartnerRepository) repository).findByCredential(credential).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * Service method responsible for obtaining Partner by slot
+     */
     public Partner findPartnerContainingSlot(Slot slot) {
         return ((PartnerRepository) repository).findBySlotsContaining(slot).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Optional<Partner> getByCredentials(Credential credential) {
-        return ((PartnerRepository) repository).findByCredential(credential);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<Partner> findAllContaining(Sort sort, String searchBy) {
+        return ((PartnerRepository) repository).findAllByAddress_CityContainsOrAddress_StreetContainsOrAddress_ZipCodeContains(searchBy, searchBy, searchBy, sort);
     }
 
 }
