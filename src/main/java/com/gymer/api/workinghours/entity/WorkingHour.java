@@ -24,4 +24,11 @@ public class WorkingHour {
 	private Time startHour;
 	private Time endHour;
 
+	public WorkingHour(WorkingHourDTO workingHourDTO) {
+		this.id = workingHourDTO.getId();
+		this.day = workingHourDTO.getDay();
+		this.startHour = workingHourDTO.getStartHour();
+		this.endHour = workingHourDTO.getEndHour();
+	}
+
 }
