@@ -56,12 +56,12 @@ public class RandomDataGenerator {
     @PostConstruct
     public void init() throws FileNotFoundException {
 
-        nameList = readDataFromFile("src/main/resources/names.txt");
-        surnameList = readDataFromFile("src/main/resources/surnames.txt");
-        emails = readDataFromFile("src/main/resources/emails.txt");
-        cities = readDataFromFile("src/main/resources/cities.txt");
-        streets = readDataFromFile("src/main/resources/streets.txt");
-        companies = readDataFromFile("src/main/resources/companies.txt");
+        nameList = readDataFromFile("names.txt");
+        surnameList = readDataFromFile("surnames.txt");
+        emails = readDataFromFile("emails.txt");
+        cities = readDataFromFile("cities.txt");
+        streets = readDataFromFile("streets.txt");
+        companies = readDataFromFile("companies.txt");
 
         for (int i = 0; i < 10; i++) {
             partnerService.updatePartner(getRandomPartner());
@@ -70,9 +70,10 @@ public class RandomDataGenerator {
     }
 
     private List<String> readDataFromFile(String fileName) throws FileNotFoundException {
+        final String ADDON_URL = "src/main/resources/generator/";
         List<String> result = new ArrayList<>();
 
-        File file = new File(fileName);
+        File file = new File(ADDON_URL + fileName);
         InputStream is = new FileInputStream(file);
 
         try {
