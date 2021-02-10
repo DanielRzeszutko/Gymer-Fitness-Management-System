@@ -1,7 +1,6 @@
 package com.gymer.api.user.entity;
 
 import com.gymer.api.credential.entity.Credential;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,6 @@ import javax.persistence.*;
 @Data
 @Entity(name = "user_account")
 @NoArgsConstructor
-@AllArgsConstructor
 public class User {
 
     @Id
@@ -22,5 +20,17 @@ public class User {
 
     @OneToOne
     private Credential credential;
+
+    public User(String firstName, String lastName, Credential credential) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.credential = credential;
+    }
+
+    public User(UserDTO userDTO) {
+        this.id = userDTO.getId();
+        this.firstName = userDTO.getFirstName();
+        this.lastName = userDTO.getLastName();
+    }
 
 }

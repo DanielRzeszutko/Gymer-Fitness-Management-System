@@ -1,31 +1,25 @@
 package com.gymer.api.address;
 
 import com.gymer.api.address.entity.Address;
+import com.gymer.api.common.service.AbstractRestApiService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class AddressService {
+public class AddressService extends AbstractRestApiService<Address, Long> {
 
-    private final AddressRepository addressRepository;
-
-    public AddressService(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
+    @Autowired
+    public AddressService(AddressRepository repository) {
+        super(repository);
     }
 
-    public Iterable<Address> getAllAddresses(Sort sort) {
-        return addressRepository.findAll(sort);
-    }
-
-    public Address getAddressById(Long addressId) {
-        return addressRepository.findById(addressId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    public void updateAddress(Address address) {
-        addressRepository.save(address);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<Address> findAllContaining(Sort sort, String searchBy) {
+        return ((AddressRepository) repository).findAllByCityContainsOrStreetContainsOrZipCodeContains(searchBy, searchBy, searchBy, sort);
     }
 
 }

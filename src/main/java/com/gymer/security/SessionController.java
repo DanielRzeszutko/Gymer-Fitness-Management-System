@@ -50,8 +50,7 @@ public class SessionController {
         Credential credential = (Credential) authentication.getPrincipal();
         User user = userService.getByCredentials(credential).orElse(null);
         if (user != null) return user;
-        return partnerService.getByCredentials(credential).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return partnerService.getByCredentials(credential);
     }
 
 }

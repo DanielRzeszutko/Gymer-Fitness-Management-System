@@ -2,7 +2,6 @@ package com.gymer.api.credential.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import javax.persistence.*;
 @Data
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 public class Credential {
 
     @Id
@@ -35,5 +33,22 @@ public class Credential {
     @NotNull
     @Column(columnDefinition = "boolean default true")
     private boolean active;
+
+    public Credential(String email, String password, String phoneNumber, Role role, boolean active) {
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.active = active;
+    }
+
+    public Credential(CredentialDTO credentialDTO) {
+        this.id = credentialDTO.getId();
+        this.email = credentialDTO.getEmail();
+        this.password = credentialDTO.getPassword();
+        this.phoneNumber = credentialDTO.getPhoneNumber();
+        this.role = credentialDTO.getRole();
+        this.active = credentialDTO.isActive();
+    }
 
 }

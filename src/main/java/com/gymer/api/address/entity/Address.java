@@ -1,6 +1,5 @@
 package com.gymer.api.address.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,6 @@ import javax.persistence.Id;
 @Data
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 public class Address {
 
     @Id
@@ -23,5 +21,20 @@ public class Address {
     private String street;
     private String number;
     private String zipCode;
+
+    public Address(String city, String street, String number, String zipCode) {
+        this.city = city;
+        this.street = street;
+        this.number = number;
+        this.zipCode = zipCode;
+    }
+
+    public Address(AddressDTO addressDTO) {
+        this.id = addressDTO.getId();
+        this.city = addressDTO.getCity();
+        this.street = addressDTO.getStreet();
+        this.number = addressDTO.getNumber();
+        this.zipCode = addressDTO.getZipCode();
+    }
 
 }

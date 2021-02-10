@@ -1,27 +1,27 @@
 package com.gymer.api.workinghours;
 
+import com.gymer.api.common.service.AbstractRestApiService;
+import com.gymer.api.workinghours.entity.Day;
 import com.gymer.api.workinghours.entity.WorkingHour;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.sql.Time;
 
 @Service
-public class WorkingHourService {
+public class WorkingHourService extends AbstractRestApiService<WorkingHour, Long> {
 
-	private final WorkingHourRepository workingHourRepository;
+    public WorkingHourService(WorkingHourRepository repository) {
+        super(repository);
+    }
 
-	public WorkingHourService(WorkingHourRepository workingHourRepository) {
-		this.workingHourRepository = workingHourRepository;
-	}
-
-	public void updateWorkingHour(Long workingHourId, WorkingHour workingHour) {
-		workingHour.setId(workingHourId);
-		workingHourRepository.save(workingHour);
-	}
-
-	public WorkingHour getWorkingHourById(Long workingHourId) {
-		return workingHourRepository.findById(workingHourId).orElseThrow(
-				() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<WorkingHour> findAllContaining(Sort sort, String searchBy) {
+        Time time = Time.valueOf(searchBy);
+        return ((WorkingHourRepository) repository).findAllByStartHourContainsOrEndHourContains(time, time, sort);
+    }
 
 }
