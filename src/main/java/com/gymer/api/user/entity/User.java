@@ -18,7 +18,7 @@ public class User {
     private String firstName;
     private String lastName;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Credential credential;
 
     public User(String firstName, String lastName, Credential credential) {
