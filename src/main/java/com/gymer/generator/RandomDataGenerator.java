@@ -94,7 +94,7 @@ public class RandomDataGenerator {
             slots.addAll(getRandomSlots(employee));
         }
         String gymName = getRandomGymName();
-        return new Partner(gymName, "logo" + gymName, "Lorem ipsum" + createRandomWord(20),
+        return new Partner(gymName, "../images/logo_transparent.png", "../images/gym8.jpg", "Lorem ipsum" + createRandomWord(20),
                 getRandomWebsite(gymName), getRandomCredential(gymName, "business", Role.PARTNER),
                 getRandomAddress(), employees, slots, getRandomWorkingHours());
     }

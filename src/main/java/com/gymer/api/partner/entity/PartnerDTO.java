@@ -13,6 +13,7 @@ public class PartnerDTO extends RepresentationModel<PartnerDTO> {
     private Long id;
     private String name;
     private String logo;
+    private String image;
     private String description;
     private String website;
 
@@ -20,6 +21,7 @@ public class PartnerDTO extends RepresentationModel<PartnerDTO> {
         this.id = partner.getId();
         this.name = partner.getName();
         this.logo = partner.getLogo();
+        this.image = partner.getImage();
         this.description = partner.getDescription();
         this.website = partner.getWebsite();
     }

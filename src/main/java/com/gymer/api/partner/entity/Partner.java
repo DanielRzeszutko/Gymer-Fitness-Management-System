@@ -25,6 +25,7 @@ public class Partner {
     private String name;
 
     private String logo;
+    private String image;
     private String description;
     private String website;
 
@@ -46,11 +47,12 @@ public class Partner {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<WorkingHour> workingHours;
 
-    public Partner(String name, String logo, String description, String website,
+    public Partner(String name, String logo, String image, String description, String website,
                    Credential credential, Address address, List<Employee> employees,
                    List<Slot> slots, List<WorkingHour> workingHours) {
         this.name = name;
         this.logo = logo;
+        this.image = image;
         this.description = description;
         this.website = website;
         this.credential = credential;
@@ -64,6 +66,7 @@ public class Partner {
         this.id = partnerDTO.getId();
         this.name = partnerDTO.getName();
         this.logo = partnerDTO.getLogo();
+        this.image = partnerDTO.getImage();
         this.description = partnerDTO.getDescription();
         this.website = partnerDTO.getWebsite();
     }
