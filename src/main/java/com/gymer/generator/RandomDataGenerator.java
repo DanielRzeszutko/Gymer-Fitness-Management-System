@@ -65,12 +65,12 @@ public class RandomDataGenerator {
 
         for (int i = 0; i < 10; i++) {
             partnerService.updateElement(getRandomPartner());
-//            userService.updateElement(getRandomUser());
+            userService.updateElement(getRandomUser());
         }
     }
 
     private List<String> readDataFromFile(String fileName) throws FileNotFoundException {
-        final String ADDON_URL = "src/main/resources/generator/";
+        final String ADDON_URL = "src/main/resources/sampleData/";
         List<String> result = new ArrayList<>();
 
         File file = new File(ADDON_URL + fileName);
@@ -188,7 +188,7 @@ public class RandomDataGenerator {
             int randomInt = getRandomNumberBetween(0, 10000);
             String end = emails.get(getRandomNumberBetween(0, emails.size() - 1));
 
-            email = name.toLowerCase() + surname.toLowerCase() + randomInt + end;
+            email = name.toLowerCase().replace(" ", "") + surname.toLowerCase() + randomInt + end;
         } while (usedEmails.contains(email));
 
         usedEmails.add(email);
@@ -225,7 +225,7 @@ public class RandomDataGenerator {
     }
 
     private String getRandomWebsite(String gymName) {
-        return "www." + gymName.toLowerCase() + ".pl" ;
+        return "www." + gymName.toLowerCase().replace(" ", "") + ".pl" ;
     }
 
     private String getRandomPhoneNumber() {
