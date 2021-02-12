@@ -40,16 +40,20 @@ public class Slot {
 	@OneToOne
 	private Employee employee;
 
+	@Enumerated(value = EnumType.STRING)
+	private SlotType slotType;
+
 	@Column(columnDefinition = "boolean default true")
 	private boolean isPrivate = true;
 
-	public Slot(String description, Date date, Time startTime, Time endTime, List<User> users, Employee employee, boolean isPrivate) {
+	public Slot(String description, Date date, Time startTime, Time endTime, List<User> users, Employee employee, SlotType slotType, boolean isPrivate) {
 		this.description = description;
 		this.date = date;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.users = users;
 		this.employee = employee;
+		this.slotType = slotType;
 		this.isPrivate = isPrivate;
 	}
 
@@ -59,6 +63,7 @@ public class Slot {
 		this.description = slotDTO.getDescription();
 		this.startTime = slotDTO.getStartTime();
 		this.endTime = slotDTO.getEndTime();
+		this.slotType = slotDTO.getSlotType();
 		this.isPrivate = slotDTO.isPrivate();
 	}
 

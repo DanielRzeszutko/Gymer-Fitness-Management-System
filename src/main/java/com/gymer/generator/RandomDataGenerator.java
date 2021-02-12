@@ -8,6 +8,7 @@ import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
+import com.gymer.api.slot.entity.SlotType;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
 import com.gymer.api.workinghours.entity.Day;
@@ -119,9 +120,9 @@ public class RandomDataGenerator {
         int endHour = startHour + 1;
         String startHourString = startHour < 10 ? "0" + startHour : Integer.toString(startHour);
         String endHourString = endHour < 10 ? "0" + endHour : Integer.toString(endHour);
-        return new Slot(
-                "Lorem ipsum" + createRandomWord(20), Date.valueOf("2021-02-10"), Time.valueOf(startHourString + ":00:00"),
-                Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, startHour < 12);
+        int randomSlotType = new Random().nextInt(SlotType.values().length - 1);
+        return new Slot("Lorem ipsum" + createRandomWord(20), Date.valueOf("2021-02-10"), Time.valueOf(startHourString + ":00:00"),
+                Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, SlotType.values()[randomSlotType], startHour < 12);
     }
 
     private List<Employee> getRandomEmployees(int howMuch) {
