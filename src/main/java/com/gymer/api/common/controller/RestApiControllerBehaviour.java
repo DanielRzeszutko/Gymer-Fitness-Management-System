@@ -1,10 +1,7 @@
 package com.gymer.api.common.controller;
 
-import com.gymer.api.address.entity.AddressDTO;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 

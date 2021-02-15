@@ -4,7 +4,6 @@ import com.gymer.api.common.service.AbstractRestApiService;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;

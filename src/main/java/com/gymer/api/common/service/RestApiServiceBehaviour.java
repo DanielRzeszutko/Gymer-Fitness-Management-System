@@ -1,7 +1,6 @@
 package com.gymer.api.common.service;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 public interface RestApiServiceBehaviour<T, V> {
 

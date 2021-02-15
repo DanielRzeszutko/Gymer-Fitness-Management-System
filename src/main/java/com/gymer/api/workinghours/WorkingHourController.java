@@ -1,20 +1,16 @@
 package com.gymer.api.workinghours;
 
 import com.gymer.api.common.controller.AbstractRestApiController;
-import com.gymer.api.credential.CredentialController;
-import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.employee.EmployeeService;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.user.UserController;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import com.gymer.api.workinghours.entity.WorkingHourDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;

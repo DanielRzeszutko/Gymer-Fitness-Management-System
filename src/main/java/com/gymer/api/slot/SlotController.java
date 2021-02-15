@@ -1,11 +1,7 @@
 package com.gymer.api.slot;
 
 import com.gymer.api.common.controller.AbstractRestApiController;
-import com.gymer.api.credential.CredentialController;
-import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.employee.EmployeeController;
-import com.gymer.api.employee.EmployeeService;
-import com.gymer.api.employee.entity.EmployeeDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
@@ -13,9 +9,7 @@ import com.gymer.api.slot.entity.SlotDTO;
 import com.gymer.api.user.UserController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
@@ -25,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;

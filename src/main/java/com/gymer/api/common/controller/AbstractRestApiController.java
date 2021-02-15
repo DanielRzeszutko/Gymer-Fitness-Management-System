@@ -1,17 +1,11 @@
 package com.gymer.api.common.controller;
 
-import com.gymer.api.address.entity.AddressDTO;
 import com.gymer.api.common.service.RestApiServiceBehaviour;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class AbstractRestApiController<K, T, V> implements RestApiControllerBehaviour<K, T, V> {
 
@@ -49,7 +43,7 @@ public abstract class AbstractRestApiController<K, T, V> implements RestApiContr
     }
 
     protected PagedModel<EntityModel<K>> getCollectionModel(Page<T> elements, PagedResourcesAssembler<K> assembler) {
-         return assembler.toModel(elements.map(this::convertToDTO));
+        return assembler.toModel(elements.map(this::convertToDTO));
     }
 
 }

@@ -1,21 +1,15 @@
 package com.gymer.api.credential;
 
-import com.gymer.api.address.AddressController;
-import com.gymer.api.address.entity.AddressDTO;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.user.UserController;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
-import com.gymer.api.workinghours.entity.WorkingHourDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;

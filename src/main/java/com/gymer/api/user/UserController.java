@@ -2,26 +2,17 @@ package com.gymer.api.user;
 
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.credential.CredentialController;
-import com.gymer.api.credential.entity.CredentialDTO;
-import com.gymer.api.employee.EmployeeService;
-import com.gymer.api.employee.entity.EmployeeDTO;
-import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.user.entity.User;
 import com.gymer.api.user.entity.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
