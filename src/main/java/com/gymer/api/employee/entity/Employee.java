@@ -2,7 +2,6 @@ package com.gymer.api.employee.entity;
 
 import com.gymer.api.workinghours.entity.WorkingHour;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

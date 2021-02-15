@@ -1,20 +1,23 @@
 package com.gymer.api.partner;
 
+import com.gymer.api.address.AddressController;
 import com.gymer.api.common.controller.AbstractRestApiController;
-import com.gymer.api.common.service.AbstractRestApiService;
+import com.gymer.api.credential.CredentialController;
+import com.gymer.api.employee.EmployeeController;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.partner.entity.PartnerDTO;
+import com.gymer.api.slot.SlotController;
+import com.gymer.api.workinghours.WorkingHourController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class PartnerController extends AbstractRestApiController<PartnerDTO, Partner, Long> {
@@ -30,7 +33,9 @@ public class PartnerController extends AbstractRestApiController<PartnerDTO, Par
     @Override
     @GetMapping("/api/partners")
     public CollectionModel<PartnerDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        return super.getAllElementsSortable(sort, searchBy);
+        CollectionModel<PartnerDTO> model = super.getAllElementsSortable(sort, searchBy);
+        model.add(linkTo(methodOn(PartnerController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+        return model;
     }
 
     /**
@@ -82,26 +87,19 @@ public class PartnerController extends AbstractRestApiController<PartnerDTO, Par
     public PartnerDTO convertToDTO(Partner partner) {
         PartnerDTO partnerDTO = new PartnerDTO(partner);
 
-        Link selfLink = Link.of("/partners/" + partnerDTO.getId()).withSelfRel();
-        Link credentialLink = Link.of("/partners/" + partner.getId() + "/credentials/" + partner.getCredential().getId()).withRel("credentials");
-        Link addressLink = Link.of("/partners/" + partner.getId() + "/addresses/" + partner.getAddress().getId()).withRel("addresses");
+        Link selfLink = linkTo(methodOn(PartnerController.class).getElementById(partner.getId())).withSelfRel();
+        Link credentialLink = linkTo(
+                methodOn(CredentialController.class).getCredentialFromPartnerById(partner.getId(), partner.getCredential().getId())).withRel("credential");
+        Link employeeLink = linkTo(
+                methodOn(EmployeeController.class).getAllEmployeesByPartnerId(partner.getId())).withRel("employees");
+        Link addressLink = linkTo(
+                methodOn(AddressController.class).getPartnerAddressById(partner.getId(), partner.getAddress().getId())).withRel("address");
+        Link slotsLink = linkTo(
+                methodOn(SlotController.class).getAllSlots(partner.getId())).withRel("slots");
+        Link workingHoursLink = linkTo(
+                methodOn(WorkingHourController.class).getPartnerWorkingHoursById(partner.getId())).withRel("workinghours");
 
-        Links employeeLinks = Links.of(partner.getEmployees().stream().map(
-                employee -> Link.of("/partners/" + partner.getId() + "/employees/" + employee.getId()).withRel("employees")
-        ).collect(Collectors.toList()));
-
-        Links slotsLinks = Links.of(partner.getSlots().stream().map(
-                slot -> Link.of("/partners/" + partner.getId() + "/slots/" + slot.getId()).withRel("slots")
-        ).collect(Collectors.toList()));
-
-        Links workingHoursLinks = Links.of(partner.getWorkingHours().stream().map(
-                workingHour -> Link.of("/partners/" + partner.getId() + "/workinghours/" + workingHour.getId()).withRel("workinghours")
-        ).collect(Collectors.toList()));
-
-        partnerDTO.add(selfLink, credentialLink, addressLink);
-        partnerDTO.add(employeeLinks);
-        partnerDTO.add(slotsLinks);
-        partnerDTO.add(workingHoursLinks);
+        partnerDTO.add(selfLink, credentialLink, employeeLink, addressLink, slotsLink, workingHoursLink);
 
         return partnerDTO;
     }

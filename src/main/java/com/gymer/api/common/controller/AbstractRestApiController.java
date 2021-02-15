@@ -20,9 +20,9 @@ public abstract class AbstractRestApiController<K, T, V> implements RestApiContr
      */
     @Override
     public CollectionModel<K> getAllElementsSortable(Sort sort, String searchBy) {
-        if (searchBy == null) return getAllElementsSortable(sort);
-        List<T> elements = (List<T>) service.findAllContaining(sort, searchBy);
-        return getAllElements(elements);
+        return searchBy == null
+                ? getAllElementsSortable(sort)
+                : getCollectionModel((List<T>) service.findAllContaining(sort, searchBy));
     }
 
     /**
@@ -31,7 +31,7 @@ public abstract class AbstractRestApiController<K, T, V> implements RestApiContr
     @Override
     public CollectionModel<K> getAllElementsSortable(Sort sort) {
         List<T> elements = (List<T>) service.getAllElements(sort);
-        return getAllElements(elements);
+        return getCollectionModel(elements);
     }
 
     /**
@@ -42,7 +42,7 @@ public abstract class AbstractRestApiController<K, T, V> implements RestApiContr
         return convertToDTO(service.getElementById(id));
     }
 
-    private CollectionModel<K> getAllElements(List<T> elements) {
+    protected CollectionModel<K> getCollectionModel(List<T> elements) {
         return CollectionModel.of(elements.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));

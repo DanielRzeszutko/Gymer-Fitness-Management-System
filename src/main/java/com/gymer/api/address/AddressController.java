@@ -3,16 +3,20 @@ package com.gymer.api.address;
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.address.entity.AddressDTO;
 import com.gymer.api.common.controller.AbstractRestApiController;
+import com.gymer.api.credential.CredentialController;
+import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.annotation.Inherited;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class AddressController extends AbstractRestApiController<AddressDTO, Address, Long> {
@@ -31,7 +35,9 @@ public class AddressController extends AbstractRestApiController<AddressDTO, Add
     @Override
     @GetMapping("/api/addresses")
     public CollectionModel<AddressDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        return super.getAllElementsSortable(sort, searchBy);
+        CollectionModel<AddressDTO> model = super.getAllElementsSortable(sort, searchBy);
+        model.add(linkTo(methodOn(AddressController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+        return model;
     }
 
     /**
@@ -81,7 +87,11 @@ public class AddressController extends AbstractRestApiController<AddressDTO, Add
      */
     @Override
     public AddressDTO convertToDTO(Address address) {
-        return new AddressDTO(address);
+        AddressDTO addressDTO = new AddressDTO(address);
+        Link selfLink = linkTo(
+                methodOn(AddressController.class).getElementById(address.getId())).withSelfRel();
+        addressDTO.add(selfLink);
+        return addressDTO;
     }
 
 }

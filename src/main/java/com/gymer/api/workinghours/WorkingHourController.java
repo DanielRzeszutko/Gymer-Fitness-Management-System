@@ -5,17 +5,22 @@ import com.gymer.api.employee.EmployeeService;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
+import com.gymer.api.user.UserController;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import com.gymer.api.workinghours.entity.WorkingHourDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class WorkingHourController extends AbstractRestApiController<WorkingHourDTO, WorkingHour, Long> {
@@ -36,7 +41,9 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
     @Override
     @GetMapping("/api/workinghours")
     public CollectionModel<WorkingHourDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        return super.getAllElementsSortable(sort, searchBy);
+        CollectionModel<WorkingHourDTO> model = super.getAllElementsSortable(sort, searchBy);
+        model.add(linkTo(methodOn(WorkingHourController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+        return model;
     }
 
     /**
@@ -65,7 +72,9 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
     @GetMapping("/api/partners/{partnerId}/workinghours")
     public CollectionModel<WorkingHourDTO> getPartnerWorkingHoursById(@PathVariable Long partnerId) {
         Partner partner = partnerService.getElementById(partnerId);
-        return CollectionModel.of(partner.getWorkingHours().stream().map(this::convertToDTO).collect(Collectors.toList()));
+        CollectionModel<WorkingHourDTO> model = CollectionModel.of(partner.getWorkingHours().stream().map(this::convertToDTO).collect(Collectors.toList()));
+        model.add(linkTo(methodOn(WorkingHourController.class).getPartnerWorkingHoursById(partnerId)).withSelfRel());
+        return model;
     }
 
     /**
@@ -127,14 +136,16 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      * Endpoint that sends back all WorkingHours with partnerID and employeeID
      */
     @GetMapping("/api/partners/{partnerId}/employees/{employeeId}/workinghours")
-    public Iterable<WorkingHourDTO> getEmployeeWorkingHoursById(@PathVariable Long partnerId, @PathVariable Long employeeId) {
+    public CollectionModel<WorkingHourDTO> getEmployeeWorkingHoursById(@PathVariable Long partnerId, @PathVariable Long employeeId) {
         Partner partner = partnerService.getElementById(partnerId);
         List<Employee> employeesList = partner.getEmployees();
         Employee employee = employeeService.getElementById(employeeId);
         if (!employeesList.contains(employee)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return employee.getWorkingHours().stream().map(this::convertToDTO).collect(Collectors.toList());
+        CollectionModel<WorkingHourDTO> model = CollectionModel.of(employee.getWorkingHours().stream().map(this::convertToDTO).collect(Collectors.toList()));
+        model.add(linkTo(methodOn(WorkingHourController.class).getEmployeeWorkingHoursById(partnerId, employeeId)).withSelfRel());
+        return model;
     }
 
     /**
@@ -204,7 +215,11 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      */
     @Override
     public WorkingHourDTO convertToDTO(WorkingHour workingHour) {
-        return new WorkingHourDTO(workingHour);
+        WorkingHourDTO workingHourDTO = new WorkingHourDTO(workingHour);
+        Link selfLink = linkTo(
+                methodOn(WorkingHourController.class).getElementById(workingHour.getId())).withSelfRel();
+        workingHourDTO.add(selfLink);
+        return workingHourDTO;
     }
 
 }

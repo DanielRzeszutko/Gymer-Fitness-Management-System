@@ -1,7 +1,6 @@
 package com.gymer.api.workinghours;
 
 import com.gymer.api.common.service.AbstractRestApiService;
-import com.gymer.api.workinghours.entity.Day;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

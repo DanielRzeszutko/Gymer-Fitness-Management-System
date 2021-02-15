@@ -1,15 +1,16 @@
 package com.gymer.api.slot;
 
 import com.gymer.api.common.controller.AbstractRestApiController;
+import com.gymer.api.employee.EmployeeController;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.slot.entity.SlotDTO;
+import com.gymer.api.user.UserController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,6 +18,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Long> {
@@ -35,7 +39,9 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
 	@Override
 	@GetMapping("/api/slots")
 	public CollectionModel<SlotDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-		return super.getAllElementsSortable(sort, searchBy);
+        CollectionModel<SlotDTO> model = super.getAllElementsSortable(sort, searchBy);
+        model.add(linkTo(methodOn(SlotController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+        return model;
 	}
 
     /**
@@ -53,9 +59,11 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
     @GetMapping("/api/partners/{partnerId}/slots")
     public CollectionModel<SlotDTO> getAllSlots(@PathVariable Long partnerId) {
         Partner partner = partnerService.getElementById(partnerId);
-        return CollectionModel.of(partner.getSlots().stream()
+        CollectionModel<SlotDTO> model = CollectionModel.of(partner.getSlots().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));
+        model.add(linkTo(methodOn(SlotController.class).getAllSlots(partnerId)).withSelfRel());
+        return model;
     }
 
     /**
@@ -137,17 +145,18 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
      */
     @Override
     public SlotDTO convertToDTO(Slot slot) {
-        Long partnerId = partnerService.findPartnerContainingSlot(slot).getId();
+        Partner partner = partnerService.findPartnerContainingSlot(slot);
 
         SlotDTO slotDTO = new SlotDTO(slot);
 
-        Link selfLink = Link.of("/partners/" + partnerId + "/employees/" + slot.getEmployee().getId() + "/slots/" + slot.getId()).withSelfRel();
-        Link employeeLink = Link.of("/partners/" + partnerId + "/employees/" + slot.getEmployee().getId()).withRel("employees");
-        Links usersLinks = Links.of(slot.getUsers().stream().map(
-                user -> Link.of("/users/" + user.getId()).withRel("users")).collect(Collectors.toList()));
+        Link selfLink = linkTo(
+                methodOn(SlotController.class).getSlotById(partner.getId(), slot.getId())).withSelfRel();
+        Link employeeLink = linkTo(
+                methodOn(EmployeeController.class).getEmployeeById(partner.getId(), slot.getEmployee().getId())).withRel("employee");
+        Link usersLink = linkTo(
+                methodOn(UserController.class).getUsersBySlotId(partner.getId(), slot.getId())).withRel("users");
 
-        slotDTO.add(selfLink, employeeLink);
-        slotDTO.add(usersLinks);
+        slotDTO.add(selfLink, employeeLink, usersLink);
 
         return slotDTO;
     }

@@ -5,14 +5,20 @@ import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
+import com.gymer.api.user.UserController;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
+import com.gymer.api.workinghours.entity.WorkingHourDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class CredentialController extends AbstractRestApiController<CredentialDTO, Credential, Long> {
@@ -33,7 +39,9 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
     @Override
     @GetMapping("/api/credentials")
     public CollectionModel<CredentialDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        return super.getAllElementsSortable(sort, searchBy);
+        CollectionModel<CredentialDTO> model = super.getAllElementsSortable(sort, searchBy);
+        model.add(linkTo(methodOn(CredentialController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+        return model;
     }
 
     /**
@@ -110,7 +118,11 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
      */
     @Override
     public CredentialDTO convertToDTO(Credential credential) {
-        return new CredentialDTO(credential);
+        CredentialDTO credentialDTO = new CredentialDTO(credential);
+        Link selfLink = linkTo(
+                methodOn(CredentialController.class).getElementById(credential.getId())).withSelfRel();
+        credentialDTO.add(selfLink);
+        return credentialDTO;
     }
 
 }

@@ -3,7 +3,6 @@ package com.gymer.api.user;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.user.entity.User;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
