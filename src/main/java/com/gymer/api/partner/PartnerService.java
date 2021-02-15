@@ -6,7 +6,8 @@ import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -55,8 +56,8 @@ public class PartnerService extends AbstractRestApiService<Partner, Long> {
      * {@inheritDoc}
      */
     @Override
-    public Iterable<Partner> findAllContaining(Sort sort, String searchBy) {
-        return ((PartnerRepository) repository).findAllByNameContainsOrDescriptionContains(searchBy, searchBy, sort);
+    public Page<Partner> findAllContaining(Pageable pageable, String searchBy) {
+        return ((PartnerRepository) repository).findAllByNameContainsOrDescriptionContains(searchBy, searchBy, pageable);
     }
 
 }
