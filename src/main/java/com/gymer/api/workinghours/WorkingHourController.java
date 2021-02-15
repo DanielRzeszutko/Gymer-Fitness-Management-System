@@ -5,11 +5,13 @@ import com.gymer.api.employee.EmployeeService;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
+import com.gymer.api.user.UserController;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import com.gymer.api.workinghours.entity.WorkingHourDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -134,14 +136,16 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      * Endpoint that sends back all WorkingHours with partnerID and employeeID
      */
     @GetMapping("/api/partners/{partnerId}/employees/{employeeId}/workinghours")
-    public Iterable<WorkingHourDTO> getEmployeeWorkingHoursById(@PathVariable Long partnerId, @PathVariable Long employeeId) {
+    public CollectionModel<WorkingHourDTO> getEmployeeWorkingHoursById(@PathVariable Long partnerId, @PathVariable Long employeeId) {
         Partner partner = partnerService.getElementById(partnerId);
         List<Employee> employeesList = partner.getEmployees();
         Employee employee = employeeService.getElementById(employeeId);
         if (!employeesList.contains(employee)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return employee.getWorkingHours().stream().map(this::convertToDTO).collect(Collectors.toList());
+        CollectionModel<WorkingHourDTO> model = CollectionModel.of(employee.getWorkingHours().stream().map(this::convertToDTO).collect(Collectors.toList()));
+        model.add(linkTo(methodOn(WorkingHourController.class).getEmployeeWorkingHoursById(partnerId, employeeId)).withSelfRel());
+        return model;
     }
 
     /**
@@ -211,7 +215,11 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      */
     @Override
     public WorkingHourDTO convertToDTO(WorkingHour workingHour) {
-        return new WorkingHourDTO(workingHour);
+        WorkingHourDTO workingHourDTO = new WorkingHourDTO(workingHour);
+        Link selfLink = linkTo(
+                methodOn(WorkingHourController.class).getElementById(workingHour.getId())).withSelfRel();
+        workingHourDTO.add(selfLink);
+        return workingHourDTO;
     }
 
 }
