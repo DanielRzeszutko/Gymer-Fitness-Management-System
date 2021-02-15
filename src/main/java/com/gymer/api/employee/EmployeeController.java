@@ -41,9 +41,7 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
     public PagedModel<EntityModel<EmployeeDTO>> getAllElementsSortable(Pageable pageable,
                                                           @RequestParam(required = false, name = "contains") String searchBy,
                                                           PagedResourcesAssembler<EmployeeDTO> assembler) {
-        PagedModel<EntityModel<EmployeeDTO>> model = super.getAllElementsSortable(pageable, searchBy, assembler);
-        model.add(linkTo(methodOn(EmployeeController.class).getAllElementsSortable(pageable, searchBy, assembler)).withSelfRel().expand());
-        return model;
+        return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
     /**
@@ -63,9 +61,7 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
                                                                            Pageable pageable,
                                                                            PagedResourcesAssembler<EmployeeDTO> assembler) {
         Partner partner = partnerService.getElementById(partnerId);
-        PagedModel<EntityModel<EmployeeDTO>> model = super.getCollectionModel(((EmployeeService) service).findAllEmployeesForPartner(pageable, partner), assembler);
-        model.add(linkTo(methodOn(EmployeeController.class).getAllEmployeesByPartnerId(partnerId, pageable, assembler)).withSelfRel());
-        return model;
+        return super.getCollectionModel(((EmployeeService) service).findAllEmployeesForPartner(pageable, partner), assembler);
     }
 
     /**

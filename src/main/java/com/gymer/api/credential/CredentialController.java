@@ -41,9 +41,7 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
     public PagedModel<EntityModel<CredentialDTO>> getAllElementsSortable(Pageable pageable,
                                                                  @RequestParam(required = false, name = "contains") String searchBy,
                                                                  PagedResourcesAssembler<CredentialDTO> assembler) {
-        PagedModel<EntityModel<CredentialDTO>> model = super.getAllElementsSortable(pageable, searchBy, assembler);
-        model.add(linkTo(methodOn(CredentialController.class).getAllElementsSortable(pageable, searchBy, assembler)).withSelfRel().expand());
-        return model;
+        return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
     /**

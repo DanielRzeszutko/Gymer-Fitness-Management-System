@@ -37,9 +37,7 @@ public class AddressController extends AbstractRestApiController<AddressDTO, Add
     public PagedModel<EntityModel<AddressDTO>> getAllElementsSortable(Pageable pageable,
                                                    @RequestParam(required = false, name = "contains") String searchBy,
                                                    PagedResourcesAssembler<AddressDTO> assembler) {
-        PagedModel<EntityModel<AddressDTO>> model = super.getAllElementsSortable(pageable, searchBy, assembler);
-        model.add(linkTo(methodOn(AddressController.class).getAllElementsSortable(pageable, searchBy, assembler)).withSelfRel().expand());
-        return model;
+        return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
     /**

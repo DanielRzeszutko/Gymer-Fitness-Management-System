@@ -47,9 +47,7 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
     public PagedModel<EntityModel<WorkingHourDTO>> getAllElementsSortable(Pageable pageable,
                                                              @RequestParam(required = false, name = "contains") String searchBy,
                                                              PagedResourcesAssembler<WorkingHourDTO> assembler) {
-        PagedModel<EntityModel<WorkingHourDTO>> model = super.getAllElementsSortable(pageable, searchBy, assembler);
-        model.add(linkTo(methodOn(WorkingHourController.class).getAllElementsSortable(pageable, searchBy, assembler)).withSelfRel().expand());
-        return model;
+        return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
     /**
@@ -81,9 +79,7 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
                                                                               PagedResourcesAssembler<WorkingHourDTO> assembler) {
         Partner partner = partnerService.getElementById(partnerId);
         Page<WorkingHour> page = new PageImpl<>(partner.getWorkingHours(), pageable, partner.getWorkingHours().size());
-        PagedModel<EntityModel<WorkingHourDTO>> model = super.getCollectionModel(page, assembler);
-        model.add(linkTo(methodOn(WorkingHourController.class).getPartnerWorkingHoursById(partnerId, pageable, assembler)).withSelfRel().expand());
-        return model;
+        return super.getCollectionModel(page, assembler);
     }
 
     /**

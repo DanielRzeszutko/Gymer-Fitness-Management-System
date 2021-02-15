@@ -42,9 +42,7 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
 	public PagedModel<EntityModel<SlotDTO>> getAllElementsSortable(Pageable pageable,
                                                       @RequestParam(required = false, name = "contains") String searchBy,
                                                       PagedResourcesAssembler<SlotDTO> assembler) {
-        PagedModel<EntityModel<SlotDTO>> model = super.getAllElementsSortable(pageable, searchBy, assembler);
-        model.add(linkTo(methodOn(SlotController.class).getAllElementsSortable(pageable, searchBy, assembler)).withSelfRel().expand());
-        return model;
+        return super.getAllElementsSortable(pageable, searchBy, assembler);
 	}
 
     /**
@@ -64,9 +62,7 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
                                                         Pageable pageable,
                                                         PagedResourcesAssembler<SlotDTO> assembler) {
         Partner partner = partnerService.getElementById(partnerId);
-        PagedModel<EntityModel<SlotDTO>> model = super.getCollectionModel(((SlotService) service).findAllSlotsForPartner(pageable, partner), assembler);
-        model.add(linkTo(methodOn(SlotController.class).getAllSlots(partnerId, pageable, assembler)).withSelfRel());
-        return model;
+        return super.getCollectionModel(((SlotService) service).findAllSlotsForPartner(pageable, partner), assembler);
     }
 
     /**
