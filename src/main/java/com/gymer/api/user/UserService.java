@@ -6,6 +6,9 @@ import com.gymer.api.slot.SlotService;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +29,8 @@ public class UserService extends AbstractRestApiService<User, Long> {
      * {@inheritDoc}
      */
     @Override
-    public Iterable<User> findAllContaining(Sort sort, String searchBy) {
-        return ((UserRepository) repository).findAllByFirstNameContainsOrLastNameContains(searchBy, searchBy, sort);
+    public Page<User> findAllContaining(Pageable pageable, String searchBy) {
+        return ((UserRepository) repository).findAllByFirstNameContainsOrLastNameContains(searchBy, searchBy, pageable);
     }
 
     /**
@@ -45,9 +48,9 @@ public class UserService extends AbstractRestApiService<User, Long> {
         return ((UserRepository) repository).findByCredential(credential);
     }
 
-    public Iterable<User> findAllUsersSubmittedToSlot(Long slotId) {
+    public Page<User> findAllUsersSubmittedToSlot(Pageable pageable, Long slotId) {
         Slot oldSlot = slotService.getElementById(slotId);
-        return oldSlot.getUsers();
+        return new PageImpl<>(oldSlot.getUsers(), Pageable.unpaged(), oldSlot.getUsers().size());
     }
 
 }

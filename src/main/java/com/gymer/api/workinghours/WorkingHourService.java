@@ -2,6 +2,8 @@ package com.gymer.api.workinghours;
 
 import com.gymer.api.common.service.AbstractRestApiService;
 import com.gymer.api.workinghours.entity.WorkingHour;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +20,9 @@ public class WorkingHourService extends AbstractRestApiService<WorkingHour, Long
      * {@inheritDoc}
      */
     @Override
-    public Iterable<WorkingHour> findAllContaining(Sort sort, String searchBy) {
+    public Page<WorkingHour> findAllContaining(Pageable pageable, String searchBy) {
         Time time = Time.valueOf(searchBy);
-        return ((WorkingHourRepository) repository).findAllByStartHourContainsOrEndHourContains(time, time, sort);
+        return ((WorkingHourRepository) repository).findAllByStartHourContainsOrEndHourContains(time, time, pageable);
     }
 
 }

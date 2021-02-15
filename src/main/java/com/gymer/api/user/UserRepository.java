@@ -2,6 +2,8 @@ package com.gymer.api.user;
 
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.user.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -13,6 +15,6 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
     Optional<User> findByCredential(Credential credential);
 
-    Iterable<User> findAllByFirstNameContainsOrLastNameContains(String firstName, String lastName, Sort sort);
+    Page<User> findAllByFirstNameContainsOrLastNameContains(String firstName, String lastName, Pageable pageable);
 
 }

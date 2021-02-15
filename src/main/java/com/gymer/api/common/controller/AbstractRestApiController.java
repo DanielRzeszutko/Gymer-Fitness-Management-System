@@ -1,8 +1,14 @@
 package com.gymer.api.common.controller;
 
+import com.gymer.api.address.entity.AddressDTO;
 import com.gymer.api.common.service.RestApiServiceBehaviour;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,19 +25,19 @@ public abstract class AbstractRestApiController<K, T, V> implements RestApiContr
      * {@inheritDoc}
      */
     @Override
-    public CollectionModel<K> getAllElementsSortable(Sort sort, String searchBy) {
+    public PagedModel<EntityModel<K>> getAllElementsSortable(Pageable pageable, String searchBy, PagedResourcesAssembler<K> assembler) {
         return searchBy == null
-                ? getAllElementsSortable(sort)
-                : getCollectionModel((List<T>) service.findAllContaining(sort, searchBy));
+                ? getAllElementsSortable(pageable, assembler)
+                : getCollectionModel((Page<T>) service.findAllContaining(pageable, searchBy), assembler);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public CollectionModel<K> getAllElementsSortable(Sort sort) {
-        List<T> elements = (List<T>) service.getAllElements(sort);
-        return getCollectionModel(elements);
+    public PagedModel<EntityModel<K>> getAllElementsSortable(Pageable pageable, PagedResourcesAssembler<K> assembler) {
+        Page<T> elements = (Page<T>) service.getAllElements(pageable);
+        return getCollectionModel(elements, assembler);
     }
 
     /**
@@ -42,10 +48,8 @@ public abstract class AbstractRestApiController<K, T, V> implements RestApiContr
         return convertToDTO(service.getElementById(id));
     }
 
-    protected CollectionModel<K> getCollectionModel(List<T> elements) {
-        return CollectionModel.of(elements.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList()));
+    protected PagedModel<EntityModel<K>> getCollectionModel(Page<T> elements, PagedResourcesAssembler<K> assembler) {
+         return assembler.toModel(elements.map(this::convertToDTO));
     }
 
 }

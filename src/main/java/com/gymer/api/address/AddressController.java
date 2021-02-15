@@ -8,12 +8,19 @@ import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -34,9 +41,11 @@ public class AddressController extends AbstractRestApiController<AddressDTO, Add
      */
     @Override
     @GetMapping("/api/addresses")
-    public CollectionModel<AddressDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        CollectionModel<AddressDTO> model = super.getAllElementsSortable(sort, searchBy);
-        model.add(linkTo(methodOn(AddressController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+    public PagedModel<EntityModel<AddressDTO>> getAllElementsSortable(Pageable pageable,
+                                                   @RequestParam(required = false, name = "contains") String searchBy,
+                                                   PagedResourcesAssembler<AddressDTO> assembler) {
+        PagedModel<EntityModel<AddressDTO>> model = super.getAllElementsSortable(pageable, searchBy, assembler);
+        model.add(linkTo(methodOn(AddressController.class).getAllElementsSortable(pageable, searchBy, assembler)).withSelfRel().expand());
         return model;
     }
 

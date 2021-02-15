@@ -1,7 +1,12 @@
 package com.gymer.api.common.controller;
 
+import com.gymer.api.address.entity.AddressDTO;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 
 public interface RestApiControllerBehaviour<K, T, V> {
 
@@ -23,11 +28,11 @@ public interface RestApiControllerBehaviour<K, T, V> {
     /**
      * Endpoint with searching functionalities, work with ?sort=
      */
-    CollectionModel<K> getAllElementsSortable(Sort sort);
+    PagedModel<EntityModel<K>> getAllElementsSortable(Pageable pageable, PagedResourcesAssembler<K> assembler);
 
     /**
      * Endpoint with searching functionalities, work with ?sort= and together with ?contains=
      */
-    CollectionModel<K> getAllElementsSortable(Sort sort, String searchBy);
+    PagedModel<EntityModel<K>> getAllElementsSortable(Pageable pageable, String searchBy, PagedResourcesAssembler<K> assembler);
 
 }

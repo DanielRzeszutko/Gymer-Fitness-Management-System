@@ -1,16 +1,24 @@
 package com.gymer.api.slot;
 
 import com.gymer.api.common.controller.AbstractRestApiController;
+import com.gymer.api.credential.CredentialController;
+import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.employee.EmployeeController;
+import com.gymer.api.employee.EmployeeService;
+import com.gymer.api.employee.entity.EmployeeDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.slot.entity.SlotDTO;
 import com.gymer.api.user.UserController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -38,9 +46,11 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
      */
 	@Override
 	@GetMapping("/api/slots")
-	public CollectionModel<SlotDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        CollectionModel<SlotDTO> model = super.getAllElementsSortable(sort, searchBy);
-        model.add(linkTo(methodOn(SlotController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+	public PagedModel<EntityModel<SlotDTO>> getAllElementsSortable(Pageable pageable,
+                                                      @RequestParam(required = false, name = "contains") String searchBy,
+                                                      PagedResourcesAssembler<SlotDTO> assembler) {
+        PagedModel<EntityModel<SlotDTO>> model = super.getAllElementsSortable(pageable, searchBy, assembler);
+        model.add(linkTo(methodOn(SlotController.class).getAllElementsSortable(pageable, searchBy, assembler)).withSelfRel().expand());
         return model;
 	}
 
@@ -57,12 +67,12 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
      * Endpoint responsible for getting all slots from partner
      */
     @GetMapping("/api/partners/{partnerId}/slots")
-    public CollectionModel<SlotDTO> getAllSlots(@PathVariable Long partnerId) {
+    public PagedModel<EntityModel<SlotDTO>> getAllSlots(@PathVariable Long partnerId,
+                                                        Pageable pageable,
+                                                        PagedResourcesAssembler<SlotDTO> assembler) {
         Partner partner = partnerService.getElementById(partnerId);
-        CollectionModel<SlotDTO> model = CollectionModel.of(partner.getSlots().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList()));
-        model.add(linkTo(methodOn(SlotController.class).getAllSlots(partnerId)).withSelfRel());
+        PagedModel<EntityModel<SlotDTO>> model = super.getCollectionModel(((SlotService) service).findAllSlotsForPartner(pageable, partner), assembler);
+        model.add(linkTo(methodOn(SlotController.class).getAllSlots(partnerId, pageable, assembler)).withSelfRel());
         return model;
     }
 
@@ -154,7 +164,7 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
         Link employeeLink = linkTo(
                 methodOn(EmployeeController.class).getEmployeeById(partner.getId(), slot.getEmployee().getId())).withRel("employee");
         Link usersLink = linkTo(
-                methodOn(UserController.class).getUsersBySlotId(partner.getId(), slot.getId())).withRel("users");
+                methodOn(UserController.class).getUsersBySlotId(partner.getId(), slot.getId(), Pageable.unpaged(), null)).withRel("users");
 
         slotDTO.add(selfLink, employeeLink, usersLink);
 

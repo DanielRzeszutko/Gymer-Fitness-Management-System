@@ -1,5 +1,6 @@
 package com.gymer.api.common.service;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 public interface RestApiServiceBehaviour<T, V> {
@@ -7,7 +8,7 @@ public interface RestApiServiceBehaviour<T, V> {
     /**
      * Service method responsible for getting all elements only with sort parameter
      */
-    Iterable<T> getAllElements(Sort sort);
+    Iterable<T> getAllElements(Pageable pageable);
 
     /**
      * Service method responsible for getting element from selected repository
@@ -23,7 +24,7 @@ public interface RestApiServiceBehaviour<T, V> {
     /**
      * Service method responsible for searching for elements with sort and searchBy parameters
      */
-    Iterable<T> findAllContaining(Sort sort, String searchBy);
+    Iterable<T> findAllContaining(Pageable pageable, String searchBy);
 
     /**
      * Service method responsible for returning true if object exists in databse

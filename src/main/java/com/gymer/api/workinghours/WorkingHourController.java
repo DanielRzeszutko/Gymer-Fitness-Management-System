@@ -1,6 +1,8 @@
 package com.gymer.api.workinghours;
 
 import com.gymer.api.common.controller.AbstractRestApiController;
+import com.gymer.api.credential.CredentialController;
+import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.employee.EmployeeService;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.PartnerService;
@@ -9,9 +11,15 @@ import com.gymer.api.user.UserController;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import com.gymer.api.workinghours.entity.WorkingHourDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,9 +48,11 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      */
     @Override
     @GetMapping("/api/workinghours")
-    public CollectionModel<WorkingHourDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        CollectionModel<WorkingHourDTO> model = super.getAllElementsSortable(sort, searchBy);
-        model.add(linkTo(methodOn(WorkingHourController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+    public PagedModel<EntityModel<WorkingHourDTO>> getAllElementsSortable(Pageable pageable,
+                                                             @RequestParam(required = false, name = "contains") String searchBy,
+                                                             PagedResourcesAssembler<WorkingHourDTO> assembler) {
+        PagedModel<EntityModel<WorkingHourDTO>> model = super.getAllElementsSortable(pageable, searchBy, assembler);
+        model.add(linkTo(methodOn(WorkingHourController.class).getAllElementsSortable(pageable, searchBy, assembler)).withSelfRel().expand());
         return model;
     }
 
@@ -70,10 +80,13 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      * Endpoint that sends back all WorkingHours with partnerID
      */
     @GetMapping("/api/partners/{partnerId}/workinghours")
-    public CollectionModel<WorkingHourDTO> getPartnerWorkingHoursById(@PathVariable Long partnerId) {
+    public PagedModel<EntityModel<WorkingHourDTO>> getPartnerWorkingHoursById(@PathVariable Long partnerId,
+                                                                              Pageable pageable,
+                                                                              PagedResourcesAssembler<WorkingHourDTO> assembler) {
         Partner partner = partnerService.getElementById(partnerId);
-        CollectionModel<WorkingHourDTO> model = CollectionModel.of(partner.getWorkingHours().stream().map(this::convertToDTO).collect(Collectors.toList()));
-        model.add(linkTo(methodOn(WorkingHourController.class).getPartnerWorkingHoursById(partnerId)).withSelfRel());
+        Page<WorkingHour> page = new PageImpl<>(partner.getWorkingHours(), pageable, partner.getWorkingHours().size());
+        PagedModel<EntityModel<WorkingHourDTO>> model = super.getCollectionModel(page, assembler);
+        model.add(linkTo(methodOn(WorkingHourController.class).getPartnerWorkingHoursById(partnerId, pageable, assembler)).withSelfRel().expand());
         return model;
     }
 

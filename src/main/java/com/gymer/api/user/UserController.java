@@ -2,12 +2,21 @@ package com.gymer.api.user;
 
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.credential.CredentialController;
+import com.gymer.api.credential.entity.CredentialDTO;
+import com.gymer.api.employee.EmployeeService;
+import com.gymer.api.employee.entity.EmployeeDTO;
+import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.user.entity.User;
 import com.gymer.api.user.entity.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,9 +40,11 @@ public class UserController extends AbstractRestApiController<UserDTO, User, Lon
      */
     @Override
     @GetMapping("/api/users")
-    public CollectionModel<UserDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        CollectionModel<UserDTO> model = super.getAllElementsSortable(sort, searchBy);
-        model.add(linkTo(methodOn(UserController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+    public PagedModel<EntityModel<UserDTO>> getAllElementsSortable(Pageable pageable,
+                                                      @RequestParam(required = false, name = "contains") String searchBy,
+                                                      PagedResourcesAssembler<UserDTO> assembler) {
+        PagedModel<EntityModel<UserDTO>> model = super.getAllElementsSortable(pageable, searchBy, assembler);
+        model.add(linkTo(methodOn(UserController.class).getAllElementsSortable(pageable, searchBy, assembler)).withSelfRel().expand());
         return model;
     }
 
@@ -50,10 +61,12 @@ public class UserController extends AbstractRestApiController<UserDTO, User, Lon
      * Endpoint showing all users connected to slot with slotId
      */
     @GetMapping("/api/partners/{partnerId}/slots/{slotId}/users")
-    public CollectionModel<UserDTO> getUsersBySlotId(@PathVariable Long partnerId, @PathVariable Long slotId) {
-        List<User> users = (List<User>) ((UserService) service).findAllUsersSubmittedToSlot(slotId);
-        CollectionModel<UserDTO> model = super.getCollectionModel(users);
-        model.add(linkTo(methodOn(UserController.class).getUsersBySlotId(partnerId, slotId)).withSelfRel());
+    public PagedModel<EntityModel<UserDTO>> getUsersBySlotId(@PathVariable Long partnerId,
+                                                     @PathVariable Long slotId,
+                                                     Pageable pageable,
+                                                     PagedResourcesAssembler<UserDTO> assembler) {
+        PagedModel<EntityModel<UserDTO>> model = super.getCollectionModel(((UserService) service).findAllUsersSubmittedToSlot(pageable, slotId), assembler);
+        model.add(linkTo(methodOn(UserController.class).getUsersBySlotId(partnerId, slotId, pageable, assembler)).withSelfRel().expand());
         return model;
     }
 
