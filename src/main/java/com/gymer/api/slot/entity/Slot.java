@@ -3,7 +3,6 @@ package com.gymer.api.slot.entity;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.user.entity.User;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

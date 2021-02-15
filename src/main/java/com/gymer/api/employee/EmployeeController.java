@@ -5,14 +5,11 @@ import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.employee.entity.EmployeeDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.partner.entity.PartnerDTO;
-import lombok.Builder;
-import org.hibernate.mapping.Collection;
+import com.gymer.api.workinghours.WorkingHourController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,6 +17,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class EmployeeController extends AbstractRestApiController<EmployeeDTO, Employee, Long> {
@@ -38,7 +38,9 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
     @Override
     @GetMapping("/api/employees")
     public CollectionModel<EmployeeDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        return super.getAllElementsSortable(sort, searchBy);
+        CollectionModel<EmployeeDTO> model = super.getAllElementsSortable(sort, searchBy);
+        model.add(linkTo(methodOn(EmployeeController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+        return model;
     }
 
     /**
@@ -56,7 +58,9 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
     @GetMapping("/api/partners/{partnerId}/employees")
     public CollectionModel<EmployeeDTO> getAllEmployeesByPartnerId(@PathVariable Long partnerId) {
         Partner partner = partnerService.getElementById(partnerId);
-        return CollectionModel.of(partner.getEmployees().stream().map(this::convertToDTO).collect(Collectors.toList()));
+        CollectionModel<EmployeeDTO> model = CollectionModel.of(partner.getEmployees().stream().map(this::convertToDTO).collect(Collectors.toList()));
+        model.add(linkTo(methodOn(EmployeeController.class).getAllEmployeesByPartnerId(partnerId)).withSelfRel());
+        return model;
     }
 
     /**
@@ -133,15 +137,15 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
      */
     @Override
     public EmployeeDTO convertToDTO(Employee employee) {
+        Partner partner = partnerService.findPartnerContainingEmployee(employee);
         EmployeeDTO employeeDTO = new EmployeeDTO(employee);
 
-        Link selfLink = Link.of("/partners/" + employee.getId() + "/employees/" + employee.getId()).withSelfRel();
-        Links workingHoursLinks = Links.of(employee.getWorkingHours().stream().map(
-                workingHour -> Link.of("/partners/" + employee.getId() + "/employees/" + employee.getId() + "/workinghours/" + workingHour.getId()).withRel("workinghours")
-        ).collect(Collectors.toList()));
+        Link selfLink = linkTo(
+                methodOn(EmployeeController.class).getEmployeeById(partner.getId(), employee.getId())).withSelfRel();
+        Link workingHoursLink = linkTo(
+                methodOn(WorkingHourController.class).getEmployeeWorkingHoursById(partner.getId(), employee.getId())).withRel("workinghours");
 
-        employeeDTO.add(selfLink);
-        employeeDTO.add(workingHoursLinks);
+        employeeDTO.add(selfLink, workingHoursLink);
         return employeeDTO;
     }
 

@@ -12,7 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.annotation.Inherited;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class AddressController extends AbstractRestApiController<AddressDTO, Address, Long> {
@@ -31,7 +32,9 @@ public class AddressController extends AbstractRestApiController<AddressDTO, Add
     @Override
     @GetMapping("/api/addresses")
     public CollectionModel<AddressDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        return super.getAllElementsSortable(sort, searchBy);
+        CollectionModel<AddressDTO> model = super.getAllElementsSortable(sort, searchBy);
+        model.add(linkTo(methodOn(AddressController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+        return model;
     }
 
     /**

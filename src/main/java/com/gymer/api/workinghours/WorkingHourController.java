@@ -17,6 +17,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 public class WorkingHourController extends AbstractRestApiController<WorkingHourDTO, WorkingHour, Long> {
 
@@ -36,7 +39,9 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
     @Override
     @GetMapping("/api/workinghours")
     public CollectionModel<WorkingHourDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        return super.getAllElementsSortable(sort, searchBy);
+        CollectionModel<WorkingHourDTO> model = super.getAllElementsSortable(sort, searchBy);
+        model.add(linkTo(methodOn(WorkingHourController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+        return model;
     }
 
     /**
@@ -65,7 +70,9 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
     @GetMapping("/api/partners/{partnerId}/workinghours")
     public CollectionModel<WorkingHourDTO> getPartnerWorkingHoursById(@PathVariable Long partnerId) {
         Partner partner = partnerService.getElementById(partnerId);
-        return CollectionModel.of(partner.getWorkingHours().stream().map(this::convertToDTO).collect(Collectors.toList()));
+        CollectionModel<WorkingHourDTO> model = CollectionModel.of(partner.getWorkingHours().stream().map(this::convertToDTO).collect(Collectors.toList()));
+        model.add(linkTo(methodOn(WorkingHourController.class).getPartnerWorkingHoursById(partnerId)).withSelfRel());
+        return model;
     }
 
     /**

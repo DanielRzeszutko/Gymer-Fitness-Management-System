@@ -1,6 +1,7 @@
 package com.gymer.api.user;
 
 import com.gymer.api.common.controller.AbstractRestApiController;
+import com.gymer.api.credential.CredentialController;
 import com.gymer.api.user.entity.User;
 import com.gymer.api.user.entity.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping
 public class UserController extends AbstractRestApiController<UserDTO, User, Long> {
 
     @Autowired
@@ -26,7 +32,9 @@ public class UserController extends AbstractRestApiController<UserDTO, User, Lon
     @Override
     @GetMapping("/api/users")
     public CollectionModel<UserDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        return super.getAllElementsSortable(sort, searchBy);
+        CollectionModel<UserDTO> model = super.getAllElementsSortable(sort, searchBy);
+        model.add(linkTo(methodOn(UserController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
+        return model;
     }
 
     /**
@@ -36,6 +44,17 @@ public class UserController extends AbstractRestApiController<UserDTO, User, Lon
     @GetMapping("/api/users/{id}")
     public UserDTO getElementById(@PathVariable Long id) {
         return super.getElementById(id);
+    }
+
+    /**
+     * Endpoint showing all users connected to slot with slotId
+     */
+    @GetMapping("/api/partners/{partnerId}/slots/{slotId}/users")
+    public CollectionModel<UserDTO> getUsersBySlotId(@PathVariable Long partnerId, @PathVariable Long slotId) {
+        List<User> users = (List<User>) ((UserService) service).findAllUsersSubmittedToSlot(slotId);
+        CollectionModel<UserDTO> model = super.getCollectionModel(users);
+        model.add(linkTo(methodOn(UserController.class).getUsersBySlotId(partnerId, slotId)).withSelfRel());
+        return model;
     }
 
     /**
@@ -75,8 +94,11 @@ public class UserController extends AbstractRestApiController<UserDTO, User, Lon
     public UserDTO convertToDTO(User user) {
         UserDTO userDTO = new UserDTO(user);
 
-        Link selfLink = Link.of("/users/" + user.getId()).withSelfRel();
-        Link credentialLink = Link.of("/users/" + user.getId() + "/credentials/" + user.getCredential().getId()).withRel("credentials");
+        Link selfLink = linkTo(
+                methodOn(UserController.class).getElementById(user.getId())).withSelfRel();
+        Link credentialLink = linkTo(
+                methodOn(CredentialController.class).getCredentialFromUserById(user.getId(), user.getCredential().getId())).withRel("credentials");
+
         userDTO.add(selfLink, credentialLink);
 
         return userDTO;
