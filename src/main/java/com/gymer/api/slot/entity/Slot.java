@@ -40,13 +40,12 @@ public class Slot {
 	@OneToOne
 	private Employee employee;
 
-	@Enumerated(value = EnumType.STRING)
-	private SlotType slotType;
+	private String slotType;
 
 	@Column(columnDefinition = "boolean default true")
 	private boolean isPrivate = true;
 
-	public Slot(String description, Date date, Time startTime, Time endTime, List<User> users, Employee employee, SlotType slotType, boolean isPrivate) {
+	public Slot(String description, Date date, Time startTime, Time endTime, List<User> users, Employee employee, String slotType, boolean isPrivate) {
 		this.description = description;
 		this.date = date;
 		this.startTime = startTime;

@@ -18,7 +18,7 @@ public class SlotDTO extends RepresentationModel<SlotDTO> {
     private Date date;
     private Time startTime;
     private Time endTime;
-    private SlotType slotType;
+    private String slotType;
     private boolean isPrivate;
 
     public SlotDTO(Slot slot) {
