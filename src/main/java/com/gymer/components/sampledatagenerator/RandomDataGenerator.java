@@ -1,4 +1,4 @@
-package com.gymer.generator;
+package com.gymer.components.sampledatagenerator;
 
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.credential.entity.Credential;
