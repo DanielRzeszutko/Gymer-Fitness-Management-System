@@ -5,6 +5,7 @@ import com.gymer.api.credential.entity.Role;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
+import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.register.entity.UserRegisterDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,9 +32,12 @@ public class RegistrationController {
 
 	@PostMapping("/user")
 	@ResponseStatus(HttpStatus.OK)
-	public void registerUser(@RequestBody UserRegisterDetails userDetails) {
+	public JsonResponse registerUser(@RequestBody UserRegisterDetails userDetails) {
 		if (!userDetails.getPassword().equals(userDetails.getConfirmPassword())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+			return new JsonResponse("Passwords do not match.", true);
+		}
+		else if (userService.isUserExistsByEmail(userDetails.getEmail())) {
+			return new JsonResponse("Account with this email already exists.", true);
 		}
 		String codedPassword = passwordEncoder.encode(userDetails.getPassword());
 		Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
@@ -41,6 +45,7 @@ public class RegistrationController {
 				codedPassword, "", Role.USER, false, timestamp);
 		User user = new User("", "", credential);
 		userService.updateElement(user);
+			return new JsonResponse("Registered successfully.", false);
 
 	}
 
