@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -34,12 +35,16 @@ public class Credential {
     @Column(columnDefinition = "boolean default true")
     private boolean active;
 
-    public Credential(String email, String password, String phoneNumber, Role role, boolean active) {
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp registrationTime;
+
+    public Credential(String email, String password, String phoneNumber, Role role, boolean active, Timestamp registrationTime) {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.active = active;
+        this.registrationTime = registrationTime;
     }
 
     public Credential(CredentialDTO credentialDTO) {
@@ -49,6 +54,7 @@ public class Credential {
         this.phoneNumber = credentialDTO.getPhoneNumber();
         this.role = credentialDTO.getRole();
         this.active = credentialDTO.isActive();
+        this.registrationTime = credentialDTO.getRegistrationTime();
     }
 
 }

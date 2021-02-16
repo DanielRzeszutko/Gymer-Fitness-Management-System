@@ -1,9 +1,7 @@
 package com.gymer.security;
 
-import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.user.UserService;
-import com.gymer.api.user.entity.User;
 import com.gymer.security.entity.LoginCredentials;
 import com.gymer.security.entity.RegisterCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +41,7 @@ public class SessionController {
 
     @GetMapping("/api/me")
     public Object getActiveUser(@AuthenticationPrincipal Authentication authentication) {
-        if (authentication == null || authentication.getPrincipal() == null) return null;
-        Credential credential = (Credential) authentication.getPrincipal();
-        User user = userService.getByCredentials(credential).orElse(null);
-        if (user != null) return user;
-        return partnerService.getByCredentials(credential);
+        return null;
     }
 
 }

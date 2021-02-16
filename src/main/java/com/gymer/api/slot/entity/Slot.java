@@ -23,12 +23,15 @@ public class Slot {
 	private String description;
 
 	@NotNull
+	@Temporal(TemporalType.DATE)
 	private Date date;
 
 	@NotNull
+	@Temporal(TemporalType.TIME)
 	private Time startTime;
 
 	@NotNull
+	@Temporal(TemporalType.TIME)
 	private Time endTime;
 
 	@NotNull

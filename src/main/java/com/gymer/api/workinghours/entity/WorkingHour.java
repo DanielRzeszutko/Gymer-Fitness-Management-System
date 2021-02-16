@@ -3,10 +3,7 @@ package com.gymer.api.workinghours.entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Time;
 
 @Data
@@ -19,7 +16,11 @@ public class WorkingHour {
     private Long id;
 
     private Day day;
+
+    @Temporal(TemporalType.TIME)
     private Time startHour;
+
+    @Temporal(TemporalType.TIME)
     private Time endHour;
 
     public WorkingHour(Day day, Time startHour, Time endHour) {
