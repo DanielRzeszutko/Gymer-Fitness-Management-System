@@ -19,7 +19,6 @@ public class RegistrationController {
 	}
 
 	@PostMapping("/user")
-	@ResponseStatus(HttpStatus.OK)
 	public JsonResponse registerUser(@RequestBody RegistrationDetails registrationDetails) {
 		return registrationService.registerUser(registrationDetails);
 	}
