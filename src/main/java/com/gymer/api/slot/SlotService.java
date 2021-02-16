@@ -32,6 +32,9 @@ public class SlotService extends AbstractRestApiService<Slot, Long> {
         return ((SlotRepository) repository).findAllByEmployee_FirstNameOrEmployee_LastName(searchBy, searchBy, pageable);
     }
 
+    /**
+     * Service method that returns all slots for specific partner with pageable sorting properties
+     */
     public Page<Slot> findAllSlotsForPartner(Pageable pageable, Partner partner) {
         return new PageImpl<>(partner.getSlots(), pageable, partner.getSlots().size());
     }

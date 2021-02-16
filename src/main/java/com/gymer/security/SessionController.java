@@ -2,20 +2,17 @@ package com.gymer.security;
 
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.partner.PartnerService;
-import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
 import com.gymer.security.entity.LoginCredentials;
 import com.gymer.security.entity.RegisterCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 public class SessionController {

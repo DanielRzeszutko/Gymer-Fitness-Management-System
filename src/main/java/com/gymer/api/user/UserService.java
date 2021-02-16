@@ -47,9 +47,12 @@ public class UserService extends AbstractRestApiService<User, Long> {
         return ((UserRepository) repository).findByCredential(credential);
     }
 
+    /**
+     * Service method that returns all users connected with specific slot in database
+     */
     public Page<User> findAllUsersSubmittedToSlot(Pageable pageable, Long slotId) {
         Slot oldSlot = slotService.getElementById(slotId);
-        return new PageImpl<>(oldSlot.getUsers(), Pageable.unpaged(), oldSlot.getUsers().size());
+        return new PageImpl<>(oldSlot.getUsers(), pageable, oldSlot.getUsers().size());
     }
 
 }

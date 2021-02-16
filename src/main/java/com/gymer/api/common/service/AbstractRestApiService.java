@@ -39,6 +39,9 @@ public abstract class AbstractRestApiService<T, V> implements RestApiServiceBeha
         repository.save(element);
     }
 
+    /**
+     * Service method returning true if element with specified Id exist in database
+     */
     public boolean isElementExistById(V elementId) {
         return repository.existsById(elementId);
     }

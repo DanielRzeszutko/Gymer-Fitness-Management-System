@@ -32,6 +32,9 @@ public class EmployeeService extends AbstractRestApiService<Employee, Long> {
         return ((EmployeeRepository) repository).findAllByFirstNameContainsOrLastNameContains(searchBy, searchBy, pageable);
     }
 
+    /**
+     * Service method that returns collection of employees sorted with pageable object
+     */
     public Page<Employee> findAllEmployeesForPartner(Pageable pageable, Partner partner) {
         return new PageImpl<>(partner.getEmployees(), pageable, partner.getEmployees().size());
     }
