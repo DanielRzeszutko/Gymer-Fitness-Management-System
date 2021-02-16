@@ -3,7 +3,7 @@ package com.gymer.components.register.entity;
 import lombok.Data;
 
 @Data
-public class UserRegisterDetails {
+public class RegisterDetails {
 
     private String email;
     private String password;
