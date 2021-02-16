@@ -45,6 +45,8 @@ class ReservationService {
         if (userService.isUserExistsByEmail(details.getEmail())) return userAlreadyExistsResponse();
 
         User user = createGuestAccount(details);
+        if (slot.getUsers().contains(user)) return alreadyReservedResponse();
+
         return reserveUserInSlot(slot, user);
     }
 
