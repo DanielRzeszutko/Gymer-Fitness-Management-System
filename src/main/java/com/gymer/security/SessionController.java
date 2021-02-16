@@ -33,11 +33,11 @@ public class SessionController {
     public void login(@RequestBody LoginCredentials loginCredentials) {
 
     }
-
-    @PostMapping("/api/register")
-    public void register(@RequestBody RegisterCredentials registerCredentials) {
-
-    }
+//
+//    @PostMapping("/api/register")
+//    public void register(@RequestBody RegisterCredentials registerCredentials) {
+//
+//    }
 
     @GetMapping("/api/logout")
     public void logout() {

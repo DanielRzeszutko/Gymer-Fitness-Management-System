@@ -6,8 +6,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import javax.servlet.Filter;
 
@@ -21,11 +25,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.frontUrl = environment.getProperty("server.address.frontend");
     }
 
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails userDetails = User.withDefaultPasswordEncoder()
+                .username("test").password("test")
+                .roles("USER").build();
+        return new InMemoryUserDetailsManager(userDetails);
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests()
-                .anyRequest().permitAll();
+                .antMatchers("/api/partners", "/login").permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .formLogin();
     }
 
     @Bean
@@ -35,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(10);
     }
 
 }
