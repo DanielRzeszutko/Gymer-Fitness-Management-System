@@ -1,4 +1,4 @@
-package com.gymer.security.config;
+package com.gymer.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -16,4 +16,6 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
     Page<User> findAllByFirstNameContainsOrLastNameContains(String firstName, String lastName, Pageable pageable);
 
+    Optional<User> findByCredentialEmail(String email);
+
 }
