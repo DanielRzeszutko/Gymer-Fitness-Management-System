@@ -60,13 +60,6 @@ public class UserService extends AbstractRestApiService<User, Long> {
     }
 
     /**
-     * Service method that returns user from email address
-     */
-    public Page<User> getByEmailAndRoleUser(String email, Role role) {
-        return ((UserRepository) repository).findByCredentialEmailAndCredentialRole(email, role);
-    }
-
-    /**
      * Service method that returns true if email is existing in database and Role.USER is set up with this account
      * In another case when Role.GUEST is only in database new record is created
      */

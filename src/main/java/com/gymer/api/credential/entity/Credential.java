@@ -35,7 +35,6 @@ public class Credential {
     @Column(columnDefinition = "boolean default true")
     private boolean active;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp registrationTime;
 
     public Credential(String email, String password, String phoneNumber, Role role, boolean active, Timestamp registrationTime) {
