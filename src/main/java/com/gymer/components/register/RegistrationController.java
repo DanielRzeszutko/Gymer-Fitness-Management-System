@@ -44,10 +44,7 @@ public class RegistrationController {
 		User user = new User("", "", credential);
 		userService.updateElement(user);
 		return response;
-
 	}
-
-
 
 	@PostMapping("/partner")
 	public JsonResponse registerPartner(@RequestBody RegisterDetails registerDetails) {
@@ -58,8 +55,7 @@ public class RegistrationController {
 
 		Credential credential = getCredentialBy(registerDetails, Role.PARTNER);
 		Address address = new Address("","","","");
-		Address a = new Address();
-		Partner partner = new Partner("","","","","", credential, a,
+		Partner partner = new Partner("","","","","", credential, address,
 				Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 		partnerService.updateElement(partner);
 		return response;
@@ -78,8 +74,8 @@ public class RegistrationController {
 	private Credential getCredentialBy(RegisterDetails userDetails, Role role) {
 		String codedPassword = passwordEncoder.encode(userDetails.getPassword());
 		Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
-		Credential credential = new Credential(userDetails.getEmail(),
+		return new Credential(userDetails.getEmail(),
 				codedPassword, "", role, false, timestamp);
-		return credential;
 	}
+
 }
