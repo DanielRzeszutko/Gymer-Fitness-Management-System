@@ -79,11 +79,13 @@ class ReservationService {
     }
 
     private JsonResponse removeUserFromSlot(Slot slot, User user) {
-        if (isMoreThan24HBeforeVisit(slot)) return new JsonResponse("You can't drop visit now, too late.", true);
+        if (isMoreThan24HBeforeVisit(slot)) {
+            slot.getUsers().remove(user);
+            slotService.updateElement(slot);
+            return new JsonResponse("Successfully unreserved visit.", false);
+        }
 
-        slot.getUsers().remove(user);
-        slotService.updateElement(slot);
-        return new JsonResponse("Successfully unreserved visit.", false);
+        return new JsonResponse("You can't drop visit now, too late.", true);
     }
 
     private boolean isMoreThan24HBeforeVisit(Slot slot) {
