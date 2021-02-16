@@ -2,12 +2,17 @@ package com.gymer.api.user;
 
 import com.gymer.api.common.service.AbstractRestApiService;
 import com.gymer.api.credential.entity.Credential;
+import com.gymer.api.credential.entity.Role;
 import com.gymer.api.slot.SlotService;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -26,8 +31,8 @@ public class UserService extends AbstractRestApiService<User, Long> {
      * {@inheritDoc}
      */
     @Override
-    public Iterable<User> findAllContaining(Sort sort, String searchBy) {
-        return ((UserRepository) repository).findAllByFirstNameContainsOrLastNameContains(searchBy, searchBy, sort);
+    public Page<User> findAllContaining(Pageable pageable, String searchBy) {
+        return ((UserRepository) repository).findAllByFirstNameContainsOrLastNameContains(searchBy, searchBy, pageable);
     }
 
     /**
@@ -41,13 +46,26 @@ public class UserService extends AbstractRestApiService<User, Long> {
     /**
      * Service method responsible for obtaining user by credentials
      */
-    public Optional<User> getByCredentials(Credential credential) {
-        return ((UserRepository) repository).findByCredential(credential);
+    public User getByCredentials(Credential credential) {
+        return ((UserRepository) repository).findByCredential(credential).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Iterable<User> findAllUsersSubmittedToSlot(Long slotId) {
+    /**
+     * Service method that returns all users connected with specific slot in database
+     */
+    public Page<User> findAllUsersSubmittedToSlot(Pageable pageable, Long slotId) {
         Slot oldSlot = slotService.getElementById(slotId);
-        return oldSlot.getUsers();
+        return new PageImpl<>(oldSlot.getUsers(), pageable, oldSlot.getUsers().size());
+    }
+
+    /**
+     * Service method that returns true if email is existing in database and Role.USER is set up with this account
+     * In another case when Role.GUEST is only in database new record is created
+     */
+    public boolean isUserExistsByEmail(String email) {
+        Optional<User> user = ((UserRepository) repository).findByCredentialEmail(email);
+        return user.isPresent() && user.get().getCredential().getRole().equals(Role.USER);
     }
 
 }

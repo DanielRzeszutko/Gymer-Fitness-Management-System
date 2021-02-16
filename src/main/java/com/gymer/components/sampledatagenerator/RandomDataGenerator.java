@@ -1,4 +1,4 @@
-package com.gymer.generator;
+package com.gymer.components.sampledatagenerator;
 
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.credential.entity.Credential;
@@ -15,9 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Component
@@ -149,7 +153,8 @@ public class RandomDataGenerator {
     }
 
     private Credential getRandomCredential(String name, String secondName, Role role) {
-        return new Credential(getRandomEmail(name, secondName), getRandomPassword(), getRandomPhoneNumber(), role, true);
+        Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
+        return new Credential(getRandomEmail(name, secondName), getRandomPassword(), getRandomPhoneNumber(), role, true, timestamp);
     }
 
     private String createRandomWord(int length) {

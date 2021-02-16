@@ -7,16 +7,17 @@ import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.workinghours.WorkingHourController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -37,10 +38,10 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
      */
     @Override
     @GetMapping("/api/employees")
-    public CollectionModel<EmployeeDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        CollectionModel<EmployeeDTO> model = super.getAllElementsSortable(sort, searchBy);
-        model.add(linkTo(methodOn(EmployeeController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
-        return model;
+    public PagedModel<EntityModel<EmployeeDTO>> getAllElementsSortable(Pageable pageable,
+                                                          @RequestParam(required = false, name = "contains") String searchBy,
+                                                          PagedResourcesAssembler<EmployeeDTO> assembler) {
+        return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
     /**
@@ -56,11 +57,11 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
      * Endpoint responsible for obtaining list of employees from partner
      */
     @GetMapping("/api/partners/{partnerId}/employees")
-    public CollectionModel<EmployeeDTO> getAllEmployeesByPartnerId(@PathVariable Long partnerId) {
+    public PagedModel<EntityModel<EmployeeDTO>> getAllEmployeesByPartnerId(@PathVariable Long partnerId,
+                                                                           Pageable pageable,
+                                                                           PagedResourcesAssembler<EmployeeDTO> assembler) {
         Partner partner = partnerService.getElementById(partnerId);
-        CollectionModel<EmployeeDTO> model = CollectionModel.of(partner.getEmployees().stream().map(this::convertToDTO).collect(Collectors.toList()));
-        model.add(linkTo(methodOn(EmployeeController.class).getAllEmployeesByPartnerId(partnerId)).withSelfRel());
-        return model;
+        return super.getCollectionModel(((EmployeeService) service).findAllEmployeesForPartner(pageable, partner), assembler);
     }
 
     /**

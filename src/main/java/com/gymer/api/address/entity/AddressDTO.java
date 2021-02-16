@@ -1,6 +1,5 @@
 package com.gymer.api.address.entity;
 
-import com.gymer.api.credential.entity.CredentialDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.hateoas.RepresentationModel;

@@ -1,19 +1,18 @@
-package com.gymer.security.register;
+package com.gymer.components.register;
 
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.Role;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
-import com.gymer.security.entity.RegisterCredentials;
+import com.gymer.components.register.entity.UserRegisterDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.sql.Timestamp;
 
 @RestController
 @RequestMapping("/registration")
@@ -31,21 +30,22 @@ public class RegistrationController {
 	}
 
 	@PostMapping("/user")
-	public void registerUser(@RequestBody RegisterCredentials registerCredentials) {
-		if (!registerCredentials.getPassword().equals(registerCredentials.getConfirmPassword())) {
+	@ResponseStatus(HttpStatus.OK)
+	public void registerUser(@RequestBody UserRegisterDetails userDetails) {
+		if (!userDetails.getPassword().equals(userDetails.getConfirmPassword())) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
-
-		Credential credential = new Credential(registerCredentials.getEmail(),
-				passwordEncoder.encode(registerCredentials.getPassword()),
-				"", Role.USER, false);
+		String codedPassword = passwordEncoder.encode(userDetails.getPassword());
+		Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
+		Credential credential = new Credential(userDetails.getEmail(),
+				codedPassword, "", Role.USER, false, timestamp);
 		User user = new User("", "", credential);
 		userService.updateElement(user);
 
 	}
 
 	@PostMapping("/partner")
-	public void registerPartner(@RequestBody RegisterCredentials registerCredentials) {
+	public void registerPartner(@RequestBody UserRegisterDetails registerCredentials) {
 
 
 	}

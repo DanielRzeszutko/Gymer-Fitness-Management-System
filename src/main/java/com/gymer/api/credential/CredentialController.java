@@ -5,14 +5,14 @@ import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.user.UserController;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
-import com.gymer.api.workinghours.entity.WorkingHourDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -38,10 +38,10 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
      */
     @Override
     @GetMapping("/api/credentials")
-    public CollectionModel<CredentialDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        CollectionModel<CredentialDTO> model = super.getAllElementsSortable(sort, searchBy);
-        model.add(linkTo(methodOn(CredentialController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
-        return model;
+    public PagedModel<EntityModel<CredentialDTO>> getAllElementsSortable(Pageable pageable,
+                                                                 @RequestParam(required = false, name = "contains") String searchBy,
+                                                                 PagedResourcesAssembler<CredentialDTO> assembler) {
+        return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
     /**

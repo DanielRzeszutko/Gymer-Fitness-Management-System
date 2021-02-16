@@ -3,14 +3,14 @@ package com.gymer.api.address;
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.address.entity.AddressDTO;
 import com.gymer.api.common.controller.AbstractRestApiController;
-import com.gymer.api.credential.CredentialController;
-import com.gymer.api.credential.entity.CredentialDTO;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,10 +34,10 @@ public class AddressController extends AbstractRestApiController<AddressDTO, Add
      */
     @Override
     @GetMapping("/api/addresses")
-    public CollectionModel<AddressDTO> getAllElementsSortable(Sort sort, @RequestParam(required = false, name = "contains") String searchBy) {
-        CollectionModel<AddressDTO> model = super.getAllElementsSortable(sort, searchBy);
-        model.add(linkTo(methodOn(AddressController.class).getAllElementsSortable(sort, searchBy)).withSelfRel().expand());
-        return model;
+    public PagedModel<EntityModel<AddressDTO>> getAllElementsSortable(Pageable pageable,
+                                                   @RequestParam(required = false, name = "contains") String searchBy,
+                                                   PagedResourcesAssembler<AddressDTO> assembler) {
+        return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
     /**
