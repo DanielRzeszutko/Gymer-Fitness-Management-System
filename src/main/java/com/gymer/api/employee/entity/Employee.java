@@ -38,7 +38,7 @@ public class Employee {
     }
 
     public Employee(EmployeeDTO employeeDTO) {
-        this.id = employeeDTO.getId();
+        if (employeeDTO.getId() != null) this.id = employeeDTO.getId();
         this.firstName = employeeDTO.getFirstName();
         this.lastName = employeeDTO.getLastName();
         this.description = employeeDTO.getDescription();
