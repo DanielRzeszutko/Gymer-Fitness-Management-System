@@ -2,7 +2,7 @@ package com.gymer.components.login;
 
 import com.gymer.api.credential.CredentialService;
 import com.gymer.api.credential.entity.Credential;
-import com.gymer.components.login.entity.LoginDetails;
+import com.gymer.components.login.entity.AccountDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,8 +19,9 @@ public class LoginService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
 		Credential credential = credentialService.getCredentialByEmail(email);
-		return new LoginDetails(credential);
+		return new AccountDetails(credential);
 	}
 
 }
