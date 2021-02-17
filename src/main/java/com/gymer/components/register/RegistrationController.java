@@ -18,6 +18,11 @@ public class RegistrationController {
 		this.registrationService = registrationService;
 	}
 
+	@GetMapping
+	public String getRegisterForm(){
+		return "register form";
+	}
+
 	@PostMapping("/user")
 	public JsonResponse registerUser(@RequestBody RegistrationDetails registrationDetails) {
 		return registrationService.registerUser(registrationDetails);
