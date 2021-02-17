@@ -11,6 +11,8 @@ import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
 import com.gymer.api.workinghours.entity.Day;
 import com.gymer.api.workinghours.entity.WorkingHour;
+import com.gymer.components.common.entity.MailingDetails;
+import com.gymer.components.common.mailing.MailingComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

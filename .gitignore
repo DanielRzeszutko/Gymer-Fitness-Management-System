@@ -33,11 +33,12 @@ build/
 .vscode/
 
 ### User
-src/main/resources/application.properties
 mvnw
 mvnw.cmd
 /.mvn/wrapper/maven-wrapper.jar
 /.mvn/wrapper/maven-wrapper.properties
 /.mvn/wrapper/MavenWrapperDownloader.java
-src/main/resources/sampleData
 
+### Custom
+src/main/resources/sampleData
+src/main/resources/application.properties
