@@ -1,0 +1,189 @@
+package com.gymer.api.employee;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gymer.api.employee.entity.Employee;
+import com.gymer.api.employee.entity.EmployeeDTO;
+import com.gymer.api.partner.PartnerService;
+import com.gymer.api.partner.entity.Partner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+public class EmployeeControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private EmployeeService employeeService;
+
+    @MockBean
+    private PartnerService partnerService;
+
+    @InjectMocks
+    private EmployeeController employeeController;
+
+    private final Pageable pageable = PageRequest.of(0, 20);
+    private final Page<Employee> page = getTestPageData();
+
+    @Test
+    public void contextLoads() {
+        assertThat(employeeController).isNotNull();
+    }
+
+    @Test
+    public void should_returnOkStatus_when_tryingToGetPageWithRecords() throws Exception {
+        Partner partner = new Partner("", "", "", "", "", null, null,
+                page.getContent(), Collections.emptyList(), Collections.emptyList());
+        partner.setId(1L);
+
+        for (Employee employee : page.getContent()) {
+            given(partnerService.findPartnerContainingEmployee(employee)).willReturn(partner);
+        }
+        given(employeeService.findAllContaining(pageable, "")).willReturn(page);
+
+        mockMvc.perform(get("/api/employees").header("Origin", "*").param("contains", "")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_returnOkStatus_when_tryingToGetPageWithRecordsWithoutSearchBy() throws Exception {
+        Partner partner = new Partner("", "", "", "", "", null, null,
+                page.getContent(), Collections.emptyList(), Collections.emptyList());
+        partner.setId(1L);
+
+        for (Employee employee : page.getContent()) {
+            given(partnerService.findPartnerContainingEmployee(employee)).willReturn(partner);
+        }
+        given(employeeService.getAllElements(pageable)).willReturn(page);
+
+        mockMvc.perform(get("/api/employees").header("Origin", "*")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_returnOKStatus_when_tryingToGetSpecificRecordWithId() throws Exception {
+        Employee employee = new Employee("", "", "", "", Collections.emptyList());
+        employee.setId(1L);
+        Partner partner = new Partner("", "", "", "", "", null, null,
+                Collections.singletonList(employee), Collections.emptyList(), Collections.emptyList());
+        partner.setId(1L);
+
+        given(partnerService.findPartnerContainingEmployee(employee)).willReturn(partner);
+        given(employeeService.getElementById(1L)).willReturn(employee);
+
+        mockMvc.perform(get("/api/employees/1").header("Origin", "*")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_returnNotFoundStatus_when_tryingToGetSpecificRecordWithNonExistingId() throws Exception {
+        given(employeeService.getElementById(-1L)).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        mockMvc.perform(get("/api/employees/-1").header("Origin", "*")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void should_returnOkStatus_when_tryingToGetSpecificRecordForPartner() throws Exception {
+        Employee employee = new Employee("", "", "", "", Collections.emptyList());
+        employee.setId(1L);
+        Partner partner = new Partner("", "", "", "", "", null, null,
+                Collections.singletonList(employee), Collections.emptyList(), Collections.emptyList());
+        partner.setId(1L);
+        given(employeeService.getElementById(1L)).willReturn(employee);
+        given(partnerService.findPartnerContainingEmployee(employee)).willReturn(partner);
+        given(partnerService.getElementById(1L)).willReturn(partner);
+
+        mockMvc.perform(get("/api/partners/1/employees/1").header("Origin", "*")).andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_returnOkStatus_when_tryingToUpdateExistingEmployeeForPartner() throws Exception {
+        Employee employee = new Employee("", "", "", "", Collections.emptyList());
+        employee.setId(1L);
+        Partner partner = new Partner("", "", "", "", "", null, null,
+                Collections.singletonList(employee), Collections.emptyList(), Collections.emptyList());
+        given(employeeService.getElementById(1L)).willReturn(employee);
+        given(partnerService.findPartnerContainingEmployee(employee)).willReturn(partner);
+        given(partnerService.getElementById(1L)).willReturn(partner);
+        EmployeeDTO employeeDTO = new EmployeeDTO(employee);
+
+        mockMvc.perform(put("/api/partners/1/employees/1")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(employeeDTO))
+                .header("Origin", "*"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void should_returnConflictStatus_when_tryingToUpdateEmployeeWhenUrlIsNotValidForPartner() throws Exception {
+        Employee employee = new Employee("", "", "", "", Collections.emptyList());
+        employee.setId(1L);
+        Partner partner = new Partner("", "", "", "", "", null, null,
+                Collections.singletonList(employee), Collections.emptyList(), Collections.emptyList());
+        given(employeeService.getElementById(1L)).willReturn(employee);
+        given(partnerService.findPartnerContainingEmployee(employee)).willReturn(partner);
+        given(partnerService.getElementById(1L)).willReturn(partner);
+        EmployeeDTO employeeDTO = new EmployeeDTO(employee);
+
+        mockMvc.perform(put("/api/partners/1/employees/2")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(employeeDTO))
+                .header("Origin", "*"))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    public void should_returnBadRequestStatus_when_tryingToUpdateEmployeeWhenObjectIdNotEqualToUrlIdForPartner() throws Exception {
+        Employee employee = new Employee("", "", "", "", Collections.emptyList());
+        employee.setId(1L);
+        Employee employee2 = new Employee("", "", "", "", Collections.emptyList());
+        employee2.setId(2L);
+        Partner partner = new Partner("", "", "", "", "", null, null,
+                Collections.singletonList(employee2), Collections.emptyList(), Collections.emptyList());
+        given(employeeService.getElementById(1L)).willReturn(employee);
+        given(partnerService.findPartnerContainingEmployee(employee)).willReturn(partner);
+        given(partnerService.getElementById(1L)).willReturn(partner);
+        EmployeeDTO employeeDTO = new EmployeeDTO(employee);
+
+        mockMvc.perform(put("/api/partners/1/employees/1")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(employeeDTO))
+                .header("Origin", "*"))
+                .andExpect(status().isBadRequest());
+    }
+
+    private Page<Employee> getTestPageData() {
+        List<Employee> employees = new LinkedList<>();
+        employees.add(new Employee("", "", "", "", Collections.emptyList()));
+        employees.add(new Employee("", "", "", "", Collections.emptyList()));
+        employees.add(new Employee("", "", "", "", Collections.emptyList()));
+        return new PageImpl<>(employees);
+    }
+
+}

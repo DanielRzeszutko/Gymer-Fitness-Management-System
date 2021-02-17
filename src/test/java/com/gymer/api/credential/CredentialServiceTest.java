@@ -25,19 +25,14 @@ import static org.mockito.BDDMockito.given;
 public class CredentialServiceTest {
 
     @Mock
-    private final Timestamp timestamp = Timestamp.valueOf("2021-10-20 10:15:10");
-
-    @Mock
-    private final Pageable pageable = PageRequest.of(0, 10);
-
-    @Mock
-    private final Page<Credential> page = getTestPageData();
-
-    @Mock
     private CredentialRepository credentialRepository;
 
     @InjectMocks
     private CredentialService credentialService;
+
+    private final Pageable pageable = PageRequest.of(0, 10);
+    private final Page<Credential> page = getTestPageData();
+    private final Timestamp timestamp = Timestamp.valueOf("2021-10-20 10:15:10");
 
     @Test
     public void should_returnPageOfCredentials_when_findAllContainingWithValidData() {

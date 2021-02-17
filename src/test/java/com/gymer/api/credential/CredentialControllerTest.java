@@ -85,6 +85,7 @@ public class CredentialControllerTest {
     public void should_returnOKStatus_when_tryingToGetSpecificRecordWithId() throws Exception {
         Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
         credential.setId(1L);
+
         given(credentialService.getElementById(1L)).willReturn(credential);
 
         mockMvc.perform(get("/api/credentials/1").header("Origin", "*")).andExpect(status().isOk());

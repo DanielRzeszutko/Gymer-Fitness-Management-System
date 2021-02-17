@@ -23,16 +23,13 @@ import static org.mockito.BDDMockito.given;
 public class AddressServiceTest {
 
     @Mock
-    private final Pageable pageable = PageRequest.of(0, 10);
-
-    @Mock
-    private final Page<Address> page = getTestPageData();
-
-    @Mock
     private AddressRepository addressRepository;
 
     @InjectMocks
     private AddressService addressService;
+
+    private final Pageable pageable = PageRequest.of(0, 10);
+    private final Page<Address> page = getTestPageData();
 
     @Test
     public void should_returnPageOfAddresses_when_findAllContainingWithValidData() {

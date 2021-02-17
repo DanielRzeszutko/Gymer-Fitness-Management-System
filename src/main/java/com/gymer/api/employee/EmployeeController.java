@@ -48,9 +48,9 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
      * {@inheritDoc}
      */
     @Override
-    @GetMapping("/api/employees/{addressId}")
-    public EmployeeDTO getElementById(@PathVariable Long addressId) {
-        return super.getElementById(addressId);
+    @GetMapping("/api/employees/{id}")
+    public EmployeeDTO getElementById(@PathVariable Long id) {
+        return super.getElementById(id);
     }
 
     /**
@@ -98,6 +98,7 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
         for (Employee employee : partner.getEmployees()) {
             if (employee.getId().equals(employeeId)) {
                 service.updateElement(convertToEntity(employeeDTO));
+                throw new ResponseStatusException(HttpStatus.OK);
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -113,6 +114,7 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
         for (Employee employee : employees) {
             if (employee.getId().equals(employeeId)){
                 ((EmployeeService) service).deleteEmployee(employee);
+                throw new ResponseStatusException(HttpStatus.OK);
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
