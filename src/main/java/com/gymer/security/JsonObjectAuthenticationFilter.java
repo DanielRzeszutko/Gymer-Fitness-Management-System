@@ -1,0 +1,75 @@
+package com.gymer.security;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gymer.components.login.entity.LoginDetails;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class JsonObjectAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+//	private final ObjectMapper objectMapper = new ObjectMapper();
+//
+//	@Override
+//	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+//		try {
+//			BufferedReader reader = request.getReader();
+//			StringBuilder sb = new StringBuilder();
+//			String line;
+//			while ((line = reader.readLine()) != null) {
+//				sb.append(line);
+//			}
+//			LoginDetails authRequest = objectMapper.readValue(sb.toString(), LoginDetails.class);
+//
+//			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+//					authRequest.getEmail(), authRequest.getPassword()
+//			);
+//			setDetails(request, token);
+//			return this.getAuthenticationManager().authenticate(token);
+//		} catch (IOException e) {
+//			throw new IllegalArgumentException(e.getMessage());
+//		}
+//	}
+
+
+	@Override
+	public Authentication attemptAuthentication(HttpServletRequest request,
+												HttpServletResponse response) throws AuthenticationException {
+		try {
+			// Get username & password from request (JSON) any way you like
+			LoginDetails authRequest = new ObjectMapper().readValue(request.getInputStream(), LoginDetails.class);
+
+			Authentication auth = new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword());
+
+			return getAuthenticationManager().authenticate(auth);
+		} catch (Exception exp) {
+			throw new RuntimeException(exp);
+		}
+	}
+
+	@Override
+	protected void successfulAuthentication(HttpServletRequest request,
+											HttpServletResponse response, FilterChain chain, Authentication authResult)
+			throws IOException, ServletException {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("Authentication success. Updating SecurityContextHolder to contain: "
+					+ authResult);
+		}
+
+		// custom code
+
+		SecurityContextHolder.getContext().setAuthentication(authResult);
+	}
+
+}
