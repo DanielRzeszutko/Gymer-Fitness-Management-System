@@ -12,16 +12,16 @@ import java.sql.Time;
 @AllArgsConstructor
 public class WorkingHourDTO extends RepresentationModel<WorkingHourDTO> {
 
-	private Long id;
-	private Day day;
-	private Time startHour;
-	private Time endHour;
+    private Long id;
+    private Day day;
+    private Time startHour;
+    private Time endHour;
 
-	public WorkingHourDTO(WorkingHour workingHour) {
-		this.id = workingHour.getId();
-		this.day = workingHour.getDay();
-		this.startHour = workingHour.getStartHour();
-		this.endHour = workingHour.getEndHour();
-	}
+    public WorkingHourDTO(WorkingHour workingHour) {
+        this.id = workingHour.getId();
+        this.day = workingHour.getDay();
+        this.startHour = workingHour.getStartHour();
+        this.endHour = workingHour.getEndHour();
+    }
 
 }

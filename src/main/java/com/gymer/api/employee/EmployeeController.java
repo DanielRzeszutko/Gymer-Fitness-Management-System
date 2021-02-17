@@ -39,8 +39,8 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
     @Override
     @GetMapping("/api/employees")
     public PagedModel<EntityModel<EmployeeDTO>> getAllElementsSortable(Pageable pageable,
-                                                          @RequestParam(required = false, name = "contains") String searchBy,
-                                                          PagedResourcesAssembler<EmployeeDTO> assembler) {
+                                                                       @RequestParam(required = false, name = "contains") String searchBy,
+                                                                       PagedResourcesAssembler<EmployeeDTO> assembler) {
         return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
@@ -112,7 +112,7 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
         Partner partner = partnerService.getElementById(partnerId);
         List<Employee> employees = partner.getEmployees();
         for (Employee employee : employees) {
-            if (employee.getId().equals(employeeId)){
+            if (employee.getId().equals(employeeId)) {
                 ((EmployeeService) service).deleteEmployee(employee);
                 throw new ResponseStatusException(HttpStatus.OK);
             }

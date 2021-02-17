@@ -39,8 +39,8 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
     @Override
     @GetMapping("/api/credentials")
     public PagedModel<EntityModel<CredentialDTO>> getAllElementsSortable(Pageable pageable,
-                                                                 @RequestParam(required = false, name = "contains") String searchBy,
-                                                                 PagedResourcesAssembler<CredentialDTO> assembler) {
+                                                                         @RequestParam(required = false, name = "contains") String searchBy,
+                                                                         PagedResourcesAssembler<CredentialDTO> assembler) {
         return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 

@@ -14,7 +14,8 @@ public class EmployeeService extends AbstractRestApiService<Employee, Long> {
 
     @Autowired
     public EmployeeService(EmployeeRepository repository) {
-        super(repository);;
+        super(repository);
+        ;
     }
 
     /**
