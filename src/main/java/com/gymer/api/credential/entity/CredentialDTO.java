@@ -19,6 +19,7 @@ public class CredentialDTO extends RepresentationModel<CredentialDTO> {
     private String phoneNumber;
     private Role role;
     private boolean active;
+    private boolean enabled;
     private Timestamp registrationTime;
 
     public CredentialDTO(Credential credential) {
@@ -28,6 +29,7 @@ public class CredentialDTO extends RepresentationModel<CredentialDTO> {
         this.phoneNumber = credential.getPhoneNumber();
         this.role = credential.getRole();
         this.active = credential.isActive();
+        this.enabled = credential.isEnabled();
         this.registrationTime = credential.getRegistrationTime();
     }
 

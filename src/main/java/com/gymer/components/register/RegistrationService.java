@@ -72,7 +72,7 @@ public class RegistrationService {
 		String codedPassword = passwordEncoder.encode(userDetails.getPassword());
 		Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
 		return new Credential(userDetails.getEmail(),
-				codedPassword, "", role, false, timestamp);
+				codedPassword, "", role, true, false, timestamp);
 	}
 
 }

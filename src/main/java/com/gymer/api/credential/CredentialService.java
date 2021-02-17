@@ -34,7 +34,7 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
     public Credential getCredentialFromEmailPhoneAndRoleOrCreateNewOne(String email, String phoneNumber, Role role) {
         Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
         return ((CredentialRepository) repository).findByEmailAndPhoneNumberAndRole(email, phoneNumber, role).orElse(
-                new Credential(email, null, phoneNumber, Role.GUEST, false, timestamp)
+                new Credential(email, null, phoneNumber, Role.GUEST, false, true, timestamp)
         );
     }
 
