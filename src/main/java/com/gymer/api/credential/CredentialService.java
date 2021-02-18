@@ -50,7 +50,6 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
      */
 
     public Credential getCredentialByEmail(String email) {
-
         return ((CredentialRepository) repository).getCredentialByEmail(email).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

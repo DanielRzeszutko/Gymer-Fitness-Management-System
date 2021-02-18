@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class LoginService implements UserDetailsService {
@@ -19,9 +20,13 @@ public class LoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        try {
+            Credential credential = credentialService.getCredentialByEmail(email);
+            return new AccountDetails(credential);
+        } catch (ResponseStatusException e) {
+            throw new UsernameNotFoundException("Username not found :)");
+        }
 
-        Credential credential = credentialService.getCredentialByEmail(email);
-        return new AccountDetails(credential);
     }
 
 }
