@@ -17,6 +17,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -63,6 +64,7 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      * Endpoint that add new workingHour to partner by partnerID
      */
     @PostMapping("/api/partners/{partnerId}/workinghours")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and #accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void addNewWorkingHourToPartner(@RequestBody WorkingHourDTO workingHourDTO, @PathVariable Long partnerId) {
         Partner partner = partnerService.getElementById(partnerId);
         WorkingHour newWorkingHour = convertToEntity(workingHourDTO);
@@ -97,6 +99,7 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      * Endpoint that receives WorkingHourDTO body and change all details inside database
      */
     @PutMapping("/api/partners/{partnerId}/workinghours/{workingHourId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void updatePartnerWorkingHours(@RequestBody WorkingHourDTO workingHourDTO,
                                           @PathVariable Long partnerId,
                                           @PathVariable Long workingHourId) {
@@ -114,6 +117,7 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      * Endpoint that removes workingHour from partner
      */
     @DeleteMapping("/api/partners/{partnerId}/workinghours/{workingHourId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void deleteWorkingHourFromPartner(@PathVariable Long partnerId, @PathVariable Long workingHourId) {
         Partner partner = partnerService.getElementById(partnerId);
         WorkingHour workingHour = service.getElementById(workingHourId);
@@ -126,6 +130,7 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      * Endpoint that add new workingHour to employee by partnerID and employeeID
      */
     @PostMapping("/api/partners/{partnerId}/employees/{employeeId}/workinghours")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void addNewWorkingHourToEmployee(@RequestBody WorkingHourDTO workingHourDTO,
                                             @PathVariable Long partnerId,
                                             @PathVariable Long employeeId) {
@@ -173,6 +178,7 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      * Endpoint that receives WorkingHourDTO body and change all details inside database
      */
     @PutMapping("/api/partners/{partnerId}/employees/{employeeId}/workinghours/{workingHourId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void updateEmployeeWorkingHours(@RequestBody WorkingHourDTO workingHourDTO,
                                            @PathVariable Long partnerId,
                                            @PathVariable Long employeeId,
@@ -194,6 +200,7 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
      * Endpoint that removes workingHour from employee
      */
     @DeleteMapping("/api/partners/{partnerId}/employees/{employeeId}/workinghours/{workingHourId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void deleteWorkingHourFromEmployee(@PathVariable Long partnerId,
                                               @PathVariable Long employeeId,
                                               @PathVariable Long workingHourId) {

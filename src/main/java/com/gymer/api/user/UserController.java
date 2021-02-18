@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -61,6 +62,7 @@ public class UserController extends AbstractRestApiController<UserDTO, User, Lon
      * Endpoint responsible for update user details
      */
     @PutMapping("/api/users/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @accountOwnerValidator.isOwnerLoggedIn(#userId))")
     public void updateUser(@RequestBody UserDTO userDTO, @PathVariable Long userId) {
         if (!userDTO.getId().equals(userId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
         User newUser = convertToEntity(userDTO);
@@ -71,6 +73,7 @@ public class UserController extends AbstractRestApiController<UserDTO, User, Lon
      * Endpoint responsible for changing status of user to deactivated
      */
     @DeleteMapping("/api/users/{userId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @accountOwnerValidator.isOwnerLoggedIn(#userId))")
     public void deleteUser(@PathVariable Long userId) {
         User user = service.getElementById(userId);
         ((UserService) service).deleteUser(user);

@@ -12,6 +12,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -65,6 +66,7 @@ public class AddressController extends AbstractRestApiController<AddressDTO, Add
      * Endpoint that receives AddressDTO body and change all details inside database
      */
     @PutMapping("/api/partners/{partnerId}/addresses/{addressId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void updateAddress(@RequestBody AddressDTO addressDTO, @PathVariable Long partnerId, @PathVariable Long addressId) {
         Partner partner = partnerService.getElementById(partnerId);
         if (!addressDTO.getId().equals(addressId)) {

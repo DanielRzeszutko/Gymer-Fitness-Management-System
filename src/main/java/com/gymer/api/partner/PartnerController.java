@@ -15,6 +15,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -53,6 +54,7 @@ public class PartnerController extends AbstractRestApiController<PartnerDTO, Par
      * Endpoint responsible for updating partner details
      */
     @PutMapping("/api/partners/{partnerId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void updatePartner(@RequestBody PartnerDTO partnerDTO, @PathVariable Long partnerId) {
         if (!partnerDTO.getId().equals(partnerId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
         Partner newPartner = convertToEntity(partnerDTO);
@@ -63,6 +65,7 @@ public class PartnerController extends AbstractRestApiController<PartnerDTO, Par
      * Endpoint responsible for deleting partner from application by changing status to deactivated
      */
     @DeleteMapping("/api/partners/{partnerId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void deletePartner(@PathVariable Long partnerId) {
         Partner partner = service.getElementById(partnerId);
         ((PartnerService) service).deletePartner(partner);

@@ -14,6 +14,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -69,6 +70,7 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
      * Endpoint that receives CredentialDTO body and change all details inside database
      */
     @PutMapping("/api/partners/{partnerId}/credentials/{credentialId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void updateCredentialFromPartnerById(@RequestBody CredentialDTO credentialDTO, @PathVariable Long partnerId, @PathVariable Long credentialId) {
         Partner partner = partnerService.getElementById(partnerId);
         if (!credentialDTO.getId().equals(credentialId)) {
@@ -96,6 +98,7 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
      * Endpoint that receives CredentialDTO body and change all details inside database
      */
     @PutMapping("/api/users/{userId}/credentials/{credentialId}")
+    @PreAuthorize("hasRole('ADMIN') or ((hasRole('USER') and @accountOwnerValidator.isOwnerLoggedIn(#userId)))")
     public void updateCredentialFromUserById(@RequestBody CredentialDTO credentialDTO, @PathVariable Long userId, @PathVariable Long credentialId) {
         User user = userService.getElementById(userId);
         if (!credentialDTO.getId().equals(credentialId)) {
