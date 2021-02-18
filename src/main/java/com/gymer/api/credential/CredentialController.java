@@ -39,8 +39,8 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
     @Override
     @GetMapping("/api/credentials")
     public PagedModel<EntityModel<CredentialDTO>> getAllElementsSortable(Pageable pageable,
-                                                                 @RequestParam(required = false, name = "contains") String searchBy,
-                                                                 PagedResourcesAssembler<CredentialDTO> assembler) {
+                                                                         @RequestParam(required = false, name = "contains") String searchBy,
+                                                                         PagedResourcesAssembler<CredentialDTO> assembler) {
         return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
@@ -71,12 +71,13 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
     @PutMapping("/api/partners/{partnerId}/credentials/{credentialId}")
     public void updateCredentialFromPartnerById(@RequestBody CredentialDTO credentialDTO, @PathVariable Long partnerId, @PathVariable Long credentialId) {
         Partner partner = partnerService.getElementById(partnerId);
+        if (!credentialDTO.getId().equals(credentialId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
         if (!partner.getCredential().getId().equals(credentialId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        Credential credential = convertToEntity(credentialDTO);
-        credential.setId(credentialId);
-        service.updateElement(credential);
+        updateCredentialInsideDatabase(credentialDTO);
     }
 
     /**
@@ -97,12 +98,13 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
     @PutMapping("/api/users/{userId}/credentials/{credentialId}")
     public void updateCredentialFromUserById(@RequestBody CredentialDTO credentialDTO, @PathVariable Long userId, @PathVariable Long credentialId) {
         User user = userService.getElementById(userId);
+        if (!credentialDTO.getId().equals(credentialId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
         if (!user.getCredential().getId().equals(credentialId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        Credential credential = convertToEntity(credentialDTO);
-        credential.setId(credentialId);
-        service.updateElement(credential);
+        updateCredentialInsideDatabase(credentialDTO);
     }
 
     /**
@@ -123,6 +125,12 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
                 methodOn(CredentialController.class).getElementById(credential.getId())).withSelfRel();
         credentialDTO.add(selfLink);
         return credentialDTO;
+    }
+
+    private void updateCredentialInsideDatabase(CredentialDTO credentialDTO) {
+        Credential credential = convertToEntity(credentialDTO);
+        credential.setId(credentialDTO.getId());
+        service.updateElement(credential);
     }
 
 }

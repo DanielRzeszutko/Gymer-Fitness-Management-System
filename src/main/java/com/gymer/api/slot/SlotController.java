@@ -37,22 +37,22 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
     /**
      * {@inheritDoc}
      */
-	@Override
-	@GetMapping("/api/slots")
-	public PagedModel<EntityModel<SlotDTO>> getAllElementsSortable(Pageable pageable,
-                                                      @RequestParam(required = false, name = "contains") String searchBy,
-                                                      PagedResourcesAssembler<SlotDTO> assembler) {
+    @Override
+    @GetMapping("/api/slots")
+    public PagedModel<EntityModel<SlotDTO>> getAllElementsSortable(Pageable pageable,
+                                                                   @RequestParam(required = false, name = "contains") String searchBy,
+                                                                   PagedResourcesAssembler<SlotDTO> assembler) {
         return super.getAllElementsSortable(pageable, searchBy, assembler);
-	}
+    }
 
     /**
      * {@inheritDoc}
      */
-	@Override
-	@GetMapping("/api/slots/{id}")
-	public SlotDTO getElementById(@PathVariable Long id) {
-		return super.getElementById(id);
-	}
+    @Override
+    @GetMapping("/api/slots/{id}")
+    public SlotDTO getElementById(@PathVariable Long id) {
+        return super.getElementById(id);
+    }
 
     /**
      * Endpoint responsible for getting all slots from partner
@@ -116,7 +116,7 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
         List<Slot> slots = partner.getSlots();
         for (Slot slot : slots) {
             if (slot.getId().equals(slotId)) {
-				((SlotService) service).deleteSlot(slot);
+                ((SlotService) service).deleteSlot(slot);
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

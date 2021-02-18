@@ -11,8 +11,6 @@ import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
 import com.gymer.api.workinghours.entity.Day;
 import com.gymer.api.workinghours.entity.WorkingHour;
-import com.gymer.components.common.entity.MailingDetails;
-import com.gymer.components.common.mailing.MailingComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,15 +34,15 @@ public class RandomDataGenerator {
      */
 
     private final Random RANDOM = new Random();
+    private final List<String> usedEmails = new ArrayList<>();
+    private final PartnerService partnerService;
+    private final UserService userService;
     private List<String> cities;
     private List<String> nameList;
     private List<String> surnameList;
     private List<String> emails;
     private List<String> streets;
     private List<String> companies;
-    private final List<String> usedEmails = new ArrayList<>();
-    private final PartnerService partnerService;
-    private final UserService userService;
 
     @Autowired
     public RandomDataGenerator(PartnerService partnerService, UserService userService) {
@@ -87,7 +85,7 @@ public class RandomDataGenerator {
     }
 
     private Partner getRandomPartner() {
-        List<Employee> employees = getRandomEmployees(getRandomNumberBetween(1,3));
+        List<Employee> employees = getRandomEmployees(getRandomNumberBetween(1, 3));
         List<Slot> slots = new LinkedList<>();
         for (Employee employee : employees) {
             slots.addAll(getRandomSlots(employee));
@@ -171,7 +169,7 @@ public class RandomDataGenerator {
 
     private String getRandomPassword() {
         StringBuilder password = new StringBuilder();
-        int length = getRandomNumberBetween(8,16);
+        int length = getRandomNumberBetween(8, 16);
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345678";
         String specialChars = "(!@#$%^&*(){}[]\\|:\";'<>?,./";
         for (int i = 0; i < length; i++) {
@@ -199,32 +197,32 @@ public class RandomDataGenerator {
     }
 
     private String getRandomName() {
-        return nameList.get(getRandomNumberBetween(0, nameList.size()-1));
+        return nameList.get(getRandomNumberBetween(0, nameList.size() - 1));
     }
 
     private String getRandomSurname() {
-        return surnameList.get(getRandomNumberBetween(0, surnameList.size()-1));
+        return surnameList.get(getRandomNumberBetween(0, surnameList.size() - 1));
     }
 
     private String getRandomGymName() {
-        return companies.get(getRandomNumberBetween(0, companies.size()-1));
+        return companies.get(getRandomNumberBetween(0, companies.size() - 1));
     }
 
     private String getRandomStreetName() {
-        return streets.get(getRandomNumberBetween(0, streets.size()-1));
+        return streets.get(getRandomNumberBetween(0, streets.size() - 1));
     }
 
     private String getRandomCityName() {
-        return cities.get(getRandomNumberBetween(0, cities.size()-1));
+        return cities.get(getRandomNumberBetween(0, cities.size() - 1));
     }
 
     private String getRandomZipcode() {
-        return getRandomNumberBetween(10,100) + "-"
-                + getRandomNumberBetween(100,1000);
+        return getRandomNumberBetween(10, 100) + "-"
+                + getRandomNumberBetween(100, 1000);
     }
 
     private String getRandomWebsite(String gymName) {
-        return "www." + gymName.toLowerCase().replace(" ", "") + ".pl" ;
+        return "www." + gymName.toLowerCase().replace(" ", "") + ".pl";
     }
 
     private String getRandomPhoneNumber() {

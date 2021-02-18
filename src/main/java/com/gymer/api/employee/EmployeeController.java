@@ -39,8 +39,8 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
     @Override
     @GetMapping("/api/employees")
     public PagedModel<EntityModel<EmployeeDTO>> getAllElementsSortable(Pageable pageable,
-                                                          @RequestParam(required = false, name = "contains") String searchBy,
-                                                          PagedResourcesAssembler<EmployeeDTO> assembler) {
+                                                                       @RequestParam(required = false, name = "contains") String searchBy,
+                                                                       PagedResourcesAssembler<EmployeeDTO> assembler) {
         return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
@@ -48,9 +48,9 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
      * {@inheritDoc}
      */
     @Override
-    @GetMapping("/api/employees/{addressId}")
-    public EmployeeDTO getElementById(@PathVariable Long addressId) {
-        return super.getElementById(addressId);
+    @GetMapping("/api/employees/{id}")
+    public EmployeeDTO getElementById(@PathVariable Long id) {
+        return super.getElementById(id);
     }
 
     /**
@@ -82,9 +82,11 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
      * Endpoint responsible for add new employee to partner
      */
     @PostMapping("/api/partners/{partnerId}/employees")
+    @ResponseStatus(HttpStatus.CREATED)
     public void addEmployeeToPartner(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long partnerId) {
         Partner partner = partnerService.getElementById(partnerId);
-        partner.getEmployees().add(convertToEntity(employeeDTO));
+        Employee employee = convertToEntity(employeeDTO);
+        partner.getEmployees().add(employee);
         partnerService.updateElement(partner);
     }
 
@@ -97,7 +99,10 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
         Partner partner = partnerService.getElementById(partnerId);
         for (Employee employee : partner.getEmployees()) {
             if (employee.getId().equals(employeeId)) {
-                service.updateElement(convertToEntity(employeeDTO));
+                Employee newEmployee = convertToEntity(employeeDTO);
+                newEmployee.setId(employeeId);
+                service.updateElement(newEmployee);
+                throw new ResponseStatusException(HttpStatus.NO_CONTENT);
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -111,8 +116,9 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
         Partner partner = partnerService.getElementById(partnerId);
         List<Employee> employees = partner.getEmployees();
         for (Employee employee : employees) {
-            if (employee.getId().equals(employeeId)){
+            if (employee.getId().equals(employeeId)) {
                 ((EmployeeService) service).deleteEmployee(employee);
+                throw new ResponseStatusException(HttpStatus.NO_CONTENT);
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -124,7 +130,7 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
     @Override
     public Employee convertToEntity(EmployeeDTO employeeDTO) {
         Employee newEmployee = new Employee(employeeDTO);
-        if (service.isElementExistById(employeeDTO.getId())) {
+        if (employeeDTO.getId() != null && service.isElementExistById(employeeDTO.getId())) {
             Employee oldEmployee = service.getElementById(employeeDTO.getId());
             newEmployee.setWorkingHours(oldEmployee.getWorkingHours());
             return newEmployee;

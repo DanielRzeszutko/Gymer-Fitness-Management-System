@@ -32,8 +32,8 @@ public class UserController extends AbstractRestApiController<UserDTO, User, Lon
     @Override
     @GetMapping("/api/users")
     public PagedModel<EntityModel<UserDTO>> getAllElementsSortable(Pageable pageable,
-                                                      @RequestParam(required = false, name = "contains") String searchBy,
-                                                      PagedResourcesAssembler<UserDTO> assembler) {
+                                                                   @RequestParam(required = false, name = "contains") String searchBy,
+                                                                   PagedResourcesAssembler<UserDTO> assembler) {
         return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
@@ -51,9 +51,9 @@ public class UserController extends AbstractRestApiController<UserDTO, User, Lon
      */
     @GetMapping("/api/partners/{partnerId}/slots/{slotId}/users")
     public PagedModel<EntityModel<UserDTO>> getUsersBySlotId(@PathVariable Long partnerId,
-                                                     @PathVariable Long slotId,
-                                                     Pageable pageable,
-                                                     PagedResourcesAssembler<UserDTO> assembler) {
+                                                             @PathVariable Long slotId,
+                                                             Pageable pageable,
+                                                             PagedResourcesAssembler<UserDTO> assembler) {
         return super.getCollectionModel(((UserService) service).findAllUsersSubmittedToSlot(pageable, slotId), assembler);
     }
 

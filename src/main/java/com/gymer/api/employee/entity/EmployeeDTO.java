@@ -18,7 +18,7 @@ public class EmployeeDTO extends RepresentationModel<EmployeeDTO> {
     private String image;
 
     public EmployeeDTO(Employee employee) {
-        this.id = employee.getId();
+        if (employee.getId() != null) this.id = employee.getId();
         this.firstName = employee.getFirstName();
         this.lastName = employee.getLastName();
         this.description = employee.getDescription();

@@ -35,8 +35,8 @@ public class PartnerController extends AbstractRestApiController<PartnerDTO, Par
     @Override
     @GetMapping("/api/partners")
     public PagedModel<EntityModel<PartnerDTO>> getAllElementsSortable(Pageable pageable,
-                                                         @RequestParam(required = false, name = "contains") String searchBy,
-                                                         PagedResourcesAssembler<PartnerDTO> assembler) {
+                                                                      @RequestParam(required = false, name = "contains") String searchBy,
+                                                                      PagedResourcesAssembler<PartnerDTO> assembler) {
         return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
