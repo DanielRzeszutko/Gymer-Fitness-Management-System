@@ -1,7 +1,7 @@
-package com.gymer.security.register;
+package com.gymer.components.common.security.register;
 
 import com.gymer.components.common.entity.JsonResponse;
-import com.gymer.security.register.entity.RegistrationDetails;
+import com.gymer.components.common.security.register.entity.RegistrationDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

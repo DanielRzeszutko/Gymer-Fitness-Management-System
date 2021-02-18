@@ -1,4 +1,4 @@
-package com.gymer.security.session;
+package com.gymer.components.common.security.session;
 
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.Role;
@@ -8,8 +8,8 @@ import com.gymer.api.partner.entity.PartnerDTO;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
 import com.gymer.api.user.entity.UserDTO;
-import com.gymer.security.common.entity.AccountDetails;
-import com.gymer.security.session.entity.ActiveAccount;
+import com.gymer.components.common.security.common.entity.AccountDetails;
+import com.gymer.components.common.security.session.entity.ActiveAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;

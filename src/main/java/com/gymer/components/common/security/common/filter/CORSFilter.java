@@ -1,4 +1,4 @@
-package com.gymer.security.common.filter;
+package com.gymer.components.common.security.common.filter;
 
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
-package com.gymer.security.common.filter;
+package com.gymer.components.common.security.common.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gymer.security.login.entity.LoginDetails;
+import com.gymer.components.common.security.login.entity.LoginDetails;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
