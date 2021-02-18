@@ -56,7 +56,7 @@ public class AddressController extends AbstractRestApiController<AddressDTO, Add
     public AddressDTO getPartnerAddressById(@PathVariable Long partnerId, @PathVariable Long addressId) {
         Partner partner = partnerService.getElementById(partnerId);
         if (!partner.getAddress().getId().equals(addressId)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return convertToDTO(service.getElementById(addressId));
     }
@@ -67,8 +67,11 @@ public class AddressController extends AbstractRestApiController<AddressDTO, Add
     @PutMapping("/api/partners/{partnerId}/addresses/{addressId}")
     public void updateAddress(@RequestBody AddressDTO addressDTO, @PathVariable Long partnerId, @PathVariable Long addressId) {
         Partner partner = partnerService.getElementById(partnerId);
+        if (!addressDTO.getId().equals(addressId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
         if (!partner.getAddress().getId().equals(addressId)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         Address address = convertToEntity(addressDTO);
         service.updateElement(address);

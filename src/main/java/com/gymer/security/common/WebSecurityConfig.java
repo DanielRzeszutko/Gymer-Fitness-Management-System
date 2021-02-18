@@ -3,8 +3,8 @@ package com.gymer.security.common;
 import com.gymer.security.common.filter.CORSFilter;
 import com.gymer.security.common.filter.JsonAuthenticationFilter;
 import com.gymer.security.login.JsonLogoutSuccessHandler;
-import com.gymer.security.login.LoginService;
 import com.gymer.security.login.LoginFailureHandler;
+import com.gymer.security.login.LoginService;
 import com.gymer.security.login.LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,16 +25,16 @@ import javax.servlet.Filter;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JsonLogoutSuccessHandler jsonLogoutSuccessHandler;
+    private final JsonLogoutSuccessHandler logoutSuccessHandler;
     private final LoginSuccessHandler successHandler;
     private final LoginFailureHandler failureHandler;
     private final LoginService loginService;
     private final String frontUrl;
 
-    public WebSecurityConfig(JsonLogoutSuccessHandler jsonLogoutSuccessHandler, LoginSuccessHandler successHandler,
+    public WebSecurityConfig(JsonLogoutSuccessHandler logoutSuccessHandler, LoginSuccessHandler successHandler,
                              LoginFailureHandler failureHandler,
                              LoginService loginService, Environment environment) {
-        this.jsonLogoutSuccessHandler = jsonLogoutSuccessHandler;
+        this.logoutSuccessHandler = logoutSuccessHandler;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
         this.loginService = loginService;
@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")
                 .logoutUrl("/logout")
-                .logoutSuccessHandler(jsonLogoutSuccessHandler)
+                .logoutSuccessHandler(logoutSuccessHandler)
                 .logoutSuccessUrl(frontUrl);
     }
 

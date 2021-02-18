@@ -15,18 +15,17 @@ import java.io.IOException;
 @Component
 public class JsonLogoutSuccessHandler implements LogoutSuccessHandler {
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Override
+    public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-	@Override
-	public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        JsonResponse message = new JsonResponse("Successfully logged out.", false);
 
-		JsonResponse message = new JsonResponse("Successfully logged out.", false);
-
-		response.setStatus(HttpStatus.OK.value());
-		response.setContentType("application/json");
-		response.getWriter().write(objectMapper.writeValueAsString(message));
-		response.getWriter().flush();
-	}
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType("application/json");
+        response.getWriter().write(objectMapper.writeValueAsString(message));
+        response.getWriter().flush();
+    }
 
 }
