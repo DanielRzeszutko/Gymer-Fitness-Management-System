@@ -1,7 +1,6 @@
 package com.gymer.security.session.entity;
 
 import com.gymer.api.credential.entity.Credential;
-import com.gymer.api.credential.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,8 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ActiveAccount {
 
-    Long id;
-    Role role;
+    private Long id;
     Credential credential;
 
 }

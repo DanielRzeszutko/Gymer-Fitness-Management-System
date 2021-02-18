@@ -36,9 +36,7 @@ public class RegistrationService {
 
     public JsonResponse registerUser(RegistrationDetails details) {
         JsonResponse response = createJsonResponse(details);
-        if (response.isError()) {
-            return response;
-        }
+        if (response.isError()) return response;
 
         Credential credential = createCredentialBy(details, Role.USER);
         User user = new User("", "", credential);
@@ -46,12 +44,9 @@ public class RegistrationService {
         return response;
     }
 
-
     public JsonResponse registerPartner(RegistrationDetails details) {
         JsonResponse response = createJsonResponse(details);
-        if (response.isError()) {
-            return response;
-        }
+        if (response.isError()) return response;
 
         Credential credential = createCredentialBy(details, Role.PARTNER);
         Address address = new Address("", "", "", "");
@@ -61,11 +56,11 @@ public class RegistrationService {
         return response;
     }
 
-
     private JsonResponse createJsonResponse(RegistrationDetails userDetails) {
         if (!userDetails.getPassword().equals(userDetails.getConfirmPassword())) {
             return new JsonResponse("Passwords do not match.", true);
-        } else if (credentialService.isCredentialExistsByEmail(userDetails.getEmail())) {
+        }
+        if (credentialService.isCredentialExistsByEmail(userDetails.getEmail())) {
             return new JsonResponse("Account with this email already exists.", true);
         }
         return new JsonResponse("Registered successfully.", false);
