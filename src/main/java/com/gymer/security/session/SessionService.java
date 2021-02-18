@@ -9,11 +9,13 @@ import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
 import com.gymer.api.user.entity.UserDTO;
 import com.gymer.security.common.entity.AccountDetails;
+import com.gymer.security.session.entity.ActiveAccount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SessionService {
+public final class SessionService {
 
     private final PartnerService partnerService;
     private final UserService userService;
@@ -24,11 +26,16 @@ public class SessionService {
         this.userService = userService;
     }
 
-    public Long getActiveAccountIdFromDetails(AccountDetails details) {
+    public ActiveAccount getActiveAccountIdFromDetails(AccountDetails details) {
         Credential credential = details.getCredential();
-        return credential.getRole().equals(Role.PARTNER)
+        Long activeAccountId = credential.getRole().equals(Role.PARTNER)
                 ? partnerService.getByCredentials(credential).getId()
                 : userService.getByCredentials(credential).getId();
+        return new ActiveAccount(activeAccountId, credential);
+    }
+
+    public boolean isAccountNotLoggedOrEqualRole(Authentication authentication, Role role) {
+        return !isPrincipalExist(authentication) || !((AccountDetails) authentication.getPrincipal()).getCredential().getRole().equals(role);
     }
 
     public PartnerDTO getActivePartnerAccountFromCredentials(Credential credential) {
@@ -41,6 +48,8 @@ public class SessionService {
         return new UserDTO(user);
     }
 
-
+    private boolean isPrincipalExist(Authentication authentication) {
+        return authentication == null || authentication.getPrincipal() == null;
+    }
 
 }

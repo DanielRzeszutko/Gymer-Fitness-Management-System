@@ -16,63 +16,41 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class SessionController {
 
-    private final SessionService sessionService;
+    private final SessionService service;
 
     @Autowired
     public SessionController(SessionService sessionService) {
-        this.sessionService = sessionService;
+        this.service = sessionService;
     }
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('PARTNER') or hasRole('USER')")
     public ActiveAccount getActiveAccount(Authentication authentication) {
-        if (isPrincipalExist(authentication)) return null;
-
-        AccountDetails details = (AccountDetails) authentication.getPrincipal();
-        if (partnerIsNotLogged(details) && userIsNotLogged(details)) {
+        if (service.isAccountNotLoggedOrEqualRole(authentication, Role.USER) && service.isAccountNotLoggedOrEqualRole(authentication, Role.PARTNER)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-
-        Long activeAccountId = sessionService.getActiveAccountIdFromDetails(details);
-        return new ActiveAccount(activeAccountId, details.getCredential());
+        AccountDetails details = (AccountDetails) authentication.getPrincipal();
+        return service.getActiveAccountIdFromDetails(details);
     }
 
     @GetMapping("/me/partner")
     @PreAuthorize("hasRole('PARTNER')")
     public PartnerDTO getActivePartner(Authentication authentication) {
-        if (isPrincipalExist(authentication)) return null;
-
-        AccountDetails details = (AccountDetails) authentication.getPrincipal();
-        if (partnerIsNotLogged(details)) {
+        if (service.isAccountNotLoggedOrEqualRole(authentication, Role.PARTNER)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-
-        return sessionService.getActivePartnerAccountFromCredentials(details.getCredential());
+        AccountDetails details = (AccountDetails) authentication.getPrincipal();
+        return service.getActivePartnerAccountFromCredentials(details.getCredential());
     }
 
     @GetMapping("/me/user")
     @PreAuthorize("hasRole('USER')")
     public UserDTO getActiveUser(Authentication authentication) {
-        if (isPrincipalExist(authentication)) return null;
-
-        AccountDetails details = (AccountDetails) authentication.getPrincipal();
-        if (userIsNotLogged(details)) {
+        if (service.isAccountNotLoggedOrEqualRole(authentication, Role.USER)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-
-        return sessionService.getActiveUserAccountFromCredentials(details.getCredential());
-    }
-
-    private boolean isPrincipalExist(Authentication authentication) {
-        return authentication == null || authentication.getPrincipal() == null;
-    }
-
-    private boolean partnerIsNotLogged(AccountDetails details) {
-        return !details.getCredential().getRole().equals(Role.PARTNER);
-    }
-
-    private boolean userIsNotLogged(AccountDetails details) {
-        return !details.getCredential().getRole().equals(Role.USER);
+        AccountDetails details = (AccountDetails) authentication.getPrincipal();
+        return service.getActiveUserAccountFromCredentials(details.getCredential());
     }
 
 }
