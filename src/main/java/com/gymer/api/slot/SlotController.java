@@ -1,5 +1,6 @@
 package com.gymer.api.slot;
 
+import com.gymer.api.common.JsonRestController;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.employee.EmployeeController;
 import com.gymer.api.partner.PartnerService;
@@ -24,7 +25,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
+@JsonRestController
 public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Long> {
 
     private final PartnerService partnerService;

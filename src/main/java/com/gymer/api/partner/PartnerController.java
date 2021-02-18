@@ -1,6 +1,7 @@
 package com.gymer.api.partner;
 
 import com.gymer.api.address.AddressController;
+import com.gymer.api.common.JsonRestController;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.credential.CredentialController;
 import com.gymer.api.employee.EmployeeController;
@@ -22,7 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
+@JsonRestController
 public class PartnerController extends AbstractRestApiController<PartnerDTO, Partner, Long> {
 
     @Autowired

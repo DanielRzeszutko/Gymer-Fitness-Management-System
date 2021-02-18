@@ -1,5 +1,6 @@
 package com.gymer.api.employee;
 
+import com.gymer.api.common.JsonRestController;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.employee.entity.EmployeeDTO;
@@ -23,7 +24,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
+@JsonRestController
 public class EmployeeController extends AbstractRestApiController<EmployeeDTO, Employee, Long> {
 
     private final PartnerService partnerService;

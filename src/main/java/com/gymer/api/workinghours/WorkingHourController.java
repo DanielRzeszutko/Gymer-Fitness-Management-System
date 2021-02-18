@@ -1,5 +1,6 @@
 package com.gymer.api.workinghours;
 
+import com.gymer.api.common.JsonRestController;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.employee.EmployeeService;
 import com.gymer.api.employee.entity.Employee;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
+@JsonRestController
 public class WorkingHourController extends AbstractRestApiController<WorkingHourDTO, WorkingHour, Long> {
 
     private final PartnerService partnerService;

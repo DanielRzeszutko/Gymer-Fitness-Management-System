@@ -1,5 +1,6 @@
 package com.gymer.api.user;
 
+import com.gymer.api.common.JsonRestController;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.credential.CredentialController;
 import com.gymer.api.user.entity.User;
@@ -18,8 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
-@RequestMapping
+@JsonRestController
 public class UserController extends AbstractRestApiController<UserDTO, User, Long> {
 
     @Autowired

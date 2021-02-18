@@ -1,5 +1,6 @@
 package com.gymer.api.credential;
 
+import com.gymer.api.common.JsonRestController;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.CredentialDTO;
@@ -21,7 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
+@JsonRestController
 public class CredentialController extends AbstractRestApiController<CredentialDTO, Credential, Long> {
 
     private final PartnerService partnerService;

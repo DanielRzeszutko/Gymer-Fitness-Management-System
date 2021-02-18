@@ -2,6 +2,7 @@ package com.gymer.api.address;
 
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.address.entity.AddressDTO;
+import com.gymer.api.common.JsonRestController;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
@@ -19,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
+@JsonRestController
 public class AddressController extends AbstractRestApiController<AddressDTO, Address, Long> {
 
     private final PartnerService partnerService;
