@@ -1,4 +1,4 @@
-package com.gymer.components.common.security.register;
+package com.gymer.components.register;
 
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.credential.CredentialService;
@@ -9,7 +9,7 @@ import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
 import com.gymer.components.common.entity.JsonResponse;
-import com.gymer.components.common.security.register.entity.RegistrationDetails;
+import com.gymer.components.register.entity.RegistrationDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
