@@ -1,8 +1,10 @@
 package com.gymer.security;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ public class RestAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 										AuthenticationException exception) throws ServletException, IOException {
-		super.onAuthenticationFailure(request, response, exception);
+//		super.onAuthenticationFailure(request, response, exception);
+		throw new ResponseStatusException(HttpStatus.CONFLICT);
 	}
 }
