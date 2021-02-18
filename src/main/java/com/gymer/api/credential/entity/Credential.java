@@ -33,20 +33,20 @@ public class Credential {
 
     @NotNull
     @Column(columnDefinition = "boolean default true")
-    private boolean active;
+    private boolean notSuspended;
 
     @NotNull
-    private boolean enabled;
+    private boolean activated;
 
     private Timestamp registrationTime;
 
-    public Credential(String email, String password, String phoneNumber, Role role, boolean active, boolean enabled, Timestamp registrationTime) {
+    public Credential(String email, String password, String phoneNumber, Role role, boolean notSuspended, boolean activated, Timestamp registrationTime) {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.role = role;
-        this.active = active;
-        this.enabled = enabled;
+        this.notSuspended = notSuspended;
+        this.activated = activated;
         this.registrationTime = registrationTime;
     }
 
@@ -56,8 +56,8 @@ public class Credential {
         this.password = credentialDTO.getPassword();
         this.phoneNumber = credentialDTO.getPhoneNumber();
         this.role = credentialDTO.getRole();
-        this.active = credentialDTO.isActive();
-        this.enabled = credentialDTO.isEnabled();
+        this.notSuspended = credentialDTO.isNotSuspended();
+        this.activated = credentialDTO.isActivated();
         this.registrationTime = credentialDTO.getRegistrationTime();
     }
 

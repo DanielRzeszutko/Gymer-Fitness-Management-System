@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/modify/slots/{slotId}/employee")
+@RequestMapping("/updateslot/{slotId}/employee")
 public class SlotsEmployeeController {
 
     private final SlotsEmployeeService service;

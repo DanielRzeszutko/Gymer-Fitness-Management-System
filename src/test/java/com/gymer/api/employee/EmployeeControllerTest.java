@@ -9,6 +9,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -72,7 +76,11 @@ public class EmployeeControllerTest {
         }
         given(employeeService.findAllContaining(pageable, "")).willReturn(page);
 
-        mockMvc.perform(get("/api/employees").header("Origin", "*").param("contains", "")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/employees")
+                .header("Origin", "*")
+                .param("contains", "")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -86,7 +94,10 @@ public class EmployeeControllerTest {
         }
         given(employeeService.getAllElements(pageable)).willReturn(page);
 
-        mockMvc.perform(get("/api/employees").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/employees")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -100,7 +111,10 @@ public class EmployeeControllerTest {
         given(partnerService.findPartnerContainingEmployee(employee)).willReturn(partner);
         given(employeeService.getElementById(1L)).willReturn(employee);
 
-        mockMvc.perform(get("/api/employees/1").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/employees/1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -115,7 +129,10 @@ public class EmployeeControllerTest {
         }
         given(employeeService.findAllEmployeesForPartner(pageable, partner)).willReturn(page);
 
-        mockMvc.perform(get("/api/partners/1/employees").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/partners/1/employees")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -136,7 +153,10 @@ public class EmployeeControllerTest {
         given(partnerService.findPartnerContainingEmployee(employee)).willReturn(partner2);
         given(employeeService.findAllEmployeesForPartner(pageable, partner)).willReturn(page);
 
-        mockMvc.perform(get("/api/partners/1/employees/5").header("Origin", "*")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/partners/1/employees/5")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -151,6 +171,7 @@ public class EmployeeControllerTest {
         doNothing().when(partnerService).updateElement(isA(Partner.class));
 
         mockMvc.perform(post("/api/partners/1/employees")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .accept("application/json")
                 .content(objectMapper.writeValueAsString(employeeDTO))
@@ -169,6 +190,7 @@ public class EmployeeControllerTest {
         given(employeeService.getElementById(1L)).willReturn(employee);
 
         mockMvc.perform(delete("/api/partners/1/employees/1")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .accept("application/json")
                 .header("Origin", "*"))
@@ -186,6 +208,7 @@ public class EmployeeControllerTest {
         given(employeeService.getElementById(1L)).willReturn(employee);
 
         mockMvc.perform(delete("/api/partners/1/employees/2")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .accept("application/json")
                 .header("Origin", "*"))
@@ -196,7 +219,10 @@ public class EmployeeControllerTest {
     public void should_returnNotFoundStatus_when_tryingToGetSpecificRecordWithNonExistingId() throws Exception {
         given(employeeService.getElementById(-1L)).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        mockMvc.perform(get("/api/employees/-1").header("Origin", "*")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/employees/-1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -210,7 +236,10 @@ public class EmployeeControllerTest {
         given(partnerService.findPartnerContainingEmployee(employee)).willReturn(partner);
         given(partnerService.getElementById(1L)).willReturn(partner);
 
-        mockMvc.perform(get("/api/partners/1/employees/1").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/partners/1/employees/1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -227,6 +256,7 @@ public class EmployeeControllerTest {
         EmployeeDTO employeeDTO = new EmployeeDTO(employee);
 
         mockMvc.perform(put("/api/partners/1/employees/1")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(employeeDTO))
                 .header("Origin", "*"))
@@ -245,6 +275,7 @@ public class EmployeeControllerTest {
         EmployeeDTO employeeDTO = new EmployeeDTO(employee);
 
         mockMvc.perform(put("/api/partners/1/employees/2")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(employeeDTO))
                 .header("Origin", "*"))
@@ -265,6 +296,7 @@ public class EmployeeControllerTest {
         EmployeeDTO employeeDTO = new EmployeeDTO(employee);
 
         mockMvc.perform(put("/api/partners/1/employees/1")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(employeeDTO))
                 .header("Origin", "*"))

@@ -24,7 +24,7 @@ public class PartnerService extends AbstractRestApiService<Partner, Long> {
      * Service method responsible for changing status of partner to deactivated
      */
     public void deletePartner(Partner partner) {
-        partner.getCredential().setActive(false);
+        partner.getCredential().setNotSuspended(false);
         repository.save(partner);
     }
 

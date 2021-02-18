@@ -31,6 +31,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,60 +72,79 @@ public class CredentialControllerTest {
     public void should_returnOkStatus_when_tryingToGetPageWithRecords() throws Exception {
         given(credentialService.findAllContaining(pageable, "")).willReturn(page);
 
-        mockMvc.perform(get("/api/credentials").header("Origin", "*").param("contains", "")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/credentials")
+                .header("Origin", "*")
+                .param("contains", "")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void should_returnOkStatus_when_tryingToGetPageWithRecordsWithoutSearchBy() throws Exception {
         given(credentialService.getAllElements(pageable)).willReturn(page);
 
-        mockMvc.perform(get("/api/credentials").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/credentials")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void should_returnOKStatus_when_tryingToGetSpecificRecordWithId() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(1L);
 
         given(credentialService.getElementById(1L)).willReturn(credential);
 
-        mockMvc.perform(get("/api/credentials/1").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/credentials/1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void should_returnNotFoundStatus_when_tryingToGetSpecificRecordWithNonExistingId() throws Exception {
         given(credentialService.getElementById(-1L)).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        mockMvc.perform(get("/api/credentials/-1").header("Origin", "*")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/credentials/-1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     public void should_returnOkStatus_when_tryingToGetSpecificRecordForPartner() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(1L);
         Partner partner = new Partner("", "", "", "", "", credential, null,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         given(credentialService.getElementById(1L)).willReturn(credential);
         given(partnerService.getElementById(1L)).willReturn(partner);
 
-        mockMvc.perform(get("/api/partners/1/credentials/1").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/partners/1/credentials/1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void should_returnNotFoundStatus_when_tryingToGetSpecificRecordFromPartnerWithNonExistingId() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(5L);
         Partner partner = new Partner("", "", "", "", "", credential, null,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         given(credentialService.getElementById(-1L)).willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
         given(partnerService.getElementById(1L)).willReturn(partner);
 
-        mockMvc.perform(get("/api/partners/1/credentials/-1").header("Origin", "*")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/partners/1/credentials/-1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void should_returnOkStatus_when_tryingToUpdateExistingCredentialsForPartner() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(1L);
         Partner partner = new Partner("", "", "", "", "", credential, null,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -133,6 +153,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/partners/1/credentials/1")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -141,7 +162,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnConflictStatus_when_tryingToUpdateCredentialWhenUrlIsNotValidForPartner() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(1L);
         Partner partner = new Partner("", "", "", "", "", credential, null,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -150,6 +171,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/partners/1/credentials/2")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -158,9 +180,9 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnBadRequestStatus_when_tryingToUpdateCredentialWhenObjectIdNotEqualToUrlIdForPartner() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(1L);
-        Credential credential2 = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential2 = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential2.setId(2L);
         Partner partner = new Partner("", "", "", "", "", credential2, null,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -169,6 +191,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/partners/1/credentials/1")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -177,29 +200,35 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnOkStatus_when_tryingToGetSpecificRecordForUser() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(1L);
         User user = new User("", "", credential);
         given(credentialService.getElementById(1L)).willReturn(credential);
         given(userService.getElementById(1L)).willReturn(user);
 
-        mockMvc.perform(get("/api/users/1/credentials/1").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/users/1/credentials/1")
+                .header("Origin", "*")
+                .with(user("user").roles("USER")))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void should_returnNotFoundStatus_when_tryingToGetSpecificRecordFromUserWithNonExistingId() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(5L);
         User user = new User("", "", credential);
         given(credentialService.getElementById(-1L)).willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
         given(userService.getElementById(1L)).willReturn(user);
 
-        mockMvc.perform(get("/api/users/1/credentials/-1").header("Origin", "*")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/users/1/credentials/-1")
+                .header("Origin", "*")
+                .with(user("user").roles("USER")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void should_returnOkStatus_when_tryingToUpdateExistingCredentialsForUser() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(1L);
         User user = new User("", "", credential);
         given(credentialService.getElementById(1L)).willReturn(credential);
@@ -207,6 +236,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/users/1/credentials/1")
+                .with(user("user").roles("USER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -215,7 +245,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnConflictStatus_when_tryingToUpdateCredentialWhenUrlIsNotValidForUser() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(1L);
         User user = new User("", "", credential);
         given(credentialService.getElementById(1L)).willReturn(credential);
@@ -223,6 +253,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/users/1/credentials/2")
+                .with(user("user").roles("USER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -231,9 +262,9 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnBadRequestStatus_when_tryingToUpdateCredentialWhenObjectIdNotEqualToUrlIdForUser() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential.setId(1L);
-        Credential credential2 = new Credential("", "", "", Role.USER, false, timestamp);
+        Credential credential2 = new Credential("", "", "", Role.USER, true, false, timestamp);
         credential2.setId(2L);
         User user = new User("", "", credential2);
         given(credentialService.getElementById(1L)).willReturn(credential);
@@ -241,6 +272,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/users/1/credentials/1")
+                .with(user("user").roles("USER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -249,9 +281,9 @@ public class CredentialControllerTest {
 
     private Page<Credential> getTestPageData() {
         List<Credential> credentials = new LinkedList<>();
-        credentials.add(new Credential("", "", "", Role.USER, false, timestamp));
-        credentials.add(new Credential("", "", "", Role.USER, false, timestamp));
-        credentials.add(new Credential("", "", "", Role.USER, false, timestamp));
+        credentials.add(new Credential("", "", "", Role.USER, true, false, timestamp));
+        credentials.add(new Credential("", "", "", Role.USER, true, false, timestamp));
+        credentials.add(new Credential("", "", "", Role.USER, true, false, timestamp));
         return new PageImpl<>(credentials);
     }
 

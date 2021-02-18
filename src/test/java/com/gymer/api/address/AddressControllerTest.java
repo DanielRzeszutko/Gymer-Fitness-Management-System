@@ -29,6 +29,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,14 +66,21 @@ public class AddressControllerTest {
     public void should_returnOkStatus_when_tryingToGetPageWithRecords() throws Exception {
         given(addressService.findAllContaining(pageable, "")).willReturn(page);
 
-        mockMvc.perform(get("/api/addresses").header("Origin", "*").param("contains", "")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/addresses")
+                .header("Origin", "*")
+                .param("contains", "")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void should_returnOkStatus_when_tryingToGetPageWithRecordsWithoutSearchBy() throws Exception {
         given(addressService.getAllElements(pageable)).willReturn(page);
 
-        mockMvc.perform(get("/api/addresses").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/addresses")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -81,14 +89,20 @@ public class AddressControllerTest {
         address.setId(1L);
         given(addressService.getElementById(1L)).willReturn(address);
 
-        mockMvc.perform(get("/api/addresses/1").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/addresses/1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void should_returnNotFoundStatus_when_tryingToGetSpecificRecordWithNonExistingId() throws Exception {
         given(addressService.getElementById(-1L)).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        mockMvc.perform(get("/api/addresses/-1").header("Origin", "*")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/addresses/-1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -100,7 +114,10 @@ public class AddressControllerTest {
         given(addressService.getElementById(1L)).willReturn(address);
         given(partnerService.getElementById(1L)).willReturn(partner);
 
-        mockMvc.perform(get("/api/partners/1/addresses/1").header("Origin", "*")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/partners/1/addresses/1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -113,7 +130,10 @@ public class AddressControllerTest {
         given(partnerService.getElementById(1L)).willReturn(partner);
         given(addressService.getElementById(-1L)).willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
-        mockMvc.perform(get("/api/partners/1/addresses/-1").header("Origin", "*")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/partners/1/addresses/-1")
+                .header("Origin", "*")
+                .with(user("partner").roles("PARTNER")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -126,6 +146,7 @@ public class AddressControllerTest {
         given(partnerService.getElementById(1L)).willReturn(partner);
 
         mockMvc.perform(put("/api/partners/1/addresses/1")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(addressDTO))
                 .header("Origin", "*"))
@@ -142,6 +163,7 @@ public class AddressControllerTest {
         given(partnerService.getElementById(1L)).willReturn(partner);
 
         mockMvc.perform(put("/api/partners/1/addresses/2")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(addressDTO))
                 .header("Origin", "*"))
@@ -162,6 +184,7 @@ public class AddressControllerTest {
         given(partnerService.getElementById(1L)).willReturn(partner);
 
         mockMvc.perform(put("/api/partners/1/addresses/3")
+                .with(user("partner").roles("PARTNER"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(addressDTO))
                 .header("Origin", "*"))

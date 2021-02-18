@@ -48,7 +48,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/js/**", "/css/**", "/img/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/me/**", "/logout").permitAll()
                 .antMatchers(HttpMethod.POST, "/login", "/registration/**").anonymous()
+
+                .antMatchers(HttpMethod.POST, "/api/**").authenticated()
+                .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+
+                .antMatchers(HttpMethod.POST, "/updateslot/**").permitAll()
                 .anyRequest().authenticated()
+
                 .and()
                 .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()

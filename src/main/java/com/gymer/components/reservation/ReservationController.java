@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/reservation/slots/{slotId}")
+@RequestMapping("/updateslot/{slotId}/reservation")
 public class ReservationController {
 
     private final ReservationService reservationService;

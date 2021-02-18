@@ -39,7 +39,7 @@ public class UserService extends AbstractRestApiService<User, Long> {
      * Service method responsible for changing status of user to deactivated
      */
     public void deleteUser(User user) {
-        user.getCredential().setActive(false);
+        user.getCredential().setNotSuspended(false);
         repository.save(user);
     }
 
