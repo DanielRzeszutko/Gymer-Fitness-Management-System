@@ -31,7 +31,7 @@ public final class SessionService {
         Long activeAccountId = credential.getRole().equals(Role.PARTNER)
                 ? partnerService.getByCredentials(credential).getId()
                 : userService.getByCredentials(credential).getId();
-        return new ActiveAccount(activeAccountId, credential);
+        return new ActiveAccount(credential, activeAccountId);
     }
 
     public boolean isLoggedAsRole(Authentication authentication, Role role) {
