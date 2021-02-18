@@ -2,6 +2,7 @@ package com.gymer.api.address;
 
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.address.entity.AddressDTO;
+import com.gymer.api.common.JsonRestController;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.partner.PartnerService;
 import com.gymer.api.partner.entity.Partner;
@@ -12,13 +13,14 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
+@JsonRestController
 public class AddressController extends AbstractRestApiController<AddressDTO, Address, Long> {
 
     private final PartnerService partnerService;
@@ -65,6 +67,7 @@ public class AddressController extends AbstractRestApiController<AddressDTO, Add
      * Endpoint that receives AddressDTO body and change all details inside database
      */
     @PutMapping("/api/partners/{partnerId}/addresses/{addressId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void updateAddress(@RequestBody AddressDTO addressDTO, @PathVariable Long partnerId, @PathVariable Long addressId) {
         Partner partner = partnerService.getElementById(partnerId);
         if (!addressDTO.getId().equals(addressId)) {

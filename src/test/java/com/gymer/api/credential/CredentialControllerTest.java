@@ -75,7 +75,7 @@ public class CredentialControllerTest {
         mockMvc.perform(get("/api/credentials")
                 .header("Origin", "*")
                 .param("contains", "")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -85,7 +85,7 @@ public class CredentialControllerTest {
 
         mockMvc.perform(get("/api/credentials")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -98,7 +98,7 @@ public class CredentialControllerTest {
 
         mockMvc.perform(get("/api/credentials/1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -108,7 +108,7 @@ public class CredentialControllerTest {
 
         mockMvc.perform(get("/api/credentials/-1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isNotFound());
     }
 
@@ -123,7 +123,7 @@ public class CredentialControllerTest {
 
         mockMvc.perform(get("/api/partners/1/credentials/1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -138,7 +138,7 @@ public class CredentialControllerTest {
 
         mockMvc.perform(get("/api/partners/1/credentials/-1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isBadRequest());
     }
 
@@ -153,7 +153,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/partners/1/credentials/1")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -171,7 +171,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/partners/1/credentials/2")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -191,7 +191,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/partners/1/credentials/1")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -208,7 +208,7 @@ public class CredentialControllerTest {
 
         mockMvc.perform(get("/api/users/1/credentials/1")
                 .header("Origin", "*")
-                .with(user("user").roles("USER")))
+                .with(user("user").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -222,7 +222,7 @@ public class CredentialControllerTest {
 
         mockMvc.perform(get("/api/users/1/credentials/-1")
                 .header("Origin", "*")
-                .with(user("user").roles("USER")))
+                .with(user("user").roles("ADMIN")))
                 .andExpect(status().isBadRequest());
     }
 
@@ -236,7 +236,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/users/1/credentials/1")
-                .with(user("user").roles("USER"))
+                .with(user("user").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -253,7 +253,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/users/1/credentials/2")
-                .with(user("user").roles("USER"))
+                .with(user("user").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))
@@ -272,7 +272,7 @@ public class CredentialControllerTest {
         CredentialDTO credentialDTO = new CredentialDTO(credential);
 
         mockMvc.perform(put("/api/users/1/credentials/1")
-                .with(user("user").roles("USER"))
+                .with(user("user").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(credentialDTO))
                 .header("Origin", "*"))

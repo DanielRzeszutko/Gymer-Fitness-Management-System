@@ -1,4 +1,4 @@
-package com.gymer.security.register.entity;
+package com.gymer.components.security.register.entity;
 
 import lombok.Data;
 

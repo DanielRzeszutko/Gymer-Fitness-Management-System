@@ -1,4 +1,4 @@
-package com.gymer.components.sampledatagenerator;
+package com.gymer.components.common.sampledatagenerator;
 
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.credential.entity.Credential;
@@ -25,7 +25,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 @Component
-public class RandomDataGenerator {
+class RandomDataGenerator {
 
     /**
      * For proper operation of our generator there should be 'sampleData' folder
@@ -52,7 +52,6 @@ public class RandomDataGenerator {
 
     @PostConstruct
     public void init() throws FileNotFoundException {
-
         nameList = readDataFromFile("names.txt");
         surnameList = readDataFromFile("surnames.txt");
         emails = readDataFromFile("emails.txt");

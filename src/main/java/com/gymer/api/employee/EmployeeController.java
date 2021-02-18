@@ -1,5 +1,6 @@
 package com.gymer.api.employee;
 
+import com.gymer.api.common.JsonRestController;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.employee.entity.EmployeeDTO;
@@ -13,6 +14,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,7 +24,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
+@JsonRestController
 public class EmployeeController extends AbstractRestApiController<EmployeeDTO, Employee, Long> {
 
     private final PartnerService partnerService;
@@ -81,8 +83,9 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
     /**
      * Endpoint responsible for add new employee to partner
      */
-    @PostMapping("/api/partners/{partnerId}/employees")
     @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/api/partners/{partnerId}/employees")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void addEmployeeToPartner(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long partnerId) {
         Partner partner = partnerService.getElementById(partnerId);
         Employee employee = convertToEntity(employeeDTO);
@@ -94,6 +97,7 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
      * Endpoint responsible for updating employee details from partner
      */
     @PutMapping("/api/partners/{partnerId}/employees/{employeeId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void updateEmployee(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long partnerId, @PathVariable Long employeeId) {
         if (!employeeDTO.getId().equals(employeeId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
         Partner partner = partnerService.getElementById(partnerId);
@@ -112,6 +116,7 @@ public class EmployeeController extends AbstractRestApiController<EmployeeDTO, E
      * Endpoint responsible for deleting employee completely from database
      */
     @DeleteMapping("/api/partners/{partnerId}/employees/{employeeId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void deleteEmployee(@PathVariable Long partnerId, @PathVariable Long employeeId) {
         Partner partner = partnerService.getElementById(partnerId);
         List<Employee> employees = partner.getEmployees();

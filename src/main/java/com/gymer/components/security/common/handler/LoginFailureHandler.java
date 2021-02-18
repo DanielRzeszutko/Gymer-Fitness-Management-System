@@ -1,4 +1,4 @@
-package com.gymer.security.login;
+package com.gymer.components.security.common.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gymer.components.common.entity.JsonResponse;

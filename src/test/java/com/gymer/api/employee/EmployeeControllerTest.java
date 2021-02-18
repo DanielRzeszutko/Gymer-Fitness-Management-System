@@ -79,7 +79,7 @@ public class EmployeeControllerTest {
         mockMvc.perform(get("/api/employees")
                 .header("Origin", "*")
                 .param("contains", "")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -96,7 +96,7 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(get("/api/employees")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -113,7 +113,7 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(get("/api/employees/1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -131,7 +131,7 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(get("/api/partners/1/employees")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -155,7 +155,7 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(get("/api/partners/1/employees/5")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isBadRequest());
     }
 
@@ -171,7 +171,7 @@ public class EmployeeControllerTest {
         doNothing().when(partnerService).updateElement(isA(Partner.class));
 
         mockMvc.perform(post("/api/partners/1/employees")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .accept("application/json")
                 .content(objectMapper.writeValueAsString(employeeDTO))
@@ -190,7 +190,7 @@ public class EmployeeControllerTest {
         given(employeeService.getElementById(1L)).willReturn(employee);
 
         mockMvc.perform(delete("/api/partners/1/employees/1")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .accept("application/json")
                 .header("Origin", "*"))
@@ -208,7 +208,7 @@ public class EmployeeControllerTest {
         given(employeeService.getElementById(1L)).willReturn(employee);
 
         mockMvc.perform(delete("/api/partners/1/employees/2")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .accept("application/json")
                 .header("Origin", "*"))
@@ -221,7 +221,7 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(get("/api/employees/-1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isNotFound());
     }
 
@@ -238,7 +238,7 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(get("/api/partners/1/employees/1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -256,7 +256,7 @@ public class EmployeeControllerTest {
         EmployeeDTO employeeDTO = new EmployeeDTO(employee);
 
         mockMvc.perform(put("/api/partners/1/employees/1")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(employeeDTO))
                 .header("Origin", "*"))
@@ -275,7 +275,7 @@ public class EmployeeControllerTest {
         EmployeeDTO employeeDTO = new EmployeeDTO(employee);
 
         mockMvc.perform(put("/api/partners/1/employees/2")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(employeeDTO))
                 .header("Origin", "*"))
@@ -296,7 +296,7 @@ public class EmployeeControllerTest {
         EmployeeDTO employeeDTO = new EmployeeDTO(employee);
 
         mockMvc.perform(put("/api/partners/1/employees/1")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(employeeDTO))
                 .header("Origin", "*"))

@@ -1,5 +1,6 @@
 package com.gymer.api.slot;
 
+import com.gymer.api.common.JsonRestController;
 import com.gymer.api.common.controller.AbstractRestApiController;
 import com.gymer.api.employee.EmployeeController;
 import com.gymer.api.partner.PartnerService;
@@ -14,6 +15,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,7 +25,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
+@JsonRestController
 public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Long> {
 
     private final PartnerService partnerService;
@@ -69,6 +71,7 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
      * Endpoint responsible for adding new slot for partner
      */
     @PostMapping("/api/partners/{partnerId}/slots")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void addSlotToPartner(@RequestBody SlotDTO slotDTO, @PathVariable Long partnerId) {
         Partner partner = partnerService.getElementById(partnerId);
         partner.getSlots().add(convertToEntity(slotDTO));
@@ -94,6 +97,7 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
      * Endpoint responsible for updating slot details
      */
     @PutMapping("/api/partners/{partnerId}/slots/{slotId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void updateSlotById(@RequestBody SlotDTO slotDTO, @PathVariable Long partnerId, @PathVariable Long slotId) {
         if (!slotDTO.getId().equals(slotId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
 
@@ -111,6 +115,7 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
      * Endpoint responsible for deleting slot from database completely
      */
     @DeleteMapping("/api/partners/{partnerId}/slots/{slotId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void deleteSlot(@PathVariable Long partnerId, @PathVariable Long slotId) {
         Partner partner = partnerService.getElementById(partnerId);
         List<Slot> slots = partner.getSlots();

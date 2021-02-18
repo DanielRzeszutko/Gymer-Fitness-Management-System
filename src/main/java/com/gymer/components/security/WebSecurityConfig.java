@@ -1,11 +1,11 @@
-package com.gymer.security.common;
+package com.gymer.components.security;
 
-import com.gymer.security.common.filter.CORSFilter;
-import com.gymer.security.common.filter.JsonAuthenticationFilter;
-import com.gymer.security.login.JsonLogoutSuccessHandler;
-import com.gymer.security.login.LoginFailureHandler;
-import com.gymer.security.login.LoginService;
-import com.gymer.security.login.LoginSuccessHandler;
+import com.gymer.components.security.login.LoginService;
+import com.gymer.components.security.common.filter.CORSFilter;
+import com.gymer.components.security.common.filter.JsonAuthenticationFilter;
+import com.gymer.components.security.common.handler.JsonLogoutSuccessHandler;
+import com.gymer.components.security.common.handler.LoginFailureHandler;
+import com.gymer.components.security.common.handler.LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -44,6 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
+        http.cors();
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/js/**", "/css/**", "/img/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/me/**", "/logout").permitAll()

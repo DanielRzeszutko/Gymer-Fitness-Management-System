@@ -69,7 +69,7 @@ public class AddressControllerTest {
         mockMvc.perform(get("/api/addresses")
                 .header("Origin", "*")
                 .param("contains", "")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -79,7 +79,7 @@ public class AddressControllerTest {
 
         mockMvc.perform(get("/api/addresses")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -91,7 +91,7 @@ public class AddressControllerTest {
 
         mockMvc.perform(get("/api/addresses/1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -101,7 +101,7 @@ public class AddressControllerTest {
 
         mockMvc.perform(get("/api/addresses/-1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isNotFound());
     }
 
@@ -116,7 +116,7 @@ public class AddressControllerTest {
 
         mockMvc.perform(get("/api/partners/1/addresses/1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isOk());
     }
 
@@ -132,7 +132,7 @@ public class AddressControllerTest {
 
         mockMvc.perform(get("/api/partners/1/addresses/-1")
                 .header("Origin", "*")
-                .with(user("partner").roles("PARTNER")))
+                .with(user("partner").roles("ADMIN")))
                 .andExpect(status().isBadRequest());
     }
 
@@ -146,7 +146,7 @@ public class AddressControllerTest {
         given(partnerService.getElementById(1L)).willReturn(partner);
 
         mockMvc.perform(put("/api/partners/1/addresses/1")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(addressDTO))
                 .header("Origin", "*"))
@@ -163,7 +163,7 @@ public class AddressControllerTest {
         given(partnerService.getElementById(1L)).willReturn(partner);
 
         mockMvc.perform(put("/api/partners/1/addresses/2")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(addressDTO))
                 .header("Origin", "*"))
@@ -184,7 +184,7 @@ public class AddressControllerTest {
         given(partnerService.getElementById(1L)).willReturn(partner);
 
         mockMvc.perform(put("/api/partners/1/addresses/3")
-                .with(user("partner").roles("PARTNER"))
+                .with(user("partner").roles("ADMIN"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(addressDTO))
                 .header("Origin", "*"))
