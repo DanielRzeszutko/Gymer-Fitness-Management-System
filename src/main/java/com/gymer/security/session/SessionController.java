@@ -21,7 +21,8 @@ public class SessionController {
     public ActiveAccount getActiveAccount(Authentication authentication) {
         if (authentication == null || authentication.getPrincipal() == null) return null;
         AccountDetails details = (AccountDetails) authentication.getPrincipal();
-        return sessionService.getActiveAccountFromDetails(details);
+        Long activeAccountId = sessionService.getActiveAccountIdFromDetails(details);
+        return new ActiveAccount(activeAccountId, details.getCredential());
     }
 
 }
