@@ -3,7 +3,7 @@ package com.gymer.components.session;
 import com.gymer.api.credential.entity.Role;
 import com.gymer.api.partner.entity.PartnerDTO;
 import com.gymer.api.user.entity.UserDTO;
-import com.gymer.components.common.security.common.entity.AccountDetails;
+import com.gymer.components.security.common.entity.AccountDetails;
 import com.gymer.components.session.entity.ActiveAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

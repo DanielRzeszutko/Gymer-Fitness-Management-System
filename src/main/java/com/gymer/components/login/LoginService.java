@@ -2,7 +2,7 @@ package com.gymer.components.login;
 
 import com.gymer.api.credential.CredentialService;
 import com.gymer.api.credential.entity.Credential;
-import com.gymer.components.common.security.common.entity.AccountDetails;
+import com.gymer.components.security.common.entity.AccountDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

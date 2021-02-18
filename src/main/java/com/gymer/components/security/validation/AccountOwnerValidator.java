@@ -1,4 +1,4 @@
-package com.gymer.components.common.security.validation;
+package com.gymer.components.security.validation;
 
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.Role;
@@ -8,7 +8,7 @@ import com.gymer.api.partner.entity.PartnerDTO;
 import com.gymer.api.slot.SlotService;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.user.entity.UserDTO;
-import com.gymer.components.common.security.common.entity.AccountDetails;
+import com.gymer.components.security.common.entity.AccountDetails;
 import com.gymer.components.session.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

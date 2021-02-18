@@ -8,7 +8,7 @@ import com.gymer.api.partner.entity.PartnerDTO;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
 import com.gymer.api.user.entity.UserDTO;
-import com.gymer.components.common.security.common.entity.AccountDetails;
+import com.gymer.components.security.common.entity.AccountDetails;
 import com.gymer.components.session.entity.ActiveAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

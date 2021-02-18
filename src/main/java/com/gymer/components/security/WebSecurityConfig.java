@@ -1,11 +1,11 @@
-package com.gymer.components.common.security;
+package com.gymer.components.security;
 
-import com.gymer.components.common.security.common.filter.CORSFilter;
-import com.gymer.components.common.security.common.filter.JsonAuthenticationFilter;
-import com.gymer.components.login.JsonLogoutSuccessHandler;
-import com.gymer.components.login.LoginFailureHandler;
 import com.gymer.components.login.LoginService;
-import com.gymer.components.login.LoginSuccessHandler;
+import com.gymer.components.security.common.filter.CORSFilter;
+import com.gymer.components.security.common.filter.JsonAuthenticationFilter;
+import com.gymer.components.security.common.handler.JsonLogoutSuccessHandler;
+import com.gymer.components.security.common.handler.LoginFailureHandler;
+import com.gymer.components.security.common.handler.LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;

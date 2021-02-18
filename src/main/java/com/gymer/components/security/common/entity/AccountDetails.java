@@ -1,4 +1,4 @@
-package com.gymer.components.common.security.common.entity;
+package com.gymer.components.security.common.entity;
 
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.Role;
