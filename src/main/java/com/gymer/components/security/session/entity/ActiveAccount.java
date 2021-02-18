@@ -1,4 +1,4 @@
-package com.gymer.components.session.entity;
+package com.gymer.components.security.session.entity;
 
 import com.gymer.api.credential.entity.Credential;
 import lombok.AllArgsConstructor;

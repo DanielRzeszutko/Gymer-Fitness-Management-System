@@ -1,6 +1,6 @@
 package com.gymer.components.security;
 
-import com.gymer.components.login.LoginService;
+import com.gymer.components.security.login.LoginService;
 import com.gymer.components.security.common.filter.CORSFilter;
 import com.gymer.components.security.common.filter.JsonAuthenticationFilter;
 import com.gymer.components.security.common.handler.JsonLogoutSuccessHandler;

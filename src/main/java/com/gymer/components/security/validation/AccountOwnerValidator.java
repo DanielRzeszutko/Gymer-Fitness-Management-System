@@ -9,7 +9,7 @@ import com.gymer.api.slot.SlotService;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.user.entity.UserDTO;
 import com.gymer.components.security.common.entity.AccountDetails;
-import com.gymer.components.session.SessionService;
+import com.gymer.components.security.session.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;

@@ -1,4 +1,4 @@
-package com.gymer.components.login;
+package com.gymer.components.security.login;
 
 import com.gymer.api.credential.CredentialService;
 import com.gymer.api.credential.entity.Credential;
