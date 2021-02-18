@@ -1,13 +1,14 @@
 package com.gymer.security.common;
 
 import com.gymer.security.common.filter.CORSFilter;
+import com.gymer.security.common.filter.JsonAuthenticationFilter;
 import com.gymer.security.login.LoginService;
-import com.gymer.security.login.filter.JsonObjectAuthenticationFilter;
-import com.gymer.security.login.handler.LoginAuthenticationFailureHandler;
-import com.gymer.security.login.handler.LoginAuthenticationSuccessHandler;
+import com.gymer.security.login.LoginFailureHandler;
+import com.gymer.security.login.LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,13 +24,13 @@ import javax.servlet.Filter;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final LoginAuthenticationSuccessHandler successHandler;
-    private final LoginAuthenticationFailureHandler failureHandler;
+    private final LoginSuccessHandler successHandler;
+    private final LoginFailureHandler failureHandler;
     private final LoginService loginService;
     private final String frontUrl;
 
-    public WebSecurityConfig(LoginAuthenticationSuccessHandler successHandler,
-                             LoginAuthenticationFailureHandler failureHandler,
+    public WebSecurityConfig(LoginSuccessHandler successHandler,
+                             LoginFailureHandler failureHandler,
                              LoginService loginService, Environment environment) {
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
@@ -41,28 +42,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/api/partners",
-                        "/registration/**",
-                        "/login",
-                        "/js/**",
-                        "/css/**").permitAll()
-                .anyRequest()
-                .authenticated()
+                .antMatchers(HttpMethod.GET, "/js/**", "/css/**", "/img/**").permitAll()
+                .antMatchers("/api/**").permitAll()
+                .antMatchers("/login", "/registration/**").anonymous()
+                .antMatchers("/logout").authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling();
-//                .authenticationEntryPoint(new JsonResponseEntryPoint(HttpStatus.UNAUTHORIZED));
-
-
-        //.formLogin()
-//                .and()
-//                .logout().invalidateHttpSession(true).clearAuthentication(true)
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//                .logoutSuccessUrl("/login?logout").permitAll();
+                .exceptionHandling()
+                .and()
+                .logout()
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+                .logoutUrl("/logout")
+                .logoutSuccessUrl(frontUrl);
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authenticationProvider());
     }
 
@@ -85,8 +82,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JsonObjectAuthenticationFilter authenticationFilter() throws Exception {
-        JsonObjectAuthenticationFilter filter = new JsonObjectAuthenticationFilter();
+    public JsonAuthenticationFilter authenticationFilter() throws Exception {
+        JsonAuthenticationFilter filter = new JsonAuthenticationFilter();
         filter.setAuthenticationSuccessHandler(successHandler);
         filter.setAuthenticationFailureHandler(failureHandler);
         filter.setAuthenticationManager(super.authenticationManager());

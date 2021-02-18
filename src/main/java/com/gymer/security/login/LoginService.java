@@ -24,7 +24,7 @@ public class LoginService implements UserDetailsService {
             Credential credential = credentialService.getCredentialByEmail(email);
             return new AccountDetails(credential);
         } catch (ResponseStatusException e) {
-            throw new UsernameNotFoundException("Username not found :)");
+            throw new UsernameNotFoundException("Username not found.");
         }
 
     }

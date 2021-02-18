@@ -57,4 +57,8 @@ public class AccountDetails implements UserDetails {
         return true;
     }
 
+    public Credential getCredential() {
+        return credential;
+    }
+
 }
