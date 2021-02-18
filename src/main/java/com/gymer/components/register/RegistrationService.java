@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 import java.util.Collections;
 
 @Service
-public class RegistrationService {
+class RegistrationService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
