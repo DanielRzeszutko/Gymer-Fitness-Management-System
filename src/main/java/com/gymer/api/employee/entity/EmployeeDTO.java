@@ -11,14 +11,13 @@ import org.springframework.hateoas.RepresentationModel;
 public class EmployeeDTO extends RepresentationModel<EmployeeDTO> {
 
     private Long id;
-
     private String firstName;
     private String lastName;
     private String description;
     private String image;
 
     public EmployeeDTO(Employee employee) {
-        if (employee.getId() != null) this.id = employee.getId();
+        this.id = employee.getId();
         this.firstName = employee.getFirstName();
         this.lastName = employee.getLastName();
         this.description = employee.getDescription();
