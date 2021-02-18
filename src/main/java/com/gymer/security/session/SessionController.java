@@ -26,9 +26,8 @@ public class SessionController {
     @GetMapping("/me")
     @PreAuthorize("hasRole('PARTNER') or hasRole('USER')")
     public ActiveAccount getActiveAccount(Authentication authentication) {
-        if (service.isAccountNotLoggedOrEqualRole(authentication, Role.USER) && service.isAccountNotLoggedOrEqualRole(authentication, Role.PARTNER)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+        if (service.isPrincipalNonExist(authentication)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+
         AccountDetails details = (AccountDetails) authentication.getPrincipal();
         return service.getActiveAccountIdFromDetails(details);
     }
@@ -36,9 +35,8 @@ public class SessionController {
     @GetMapping("/me/partner")
     @PreAuthorize("hasRole('PARTNER')")
     public PartnerDTO getActivePartner(Authentication authentication) {
-        if (service.isAccountNotLoggedOrEqualRole(authentication, Role.PARTNER)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+        if (!service.isLoggedAsRole(authentication, Role.PARTNER)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+
         AccountDetails details = (AccountDetails) authentication.getPrincipal();
         return service.getActivePartnerAccountFromCredentials(details.getCredential());
     }
@@ -46,9 +44,8 @@ public class SessionController {
     @GetMapping("/me/user")
     @PreAuthorize("hasRole('USER')")
     public UserDTO getActiveUser(Authentication authentication) {
-        if (service.isAccountNotLoggedOrEqualRole(authentication, Role.USER)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+        if (!service.isLoggedAsRole(authentication, Role.USER)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+
         AccountDetails details = (AccountDetails) authentication.getPrincipal();
         return service.getActiveUserAccountFromCredentials(details.getCredential());
     }

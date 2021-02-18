@@ -34,8 +34,10 @@ public final class SessionService {
         return new ActiveAccount(activeAccountId, credential);
     }
 
-    public boolean isAccountNotLoggedOrEqualRole(Authentication authentication, Role role) {
-        return !isPrincipalExist(authentication) || !((AccountDetails) authentication.getPrincipal()).getCredential().getRole().equals(role);
+    public boolean isLoggedAsRole(Authentication authentication, Role role) {
+        if (isPrincipalNonExist(authentication)) return false;
+        Credential credential = ((AccountDetails) authentication.getPrincipal()).getCredential();
+        return credential.getRole().equals(role);
     }
 
     public PartnerDTO getActivePartnerAccountFromCredentials(Credential credential) {
@@ -48,7 +50,7 @@ public final class SessionService {
         return new UserDTO(user);
     }
 
-    private boolean isPrincipalExist(Authentication authentication) {
+    public boolean isPrincipalNonExist(Authentication authentication) {
         return authentication == null || authentication.getPrincipal() == null;
     }
 
