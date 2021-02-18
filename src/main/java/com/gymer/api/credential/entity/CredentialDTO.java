@@ -21,6 +21,7 @@ public class CredentialDTO extends RepresentationModel<CredentialDTO> {
     private boolean notSuspended;
     private boolean activated;
     private Timestamp registrationTime;
+    private String verificationCode;
 
     public CredentialDTO(Credential credential) {
         this.id = credential.getId();

@@ -38,9 +38,12 @@ public class Credential {
     @NotNull
     private boolean activated;
 
+    private String verificationCode;
+
     private Timestamp registrationTime;
 
-    public Credential(String email, String password, String phoneNumber, Role role, boolean notSuspended, boolean activated, Timestamp registrationTime) {
+    public Credential(String email, String password, String phoneNumber, Role role, boolean notSuspended,
+                      boolean activated, Timestamp registrationTime) {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
