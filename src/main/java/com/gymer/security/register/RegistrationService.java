@@ -1,4 +1,4 @@
-package com.gymer.components.register;
+package com.gymer.security.register;
 
 import com.gymer.api.address.entity.Address;
 import com.gymer.api.credential.CredentialService;
@@ -9,7 +9,7 @@ import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
 import com.gymer.components.common.entity.JsonResponse;
-import com.gymer.components.register.entity.RegistrationDetails;
+import com.gymer.security.register.entity.RegistrationDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,9 +36,7 @@ public class RegistrationService {
 
     public JsonResponse registerUser(RegistrationDetails details) {
         JsonResponse response = createJsonResponse(details);
-        if (response.isError()) {
-            return response;
-        }
+        if (response.isError()) return response;
 
         Credential credential = createCredentialBy(details, Role.USER);
         User user = new User("", "", credential);
@@ -48,9 +46,7 @@ public class RegistrationService {
 
     public JsonResponse registerPartner(RegistrationDetails details) {
         JsonResponse response = createJsonResponse(details);
-        if (response.isError()) {
-            return response;
-        }
+        if (response.isError()) return response;
 
         Credential credential = createCredentialBy(details, Role.PARTNER);
         Address address = new Address("", "", "", "");
@@ -63,7 +59,8 @@ public class RegistrationService {
     private JsonResponse createJsonResponse(RegistrationDetails userDetails) {
         if (!userDetails.getPassword().equals(userDetails.getConfirmPassword())) {
             return new JsonResponse("Passwords do not match.", true);
-        } else if (credentialService.isCredentialExistsByEmail(userDetails.getEmail())) {
+        }
+        if (credentialService.isCredentialExistsByEmail(userDetails.getEmail())) {
             return new JsonResponse("Account with this email already exists.", true);
         }
         return new JsonResponse("Registered successfully.", false);
@@ -73,7 +70,7 @@ public class RegistrationService {
         String codedPassword = passwordEncoder.encode(userDetails.getPassword());
         Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
         return new Credential(userDetails.getEmail(),
-                codedPassword, "", role, false, timestamp);
+                codedPassword, "", role, true, false, timestamp);
     }
 
 }

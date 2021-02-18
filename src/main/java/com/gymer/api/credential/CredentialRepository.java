@@ -17,4 +17,6 @@ interface CredentialRepository extends PagingAndSortingRepository<Credential, Lo
     Optional<Credential> findByEmailAndPhoneNumberAndRole(String email, String phoneNumber, Role role);
 
     boolean existsCredentialByEmail(String email);
+
+    Optional<Credential> getCredentialByEmail(String email);
 }
