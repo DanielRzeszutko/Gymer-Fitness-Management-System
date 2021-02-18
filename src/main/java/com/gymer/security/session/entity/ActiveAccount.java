@@ -8,7 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ActiveAccount {
 
-    private Long id;
     Credential credential;
+    private Long id;
 
 }
