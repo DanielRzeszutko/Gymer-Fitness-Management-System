@@ -37,7 +37,7 @@ public class JsonObjectAuthenticationFilter extends UsernamePasswordAuthenticati
                 String password = "";
 
                 if (!sb.toString().contains("password") || !sb.toString().contains("email")) {
-                    throw new AuthenticationCredentialsNotFoundException("Not found valid credentials.");
+                    throw new AuthenticationCredentialsNotFoundException("Invalid JSON request format, fields needed: email and password.");
                 }
 
                 if (sb.toString().contains("password") && sb.toString().contains("email")) {
@@ -49,13 +49,17 @@ public class JsonObjectAuthenticationFilter extends UsernamePasswordAuthenticati
                     password = password != null ? password : "";
                 }
 
+                if (username.equals("") || password.equals("")) {
+                    throw new AuthenticationCredentialsNotFoundException("Username or password is empty.");
+                }
+
                 UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
                 this.setDetails(request, authRequest);
                 setUsernameParameter(username);
                 setPasswordParameter(password);
                 return this.getAuthenticationManager().authenticate(authRequest);
             } catch (IOException e) {
-                throw new AuthenticationCredentialsNotFoundException("Not found valid credentials.");
+                throw new AuthenticationCredentialsNotFoundException("Unknown error, sorry. Please be patient.");
             }
         }
     }
