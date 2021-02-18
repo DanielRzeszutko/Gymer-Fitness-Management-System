@@ -1,6 +1,10 @@
-package com.gymer.security;
+package com.gymer.security.common;
 
-import com.gymer.components.login.LoginService;
+import com.gymer.security.common.filter.CORSFilter;
+import com.gymer.security.login.LoginService;
+import com.gymer.security.login.filter.JsonObjectAuthenticationFilter;
+import com.gymer.security.login.handler.LoginAuthenticationFailureHandler;
+import com.gymer.security.login.handler.LoginAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -21,13 +25,13 @@ import javax.servlet.Filter;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final RestAuthenticationSuccessHandler successHandler;
-    private final RestAuthenticationFailureHandler failureHandler;
+    private final LoginAuthenticationSuccessHandler successHandler;
+    private final LoginAuthenticationFailureHandler failureHandler;
     private final LoginService loginService;
     private final String frontUrl;
 
-    public WebSecurityConfig(RestAuthenticationSuccessHandler successHandler,
-                             RestAuthenticationFailureHandler failureHandler,
+    public WebSecurityConfig(LoginAuthenticationSuccessHandler successHandler,
+                             LoginAuthenticationFailureHandler failureHandler,
                              LoginService loginService, Environment environment) {
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
@@ -52,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 
 
-                //.formLogin()
+        //.formLogin()
 //                .and()
 //                .logout().invalidateHttpSession(true).clearAuthentication(true)
 //                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

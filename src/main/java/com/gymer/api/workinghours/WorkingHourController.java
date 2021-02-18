@@ -45,8 +45,8 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
     @Override
     @GetMapping("/api/workinghours")
     public PagedModel<EntityModel<WorkingHourDTO>> getAllElementsSortable(Pageable pageable,
-                                                             @RequestParam(required = false, name = "contains") String searchBy,
-                                                             PagedResourcesAssembler<WorkingHourDTO> assembler) {
+                                                                          @RequestParam(required = false, name = "contains") String searchBy,
+                                                                          PagedResourcesAssembler<WorkingHourDTO> assembler) {
         return super.getAllElementsSortable(pageable, searchBy, assembler);
     }
 
@@ -164,8 +164,8 @@ public class WorkingHourController extends AbstractRestApiController<WorkingHour
         Employee employee = employeeService.getElementById(employeeId);
         WorkingHour workingHour = service.getElementById(workingHourId);
         if (partner.getEmployees().contains(employee) && employee.getWorkingHours().contains(workingHour)) {
-			return convertToDTO(workingHour);
-		}
+            return convertToDTO(workingHour);
+        }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
