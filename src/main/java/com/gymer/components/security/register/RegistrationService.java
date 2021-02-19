@@ -46,9 +46,8 @@ class RegistrationService {
         Credential credential = createCredentialBy(details, Role.USER);
         User user = new User("", "", credential);
         userService.updateElement(user);
-        if (userService.isElementExistById(user.getId())){ //TODO think about better validation
-            emailSender.sendVerificationEmail(credential, siteURL);
-        }
+        emailSender.sendVerificationEmail(credential, siteURL);
+
         return response;
     }
 
@@ -61,13 +60,15 @@ class RegistrationService {
         Partner partner = new Partner("", "", "", "", "", credential, address,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         partnerService.updateElement(partner);
-        if (partnerService.isElementExistById(partner.getId())) { //TODO think about better validation
-            emailSender.sendVerificationEmail(credential, siteURL);
-        }
+        emailSender.sendVerificationEmail(credential, siteURL);
+
         return response;
     }
 
     private JsonResponse createJsonResponse(RegistrationDetails userDetails) {
+        if (userDetails.getEmail() == null || userDetails.getPassword() == null || userDetails.getConfirmPassword() == null) {
+            return new JsonResponse("Invalid Json format. Should contain email password and confirmPassword", true);
+        }
         if (!userDetails.getPassword().equals(userDetails.getConfirmPassword())) {
             return new JsonResponse("Passwords do not match.", true);
         }
