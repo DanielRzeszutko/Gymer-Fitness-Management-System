@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.gymer.api.credential.CredentialService;
 import com.gymer.api.credential.entity.Credential;
+import com.gymer.components.security.common.entity.TokenType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -33,30 +35,68 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     @Autowired
     private CredentialService credentialService;
 
+    private final String TOKEN_HEADER_NAME = "Authorization";;
+    final String TOKEN_STARTER = "Bearer ";
+    final String COOKIE_STARTER = "exo";
+
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String tokenHeader = request.getHeader("Authorization");
-        if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) {
+        String cookieToken = isTokenExistAndIfGetTokenFromCookie(request.getCookies());
+        if (cookieToken == null || !cookieToken.startsWith(COOKIE_STARTER)) {
             chain.doFilter(request, response);
             return;
         }
 
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwtToken = request.getHeader(TOKEN_HEADER_NAME);
+        if (jwtToken == null || !jwtToken.startsWith(TOKEN_STARTER)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        UsernamePasswordAuthenticationToken cookieAuthentication = getAuthentication(cookieToken, TokenType.COOKIE);
+        if (cookieAuthentication == null) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        UsernamePasswordAuthenticationToken jwtAuthentication = getAuthentication(jwtToken, TokenType.JWT);
+        if (jwtAuthentication == null) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        if (!authenticationUserEquals(cookieAuthentication, jwtAuthentication)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(jwtAuthentication);
         chain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String tokenHeader = request.getHeader("Authorization");
-        if (tokenHeader != null) {
-            String userEmail = decodeJwtUserEmail(tokenHeader);
-            return tryToGetAuthenticationToken(userEmail);
+    private boolean authenticationUserEquals(UsernamePasswordAuthenticationToken cookieAuthentication,
+                                             UsernamePasswordAuthenticationToken jwtAuthentication) {
+        return (cookieAuthentication.getPrincipal()).equals(jwtAuthentication.getPrincipal());
+    }
+
+    private String isTokenExistAndIfGetTokenFromCookie(Cookie[] cookies) {
+        if (cookies == null) return null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(TOKEN_HEADER_NAME)) {
+                return cookie.getValue();
+            }
         }
         return null;
+    }
+
+    private UsernamePasswordAuthenticationToken getAuthentication(String token, TokenType tokenType) {
+        if (token == null) return null;
+        String userEmail = decodeToken(token, tokenType);
+        return tryToGetAuthenticationToken(userEmail);
     }
 
     private UsernamePasswordAuthenticationToken tryToGetAuthenticationToken(String userEmail) {
@@ -72,16 +112,36 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         return null;
     }
 
-    private String decodeJwtUserEmail(String tokenHeader) {
-        String token = tokenHeader.substring(7);
+    private String decodeToken(String token, TokenType tokenType) {
+        if (tokenType.equals(TokenType.COOKIE)) {
+            return decodeTokenFromCookie(token);
+        }
+        return decodeTokenFromJwt(token);
+    }
 
-        String secretKey = environment.getProperty("jwt.secret.password");
-        secretKey = secretKey != null ? secretKey : "";
-
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC512(secretKey)).build();
+    private String decodeTokenWithAlgorithm(String token, Algorithm algorithm) {
+        JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(token);
 
         return decodedJWT.getSubject();
+    }
+
+    private String decodeTokenFromCookie(String token) {
+        token = token.substring(3);
+        String cookieSecretKey = environment.getProperty("cookie.secret.password");
+        cookieSecretKey = cookieSecretKey != null ? cookieSecretKey : "";
+        Algorithm algorithm = Algorithm.HMAC384(cookieSecretKey);
+
+        return decodeTokenWithAlgorithm(token, algorithm);
+    }
+
+    private String decodeTokenFromJwt(String token) {
+        token = token.substring(7);
+        String jwtSecretKey = environment.getProperty("jwt.secret.password");
+        jwtSecretKey = jwtSecretKey != null ? jwtSecretKey : "";
+        Algorithm algorithm = Algorithm.HMAC512(jwtSecretKey);
+
+        return decodeTokenWithAlgorithm(token, algorithm);
     }
 
 }
