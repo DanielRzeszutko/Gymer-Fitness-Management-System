@@ -1,5 +1,6 @@
 package com.gymer.components.security.session;
 
+import com.gymer.api.credential.CredentialService;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.Role;
 import com.gymer.api.partner.PartnerService;
@@ -13,41 +14,62 @@ import com.gymer.components.security.session.entity.ActiveAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public final class SessionService {
 
     private final PartnerService partnerService;
     private final UserService userService;
+    private final CredentialService credentialService;
 
     @Autowired
-    public SessionService(PartnerService partnerService, UserService userService) {
+    public SessionService(PartnerService partnerService, UserService userService, CredentialService credentialService) {
         this.partnerService = partnerService;
         this.userService = userService;
+        this.credentialService = credentialService;
     }
 
-    public ActiveAccount getActiveAccountIdFromDetails(AccountDetails details) {
-        Credential credential = details.getCredential();
-        Long activeAccountId = credential.getRole().equals(Role.PARTNER)
-                ? partnerService.getByCredentials(credential).getId()
-                : userService.getByCredentials(credential).getId();
-        return new ActiveAccount(credential, activeAccountId);
+    public ActiveAccount getActiveAccountIdFromDetails(Authentication authentication) {
+        try {
+            Credential credential = credentialService.getCredentialByEmail((String) authentication.getPrincipal());
+            Long activeAccountId = credential.getRole().equals(Role.PARTNER)
+                    ? partnerService.getByCredentials(credential).getId()
+                    : userService.getByCredentials(credential).getId();
+            return new ActiveAccount(credential, activeAccountId);
+        } catch (ResponseStatusException e) {
+            return null;
+        }
     }
 
     public boolean isLoggedAsRole(Authentication authentication, Role role) {
         if (isPrincipalNonExist(authentication)) return false;
-        Credential credential = ((AccountDetails) authentication.getPrincipal()).getCredential();
-        return credential.getRole().equals(role);
+        try {
+            Credential credential = credentialService.getCredentialByEmail((String) authentication.getPrincipal());
+            return credential.getRole().equals(role);
+        } catch (ResponseStatusException e) {
+            return false;
+        }
     }
 
-    public PartnerDTO getActivePartnerAccountFromCredentials(Credential credential) {
-        Partner partner = partnerService.getByCredentials(credential);
-        return new PartnerDTO(partner);
+    public PartnerDTO getActivePartnerAccountFromCredentials(Authentication authentication) {
+        try {
+            Credential credential = credentialService.getCredentialByEmail((String) authentication.getPrincipal());
+            Partner partner = partnerService.getByCredentials(credential);
+            return new PartnerDTO(partner);
+        } catch (ResponseStatusException e) {
+            return null;
+        }
     }
 
-    public UserDTO getActiveUserAccountFromCredentials(Credential credential) {
-        User user = userService.getByCredentials(credential);
-        return new UserDTO(user);
+    public UserDTO getActiveUserAccountFromCredentials(Authentication authentication) {
+        try {
+            Credential credential = credentialService.getCredentialByEmail((String) authentication.getPrincipal());
+            User user = userService.getByCredentials(credential);
+            return new UserDTO(user);
+        } catch (ResponseStatusException e) {
+            return null;
+        }
     }
 
     public boolean isPrincipalNonExist(Authentication authentication) {

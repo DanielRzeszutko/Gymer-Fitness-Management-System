@@ -67,7 +67,6 @@ public class JsonAuthenticationFilter extends UsernamePasswordAuthenticationFilt
         }
     }
 
-
     private StringBuilder getBuilder(HttpServletRequest request) throws IOException {
         BufferedReader reader = request.getReader();
         StringBuilder sb = new StringBuilder();
