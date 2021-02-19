@@ -9,7 +9,6 @@ import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.user.UserService;
 import com.gymer.api.user.entity.User;
 import com.gymer.components.common.entity.JsonResponse;
-import com.gymer.components.common.mailing.EmailSender;
 import com.gymer.components.security.register.entity.RegistrationDetails;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +25,17 @@ class RegistrationService {
     private final UserService userService;
     private final PartnerService partnerService;
     private final CredentialService credentialService;
-    private final EmailSender emailSender;
+    private final VerificationEmailService emailService;
 
     @Autowired
     public RegistrationService(PasswordEncoder passwordEncoder, UserService userService,
                                PartnerService partnerService, CredentialService credentialService,
-                               EmailSender emailSender) {
+                               VerificationEmailService emailService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.partnerService = partnerService;
         this.credentialService = credentialService;
-        this.emailSender = emailSender;
+        this.emailService = emailService;
     }
 
     public JsonResponse registerUser(RegistrationDetails details, String siteURL) {
@@ -46,7 +45,7 @@ class RegistrationService {
         Credential credential = createCredentialBy(details, Role.USER);
         User user = new User("", "", credential);
         userService.updateElement(user);
-        emailSender.sendVerificationEmail(credential, siteURL);
+        emailService.sendVerificationEmail(credential, siteURL);
 
         return response;
     }
@@ -60,7 +59,7 @@ class RegistrationService {
         Partner partner = new Partner("", "", "", "", "", credential, address,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         partnerService.updateElement(partner);
-        emailSender.sendVerificationEmail(credential, siteURL);
+        emailService.sendVerificationEmail(credential, siteURL);
 
         return response;
     }
