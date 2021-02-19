@@ -66,6 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl("/logout")
+                .clearAuthentication(true)
+                .deleteCookies("Authorization")
                 .logoutSuccessHandler(logoutSuccessHandler)
                 .logoutSuccessUrl(frontUrl);
     }
