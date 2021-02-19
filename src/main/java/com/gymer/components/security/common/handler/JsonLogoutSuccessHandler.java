@@ -18,10 +18,10 @@ public class JsonLogoutSuccessHandler implements LogoutSuccessHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
+    public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse response, Authentication authentication) throws IOException {
         JsonResponse message = new JsonResponse("Successfully logged out.", false);
 
+        response.setHeader("Authorization", "");
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json");
         response.getWriter().write(objectMapper.writeValueAsString(message));

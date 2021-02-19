@@ -1,7 +1,7 @@
 package com.gymer.components.security;
 
+import com.gymer.components.security.common.filter.JWTAuthorizationFilter;
 import com.gymer.components.security.login.LoginService;
-import com.gymer.components.security.common.filter.CORSFilter;
 import com.gymer.components.security.common.filter.JsonAuthenticationFilter;
 import com.gymer.components.security.common.handler.JsonLogoutSuccessHandler;
 import com.gymer.components.security.common.handler.LoginFailureHandler;
@@ -10,16 +10,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.servlet.Filter;
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -32,8 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final String frontUrl;
 
     public WebSecurityConfig(JsonLogoutSuccessHandler logoutSuccessHandler, LoginSuccessHandler successHandler,
-                             LoginFailureHandler failureHandler,
-                             LoginService loginService, Environment environment) {
+                             LoginFailureHandler failureHandler, LoginService loginService, Environment environment) {
         this.logoutSuccessHandler = logoutSuccessHandler;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
@@ -43,55 +46,62 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.cors();
+        http.cors().and().csrf().disable();
+
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/js/**", "/css/**", "/img/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/me/**", "/logout").permitAll()
-                .antMatchers(HttpMethod.POST, "/login", "/registration/**").anonymous()
-
-                .antMatchers(HttpMethod.POST, "/api/**").authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
-                .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
+                .antMatchers(HttpMethod.GET, "/me", "/logout").permitAll()
+                .antMatchers(HttpMethod.POST, "/login", "/registration/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-
+                .antMatchers(HttpMethod.POST, "/api/**").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
+                .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
                 .antMatchers("/slotuser/**").permitAll()
                 .antMatchers("/slotemployee/**").authenticated()
                 .anyRequest().authenticated()
-
                 .and()
-                .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
+                .addFilter(authenticationFilter())
+                .addFilter(authorizationFilter())
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .logout()
-                .clearAuthentication(true)
-                .deleteCookies("JSESSIONID")
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(logoutSuccessHandler)
                 .logoutSuccessUrl(frontUrl);
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authenticationProvider());
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(loginService).passwordEncoder(getPasswordEncoder());
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setPasswordEncoder(getPasswordEncoder());
-        auth.setUserDetailsService(loginService);
-        return auth;
+    AuthenticationManager getAuthenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 
     @Bean
-    public Filter getCustomCORSFilter() {
-        return new CORSFilter();
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList(frontUrl));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "X-Requested-With", "remember-me", "Authorization"));
+        configuration.setMaxAge(3600L);
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder(10);
+    }
+
+    @Bean
+    public JWTAuthorizationFilter authorizationFilter() throws Exception {
+        return new JWTAuthorizationFilter(super.authenticationManager());
     }
 
     @Bean

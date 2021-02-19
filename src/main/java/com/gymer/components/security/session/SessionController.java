@@ -24,12 +24,10 @@ public class SessionController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('PARTNER') or hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('PARTNER')")
     public ActiveAccount getActiveAccount(Authentication authentication) {
         if (service.isPrincipalNonExist(authentication)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-
-        AccountDetails details = (AccountDetails) authentication.getPrincipal();
-        return service.getActiveAccountIdFromDetails(details);
+        return service.getActiveAccountIdFromDetails(authentication);
     }
 
     @GetMapping("/me/partner")
@@ -37,9 +35,7 @@ public class SessionController {
     public PartnerDTO getActivePartner(Authentication authentication) {
         if (!service.isLoggedAsRole(authentication, Role.PARTNER))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-
-        AccountDetails details = (AccountDetails) authentication.getPrincipal();
-        return service.getActivePartnerAccountFromCredentials(details.getCredential());
+        return service.getActivePartnerAccountFromCredentials(authentication);
     }
 
     @GetMapping("/me/user")
@@ -47,9 +43,7 @@ public class SessionController {
     public UserDTO getActiveUser(Authentication authentication) {
         if (!service.isLoggedAsRole(authentication, Role.USER))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-
-        AccountDetails details = (AccountDetails) authentication.getPrincipal();
-        return service.getActiveUserAccountFromCredentials(details.getCredential());
+        return service.getActiveUserAccountFromCredentials(authentication);
     }
 
 }
