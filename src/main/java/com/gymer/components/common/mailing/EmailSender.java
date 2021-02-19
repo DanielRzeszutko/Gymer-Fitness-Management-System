@@ -14,58 +14,56 @@ import java.util.Scanner;
 @Component
 public class EmailSender {
 
-	private final Environment environment;
-	private final JavaMailSender javaMailSender;
+    private final Environment environment;
+    private final JavaMailSender javaMailSender;
 
-	public EmailSender(Environment environment, JavaMailSender mailSender) {
-		this.environment = environment;
-		this.javaMailSender = mailSender;
-	}
+    public EmailSender(Environment environment, JavaMailSender mailSender) {
+        this.environment = environment;
+        this.javaMailSender = mailSender;
+    }
 
-	public void sendEmail(MailingDetails mailingDetails) {
-		try {
-			String mailBefore = readFileFromResourcesToString("src/main/resources/mailTemplate/mailBefore.html");
-			String mailAfter = readFileFromResourcesToString("src/main/resources/mailTemplate/mailAfter.html");
-			String addressFrom = environment.getProperty("spring.mail.username");
-			String content = mailBefore + mailingDetails.getMessage() + mailAfter;
+    public void sendEmail(MailingDetails mailingDetails) {
+        try {
+            String mailBefore = readFileFromResourcesToString("src/main/resources/mailTemplate/mailBefore.html");
+            String mailAfter = readFileFromResourcesToString("src/main/resources/mailTemplate/mailAfter.html");
+            String addressFrom = environment.getProperty("spring.mail.username");
+            String content = mailBefore + mailingDetails.getMessage() + mailAfter;
 
-			MimeMessage message = javaMailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message);
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
 
-			assert addressFrom != null;
-			helper.setFrom(addressFrom, "Team Gymer" );
-			helper.setTo(mailingDetails.getMailTo());
-			helper.setSubject(mailingDetails.getSubject());
+            assert addressFrom != null;
+            helper.setFrom(addressFrom, "Team Gymer");
+            helper.setTo(mailingDetails.getMailTo());
+            helper.setSubject(mailingDetails.getSubject());
 
+            helper.setText(content, true);
+            javaMailSender.send(message);
 
-			helper.setText(content, true);
-			javaMailSender.send(message);
+        } catch (FileNotFoundException e) {
+            System.out.println("Read html files from resource folder unsuccessful");
+        } catch (
+                MessagingException e) {
+            System.out.println("Can't send message or connect with mail service");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
 
-		} catch (FileNotFoundException e) {
-			System.out.println("Read html files from resource folder unsuccessful");
-		} catch (
-				MessagingException e) {
-			System.out.println("Can't send message or connect with mail service");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-	}
+    private String readFileFromResourcesToString(String filename) throws FileNotFoundException {
+        StringBuilder textFile = new StringBuilder();
+        File file = new File(filename);
+        InputStream is = new FileInputStream(file);
 
-
-	private String readFileFromResourcesToString(String filename) throws FileNotFoundException {
-		StringBuilder textFile = new StringBuilder();
-		File file = new File(filename);
-		InputStream is = new FileInputStream(file);
-
-		try {
-			Scanner scanner = new Scanner(is);
-			while (scanner.hasNextLine()) {
-				textFile.append(scanner.nextLine());
-			}
-		} catch (NullPointerException e) {
-			System.out.println("File not found");
-		}
-		return textFile.toString();
-	}
+        try {
+            Scanner scanner = new Scanner(is);
+            while (scanner.hasNextLine()) {
+                textFile.append(scanner.nextLine());
+            }
+        } catch (NullPointerException e) {
+            System.out.println("File not found");
+        }
+        return textFile.toString();
+    }
 
 }
