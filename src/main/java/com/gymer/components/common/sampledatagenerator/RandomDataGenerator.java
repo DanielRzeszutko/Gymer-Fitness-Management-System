@@ -50,7 +50,6 @@ class RandomDataGenerator {
         this.userService = userService;
     }
 
-    @PostConstruct
     public void init() throws FileNotFoundException {
         nameList = readDataFromFile("names.txt");
         surnameList = readDataFromFile("surnames.txt");
