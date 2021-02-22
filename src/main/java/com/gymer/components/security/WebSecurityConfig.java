@@ -54,18 +54,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/v2/**", "/js/**", "/css/**", "/img/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/me", "/logout", "/verify").permitAll()
-
-                // for tests only
-                .antMatchers("/populate").permitAll()
-
-                .antMatchers(HttpMethod.POST, "/login", "/registration/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/me", "/api/logout", "/api/verify").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/login", "/api/registration/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/**").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
-                .antMatchers("/slotuser/**").permitAll()
-                .antMatchers("/slotemployee/**").authenticated()
+                .antMatchers("/api/slotuser/**").permitAll()
+                .antMatchers("/api/slotemployee/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(authenticationFilter())
@@ -117,6 +113,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JsonAuthenticationFilter authenticationFilter() throws Exception {
         JsonAuthenticationFilter filter = new JsonAuthenticationFilter();
+        filter.setFilterProcessesUrl("/api/login");
         filter.setAuthenticationSuccessHandler(successHandler);
         filter.setAuthenticationFailureHandler(failureHandler);
         filter.setAuthenticationManager(super.authenticationManager());

@@ -10,7 +10,7 @@ import springfox.documentation.spring.web.json.Json;
 import java.io.FileNotFoundException;
 
 @RestController
-@RequestMapping("/populate")
+@RequestMapping("/api/populate")
 public class PopulateController {
 
     private final RandomDataGenerator dataGenerator;
