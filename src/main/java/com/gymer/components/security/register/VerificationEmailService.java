@@ -3,16 +3,20 @@ package com.gymer.components.security.register;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.components.common.entity.MailingDetails;
 import com.gymer.components.common.mailing.EmailSender;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 @Service
 class VerificationEmailService {
 
-    private final EmailSender emailSender;
+	private final Environment environment;
+	private final EmailSender emailSender;
 
-    public VerificationEmailService(EmailSender emailSender) {
-        this.emailSender = emailSender;
-    }
+
+	public VerificationEmailService(Environment environment, EmailSender emailSender) {
+		this.environment = environment;
+		this.emailSender = emailSender;
+	}
 
     public void sendVerificationEmail(Credential credential, String siteURL) {
         String emailTo = credential.getEmail();
@@ -29,9 +33,9 @@ class VerificationEmailService {
                 + "Thank you,<br>"
                 + "Team Gymer.";
 
-        String verifyURL = siteURL + "/verify?code=" + credential.getVerificationCode();
-        return content.replace("[[URL]]", verifyURL);
-    }
+		String verifyURL = environment.getProperty("server.address.frontend") + "/verify?code=" + credential.getVerificationCode();
+		return content.replace("[[URL]]", verifyURL);
+	}
 
     private String createSubject() {
         return "Please verify your registration";
