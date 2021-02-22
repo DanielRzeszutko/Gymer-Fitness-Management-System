@@ -1,12 +1,16 @@
 package com.gymer.components.common.sampledatagenerator;
 
+import com.gymer.components.common.entity.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.spring.web.json.Json;
 
 import java.io.FileNotFoundException;
 
-@RestController("/populate")
+@RestController
+@RequestMapping("/populate")
 public class PopulateController {
 
     private final RandomDataGenerator dataGenerator;
@@ -17,11 +21,12 @@ public class PopulateController {
     }
 
     @GetMapping
-    public void populateDB() {
+    public JsonResponse populateDB() {
         try {
             dataGenerator.init();
+            return new JsonResponse("Test data initialized.", false);
         } catch (FileNotFoundException e) {
-            System.out.println(e);
+            return new JsonResponse("Error with initializing test data.", true);
         }
     }
 
