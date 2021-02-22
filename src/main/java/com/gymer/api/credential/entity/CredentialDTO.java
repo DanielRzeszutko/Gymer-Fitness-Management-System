@@ -18,7 +18,6 @@ public class CredentialDTO extends RepresentationModel<CredentialDTO> {
     private String password;
     private String phoneNumber;
     private Role role;
-    private boolean notSuspended;
     private boolean activated;
     private Timestamp registrationTime;
     private String verificationCode;
@@ -29,7 +28,6 @@ public class CredentialDTO extends RepresentationModel<CredentialDTO> {
         this.password = credential.getPassword();
         this.phoneNumber = credential.getPhoneNumber();
         this.role = credential.getRole();
-        this.notSuspended = credential.isNotSuspended();
         this.activated = credential.isActivated();
         this.registrationTime = credential.getRegistrationTime();
     }
