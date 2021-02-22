@@ -23,14 +23,14 @@ public class SessionController {
         this.service = sessionService;
     }
 
-    @GetMapping("/me")
+    @GetMapping("/api/me")
     @PreAuthorize("hasRole('USER') or hasRole('PARTNER')")
     public ActiveAccount getActiveAccount(Authentication authentication) {
         if (service.isPrincipalNonExist(authentication)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         return service.getActiveAccountIdFromDetails(authentication);
     }
 
-    @GetMapping("/me/partner")
+    @GetMapping("/api/me/partner")
     @PreAuthorize("hasRole('PARTNER')")
     public PartnerDTO getActivePartner(Authentication authentication) {
         if (!service.isLoggedAsRole(authentication, Role.PARTNER))
@@ -38,7 +38,7 @@ public class SessionController {
         return service.getActivePartnerAccountFromCredentials(authentication);
     }
 
-    @GetMapping("/me/user")
+    @GetMapping("/api/me/user")
     @PreAuthorize("hasRole('USER')")
     public UserDTO getActiveUser(Authentication authentication) {
         if (!service.isLoggedAsRole(authentication, Role.USER))

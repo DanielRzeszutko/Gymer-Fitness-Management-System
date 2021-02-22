@@ -16,7 +16,7 @@ public class VerificationController {
         this.verificationService = verificationService;
     }
 
-    @GetMapping("/verify")
+    @GetMapping("/api/verify")
     public JsonResponse verifyAccount(@RequestParam("code") String code) {
         return verificationService.verify(code);
     }
