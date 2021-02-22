@@ -153,7 +153,7 @@ class RandomDataGenerator {
 
     private Credential getRandomCredential(String name, String secondName, Role role) {
         Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
-        return new Credential(getRandomEmail(name, secondName), getRandomPassword(), getRandomPhoneNumber(), role, true, true, timestamp);
+        return new Credential(getRandomEmail(name, secondName), getRandomPassword(), getRandomPhoneNumber(), role, true, timestamp);
     }
 
     private String createRandomWord(int length) {

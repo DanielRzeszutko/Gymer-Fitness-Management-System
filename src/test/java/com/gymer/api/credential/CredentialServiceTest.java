@@ -36,7 +36,7 @@ public class CredentialServiceTest {
 
     @Test
     public void should_returnPageOfCredentials_when_findAllContainingWithValidData() {
-        given(credentialRepository.findAllByEmailContainsOrPhoneNumberContains("", "", pageable)).willReturn(page);
+        given(credentialRepository.findAllByEmailContainsOrPhoneNumberContainsAndActivatedIsTrue("", "", pageable)).willReturn(page);
 
         Page<Credential> obtainedPage = credentialService.findAllContaining(pageable, "");
 
@@ -45,8 +45,8 @@ public class CredentialServiceTest {
 
     @Test
     public void should_returnPageOfCredentials_when_getCredentialFromEmailPhoneAndRoleOrCreateNewOneWithValidData() {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
-        given(credentialRepository.findByEmailAndPhoneNumberAndRole("", "", Role.USER)).willReturn(Optional.of(credential));
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
+        given(credentialRepository.findByEmailAndPhoneNumberAndRoleAndActivatedIsTrue("", "", Role.USER)).willReturn(Optional.of(credential));
 
         Credential obtainedCredential = credentialService.getCredentialFromEmailPhoneAndRoleOrCreateNewOne("", "", Role.USER);
 
@@ -64,7 +64,7 @@ public class CredentialServiceTest {
 
     @Test
     public void should_returnValidCredential_when_getElementByIdWithValidId() {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
         given(credentialRepository.findById(1L)).willReturn(Optional.of(credential));
 
@@ -82,9 +82,9 @@ public class CredentialServiceTest {
 
     @Test
     public void should_returnCredentialWithUpdatedId_when_updateElementWithNewAddress() {
-        Credential expectedCredential = new Credential("", "", "123", Role.USER, true, false, timestamp);
+        Credential expectedCredential = new Credential("", "", "123", Role.USER, true, timestamp);
         expectedCredential.setId(1L);
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
         given(credentialRepository.findById(1L)).willReturn(Optional.of(credential));
 
@@ -115,9 +115,9 @@ public class CredentialServiceTest {
 
     private Page<Credential> getTestPageData() {
         List<Credential> credentials = new LinkedList<>();
-        credentials.add(new Credential("", "", "", Role.USER, true, false, timestamp));
-        credentials.add(new Credential("", "", "", Role.USER, true, false, timestamp));
-        credentials.add(new Credential("", "", "", Role.USER, true, false, timestamp));
+        credentials.add(new Credential("", "", "", Role.USER, true, timestamp));
+        credentials.add(new Credential("", "", "", Role.USER, true, timestamp));
+        credentials.add(new Credential("", "", "", Role.USER, true, timestamp));
         return new PageImpl<>(credentials);
     }
 

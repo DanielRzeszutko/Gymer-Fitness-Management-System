@@ -21,10 +21,35 @@ public class PartnerService extends AbstractRestApiService<Partner, Long> {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<Partner> getAllElements(Pageable pageable) {
+        return ((PartnerRepository) repository).findAllByCredentialActivatedIsTrue(pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Partner getElementById(Long elementId) {
+        return ((PartnerRepository) repository).findByIdAndCredentialActivatedIsTrue(elementId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isElementExistById(Long elementId) {
+        return ((PartnerRepository) repository).existsByIdAndCredentialActivatedIsTrue(elementId);
+    }
+
+    /**
      * Service method responsible for changing status of partner to deactivated
      */
     public void deletePartner(Partner partner) {
-        partner.getCredential().setNotSuspended(false);
+        partner.getCredential().setActivated(false);
         repository.save(partner);
     }
 
@@ -40,7 +65,7 @@ public class PartnerService extends AbstractRestApiService<Partner, Long> {
      * Service method responsible for obtaining Partner by slot
      */
     public Partner findPartnerContainingSlot(Slot slot) {
-        return ((PartnerRepository) repository).findBySlotsContaining(slot).orElseThrow(
+        return ((PartnerRepository) repository).findBySlotsContainingAndCredentialActivatedIsTrue(slot).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -48,7 +73,7 @@ public class PartnerService extends AbstractRestApiService<Partner, Long> {
      * Service method responsible for obtaining Partner by employee
      */
     public Partner findPartnerContainingEmployee(Employee employee) {
-        return ((PartnerRepository) repository).findByEmployeesContaining(employee).orElseThrow(
+        return ((PartnerRepository) repository).findByEmployeesContainingAndCredentialActivatedIsTrue(employee).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -57,7 +82,7 @@ public class PartnerService extends AbstractRestApiService<Partner, Long> {
      */
     @Override
     public Page<Partner> findAllContaining(Pageable pageable, String searchBy) {
-        return ((PartnerRepository) repository).findAllByNameContainsOrDescriptionContains(searchBy, searchBy, pageable);
+        return ((PartnerRepository) repository).findAllByNameContainsOrDescriptionContainsAndCredentialActivatedIsTrue(searchBy, searchBy, pageable);
     }
 
 }
