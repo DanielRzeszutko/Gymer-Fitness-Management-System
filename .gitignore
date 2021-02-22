@@ -41,4 +41,3 @@ mvnw.cmd
 
 ### Custom
 src/main/resources/sampleData
-src/main/resources/application.properties
