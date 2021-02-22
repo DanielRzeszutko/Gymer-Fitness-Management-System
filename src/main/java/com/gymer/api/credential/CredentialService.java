@@ -54,5 +54,9 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    public Credential getCredentialByVerificationCode(String code) {
+        return ((CredentialRepository) repository).findCredentialByVerificationCode(code).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
 
 }
