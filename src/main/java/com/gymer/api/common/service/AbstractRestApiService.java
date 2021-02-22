@@ -42,6 +42,7 @@ public abstract class AbstractRestApiService<T, V> implements RestApiServiceBeha
     /**
      * Service method returning true if element with specified Id exist in database
      */
+    @Override
     public boolean isElementExistById(V elementId) {
         return repository.existsById(elementId);
     }

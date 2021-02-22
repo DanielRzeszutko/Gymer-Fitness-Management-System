@@ -4,6 +4,7 @@ import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
+import com.gymer.api.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -14,12 +15,18 @@ import java.util.Optional;
 @Repository
 public interface PartnerRepository extends PagingAndSortingRepository<Partner, Long> {
 
-    Page<Partner> findAllByNameContainsOrDescriptionContains(String name, String description, Pageable pageable);
+    boolean existsByIdAndCredentialActivatedIsTrue(Long id);
 
-    Optional<Partner> findBySlotsContaining(Slot slot);
+    Page<Partner> findAllByCredentialActivatedIsTrue(Pageable pageable);
+
+    Optional<Partner> findByIdAndCredentialActivatedIsTrue(Long id);
+
+    Page<Partner> findAllByNameContainsOrDescriptionContainsAndCredentialActivatedIsTrue(String name, String description, Pageable pageable);
+
+    Optional<Partner> findBySlotsContainingAndCredentialActivatedIsTrue(Slot slot);
 
     Optional<Partner> findByCredential(Credential credential);
 
-    Optional<Partner> findByEmployeesContaining(Employee employee);
+    Optional<Partner> findByEmployeesContainingAndCredentialActivatedIsTrue(Employee employee);
 
 }

@@ -24,8 +24,33 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
      * {@inheritDoc}
      */
     @Override
+    public Page<Credential> getAllElements(Pageable pageable) {
+        return ((CredentialRepository) repository).findAllByActivatedIsTrue(pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Credential getElementById(Long elementId) {
+        return ((CredentialRepository) repository).findByIdAndActivatedIsTrue(elementId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isElementExistById(Long elementId) {
+        return ((CredentialRepository) repository).existsByIdAndActivatedIsTrue(elementId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Page<Credential> findAllContaining(Pageable pageable, String searchBy) {
-        return ((CredentialRepository) repository).findAllByEmailContainsOrPhoneNumberContains(searchBy, searchBy, pageable);
+        return ((CredentialRepository) repository).findAllByEmailContainsOrPhoneNumberContainsAndActivatedIsTrue(searchBy, searchBy, pageable);
     }
 
     /**
@@ -33,8 +58,8 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
      */
     public Credential getCredentialFromEmailPhoneAndRoleOrCreateNewOne(String email, String phoneNumber, Role role) {
         Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
-        return ((CredentialRepository) repository).findByEmailAndPhoneNumberAndRole(email, phoneNumber, role).orElse(
-                new Credential(email, null, phoneNumber, Role.GUEST, false, true, timestamp)
+        return ((CredentialRepository) repository).findByEmailAndPhoneNumberAndRoleAndActivatedIsTrue(email, phoneNumber, role).orElse(
+                new Credential(email, null, phoneNumber, Role.GUEST, false, timestamp)
         );
     }
 
@@ -42,21 +67,18 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
      * Service method returning boolean if Credential with given email exists.
      */
     public boolean isCredentialExistsByEmail(String email) {
-        return ((CredentialRepository) repository).existsCredentialByEmail(email);
+        return ((CredentialRepository) repository).existsCredentialByEmailAndActivatedIsTrue(email);
     }
 
     /**
      * Service method return Credential by given email
      */
-
     public Credential getCredentialByEmail(String email) {
         return ((CredentialRepository) repository).getCredentialByEmail(email).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     /**
-     *
-     * @param code - verification code from auto generated email with activation link
      * Service method return Credential by given verification code. Otherwise throw an Exception.
      */
 

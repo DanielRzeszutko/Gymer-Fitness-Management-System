@@ -35,7 +35,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     @Autowired
     private CredentialService credentialService;
 
-    private final String TOKEN_HEADER_NAME = "Authorization";;
+    private final String TOKEN_HEADER_NAME = "Authorization";
     final String TOKEN_STARTER = "Bearer ";
     final String COOKIE_STARTER = "exo";
 
