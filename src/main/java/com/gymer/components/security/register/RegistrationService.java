@@ -74,7 +74,7 @@ class RegistrationService {
         if (credentialService.isCredentialExistsByEmail(userDetails.getEmail())) {
             return new JsonResponse("Account with this email already exists.", true);
         }
-        return new JsonResponse("Registered successfully.", false);
+        return new JsonResponse("Registered successfully. Please check your email to verify your account", false);
     }
 
     private Credential createCredentialBy(RegistrationDetails userDetails, Role role) {
