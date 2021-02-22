@@ -22,18 +22,13 @@ public class RegistrationController {
     }
 
     @PostMapping("/user")
-    public JsonResponse registerUser(@RequestBody RegistrationDetails registrationDetails, HttpServletRequest request) {
-        return registrationService.registerUser(registrationDetails, getSiteURL(request));
+    public JsonResponse registerUser(@RequestBody RegistrationDetails registrationDetails) {
+        return registrationService.registerUser(registrationDetails);
     }
 
     @PostMapping("/partner")
-    public JsonResponse registerPartner(@RequestBody RegistrationDetails registrationDetails, HttpServletRequest request) {
-        return registrationService.registerPartner(registrationDetails, getSiteURL(request));
-    }
-
-    private String getSiteURL(HttpServletRequest request) {
-        String siteURL = request.getRequestURL().toString();
-        return siteURL.replace(request.getServletPath(), "");
+    public JsonResponse registerPartner(@RequestBody RegistrationDetails registrationDetails) {
+        return registrationService.registerPartner(registrationDetails);
     }
 
 }

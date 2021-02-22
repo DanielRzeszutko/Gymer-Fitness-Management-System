@@ -38,19 +38,19 @@ class RegistrationService {
         this.emailService = emailService;
     }
 
-    public JsonResponse registerUser(RegistrationDetails details, String siteURL) {
+    public JsonResponse registerUser(RegistrationDetails details) {
         JsonResponse response = createJsonResponse(details);
         if (response.isError()) return response;
 
         Credential credential = createCredentialBy(details, Role.USER);
         User user = new User("", "", credential);
         userService.updateElement(user);
-        emailService.sendVerificationEmail(credential, siteURL);
+        emailService.sendVerificationEmail(credential);
 
         return response;
     }
 
-    public JsonResponse registerPartner(RegistrationDetails details, String siteURL) {
+    public JsonResponse registerPartner(RegistrationDetails details) {
         JsonResponse response = createJsonResponse(details);
         if (response.isError()) return response;
 
@@ -59,7 +59,7 @@ class RegistrationService {
         Partner partner = new Partner("", "", "", "", "", credential, address,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         partnerService.updateElement(partner);
-        emailService.sendVerificationEmail(credential, siteURL);
+        emailService.sendVerificationEmail(credential);
 
         return response;
     }
