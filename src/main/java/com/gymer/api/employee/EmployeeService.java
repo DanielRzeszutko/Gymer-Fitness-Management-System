@@ -37,6 +37,7 @@ public class EmployeeService extends AbstractRestApiService<Employee, Long> {
      * Service method that returns collection of employees sorted with pageable object
      */
     public Page<Employee> findAllEmployeesForPartner(Pageable pageable, Partner partner) {
+        if (!partner.getCredential().isActivated()) return Page.empty();
         return new PageImpl<>(partner.getEmployees(), pageable, partner.getEmployees().size());
     }
 
