@@ -18,15 +18,15 @@ class VerificationEmailService {
 		this.emailSender = emailSender;
 	}
 
-    public void sendVerificationEmail(Credential credential, String siteURL) {
+    public void sendVerificationEmail(Credential credential) {
         String emailTo = credential.getEmail();
-        String message = createContent(credential, siteURL);
+        String message = createContent(credential);
         String subject = createSubject();
         MailingDetails mailingDetails = new MailingDetails(emailTo, subject, message);
         emailSender.sendEmail(mailingDetails);
     }
 
-    private String createContent(Credential credential, String siteURL) {
+    private String createContent(Credential credential) {
         String content = "Dear " + credential.getRole() + ",<br>"
                 + "Please click the link below to verify your registration:<br>"
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
