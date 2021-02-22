@@ -36,6 +36,7 @@ public class SlotService extends AbstractRestApiService<Slot, Long> {
      * Service method that returns all slots for specific partner with pageable sorting properties
      */
     public Page<Slot> findAllSlotsForPartner(Pageable pageable, Partner partner) {
+        if (!partner.getCredential().isActivated()) return Page.empty();
         return new PageImpl<>(partner.getSlots(), pageable, partner.getSlots().size());
     }
 

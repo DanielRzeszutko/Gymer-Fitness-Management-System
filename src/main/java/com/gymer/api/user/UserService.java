@@ -3,6 +3,7 @@ package com.gymer.api.user;
 import com.gymer.api.common.service.AbstractRestApiService;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.Role;
+import com.gymer.api.partner.PartnerRepository;
 import com.gymer.api.slot.SlotService;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.user.entity.User;
@@ -31,15 +32,40 @@ public class UserService extends AbstractRestApiService<User, Long> {
      * {@inheritDoc}
      */
     @Override
+    public Page<User> getAllElements(Pageable pageable) {
+        return ((UserRepository) repository).findAllByCredentialActivatedIsTrue(pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getElementById(Long elementId) {
+        return ((UserRepository) repository).findByIdAndCredentialActivatedIsTrue(elementId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isElementExistById(Long elementId) {
+        return ((UserRepository) repository).existsByIdAndCredentialActivatedIsTrue(elementId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Page<User> findAllContaining(Pageable pageable, String searchBy) {
-        return ((UserRepository) repository).findAllByFirstNameContainsOrLastNameContains(searchBy, searchBy, pageable);
+        return ((UserRepository) repository).findAllByFirstNameContainsOrLastNameContainsAndCredentialActivatedIsTrue(searchBy, searchBy, pageable);
     }
 
     /**
      * Service method responsible for changing status of user to deactivated
      */
     public void deleteUser(User user) {
-        user.getCredential().setNotSuspended(false);
+        user.getCredential().setActivated(false);
         repository.save(user);
     }
 
@@ -64,7 +90,7 @@ public class UserService extends AbstractRestApiService<User, Long> {
      * In another case when Role.GUEST is only in database new record is created
      */
     public boolean isUserExistsByEmail(String email) {
-        Optional<User> user = ((UserRepository) repository).findByCredentialEmail(email);
+        Optional<User> user = ((UserRepository) repository).findByCredentialEmailAndCredentialActivatedIsTrue(email);
         return user.isPresent() && user.get().getCredential().getRole().equals(Role.USER);
     }
 

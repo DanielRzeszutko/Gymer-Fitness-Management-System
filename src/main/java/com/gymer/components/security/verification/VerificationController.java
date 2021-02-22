@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class VerificationController {
 
-    private VerificationService verificationService;
+    private final VerificationService verificationService;
 
     @Autowired
     public VerificationController(VerificationService verificationService) {

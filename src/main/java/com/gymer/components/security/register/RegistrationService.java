@@ -80,8 +80,7 @@ class RegistrationService {
     private Credential createCredentialBy(RegistrationDetails userDetails, Role role) {
         String codedPassword = passwordEncoder.encode(userDetails.getPassword());
         Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
-        Credential credential = new Credential(userDetails.getEmail(), codedPassword, "",
-                role, true, false, timestamp);
+        Credential credential = new Credential(userDetails.getEmail(), codedPassword, "", role, false, timestamp);
         credential.setVerificationCode(RandomString.make(64));
         return credential;
     }

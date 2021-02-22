@@ -91,7 +91,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnOKStatus_when_tryingToGetSpecificRecordWithId() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
 
         given(credentialService.getElementById(1L)).willReturn(credential);
@@ -114,7 +114,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnOkStatus_when_tryingToGetSpecificRecordForPartner() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
         Partner partner = new Partner("", "", "", "", "", credential, null,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -129,7 +129,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnNotFoundStatus_when_tryingToGetSpecificRecordFromPartnerWithNonExistingId() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(5L);
         Partner partner = new Partner("", "", "", "", "", credential, null,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -144,7 +144,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnOkStatus_when_tryingToUpdateExistingCredentialsForPartner() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
         Partner partner = new Partner("", "", "", "", "", credential, null,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -162,7 +162,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnConflictStatus_when_tryingToUpdateCredentialWhenUrlIsNotValidForPartner() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
         Partner partner = new Partner("", "", "", "", "", credential, null,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -180,9 +180,9 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnBadRequestStatus_when_tryingToUpdateCredentialWhenObjectIdNotEqualToUrlIdForPartner() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
-        Credential credential2 = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential2 = new Credential("", "", "", Role.USER, true, timestamp);
         credential2.setId(2L);
         Partner partner = new Partner("", "", "", "", "", credential2, null,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -200,7 +200,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnOkStatus_when_tryingToGetSpecificRecordForUser() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
         User user = new User("", "", credential);
         given(credentialService.getElementById(1L)).willReturn(credential);
@@ -214,7 +214,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnNotFoundStatus_when_tryingToGetSpecificRecordFromUserWithNonExistingId() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(5L);
         User user = new User("", "", credential);
         given(credentialService.getElementById(-1L)).willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
@@ -228,7 +228,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnOkStatus_when_tryingToUpdateExistingCredentialsForUser() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
         User user = new User("", "", credential);
         given(credentialService.getElementById(1L)).willReturn(credential);
@@ -245,7 +245,7 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnConflictStatus_when_tryingToUpdateCredentialWhenUrlIsNotValidForUser() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
         User user = new User("", "", credential);
         given(credentialService.getElementById(1L)).willReturn(credential);
@@ -262,9 +262,9 @@ public class CredentialControllerTest {
 
     @Test
     public void should_returnBadRequestStatus_when_tryingToUpdateCredentialWhenObjectIdNotEqualToUrlIdForUser() throws Exception {
-        Credential credential = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
         credential.setId(1L);
-        Credential credential2 = new Credential("", "", "", Role.USER, true, false, timestamp);
+        Credential credential2 = new Credential("", "", "", Role.USER, true, timestamp);
         credential2.setId(2L);
         User user = new User("", "", credential2);
         given(credentialService.getElementById(1L)).willReturn(credential);
@@ -281,9 +281,9 @@ public class CredentialControllerTest {
 
     private Page<Credential> getTestPageData() {
         List<Credential> credentials = new LinkedList<>();
-        credentials.add(new Credential("", "", "", Role.USER, true, false, timestamp));
-        credentials.add(new Credential("", "", "", Role.USER, true, false, timestamp));
-        credentials.add(new Credential("", "", "", Role.USER, true, false, timestamp));
+        credentials.add(new Credential("", "", "", Role.USER, true, timestamp));
+        credentials.add(new Credential("", "", "", Role.USER, true, timestamp));
+        credentials.add(new Credential("", "", "", Role.USER, true, timestamp));
         return new PageImpl<>(credentials);
     }
 
