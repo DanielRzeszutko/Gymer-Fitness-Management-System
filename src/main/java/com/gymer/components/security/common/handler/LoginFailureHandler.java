@@ -20,7 +20,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         JsonResponse message = new JsonResponse(exception.getMessage(), true);
 
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
         response.getWriter().write(objectMapper.writeValueAsString(message));
         response.getWriter().flush();
