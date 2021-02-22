@@ -54,6 +54,12 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    /**
+     *
+     * @param code - verification code from auto generated email with activation link
+     * Service method return Credential by given verification code. Otherwise throw an Exception.
+     */
+
     public Credential getCredentialByVerificationCode(String code) {
         return ((CredentialRepository) repository).findCredentialByVerificationCode(code).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));

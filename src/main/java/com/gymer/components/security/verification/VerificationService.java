@@ -16,6 +16,12 @@ class VerificationService {
         this.credentialService = credentialService;
     }
 
+    /**
+     *
+     * @param code - verification code from auto generated email with activation link
+     * Service method that returns response in JSON format and active account if code is correct.
+     */
+
     public JsonResponse verify(String code) {
         Credential credential = credentialService.getCredentialByVerificationCode(code);
         if (credential == null) {
