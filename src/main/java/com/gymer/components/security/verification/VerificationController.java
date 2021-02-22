@@ -20,4 +20,5 @@ public class VerificationController {
     public JsonResponse verifyAccount(@RequestParam("code") String code) {
         return verificationService.verify(code);
     }
+
 }

@@ -21,4 +21,5 @@ interface CredentialRepository extends PagingAndSortingRepository<Credential, Lo
     Optional<Credential> getCredentialByEmail(String email);
 
     Optional<Credential> findCredentialByVerificationCode(String code);
+
 }
