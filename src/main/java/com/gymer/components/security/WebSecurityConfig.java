@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/v2/**", "/js/**", "/css/**", "/img/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/me", "/api/logout", "/api/verify").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/me/**", "/api/logout", "/api/verify").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/login", "/api/registration/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/**").authenticated()
@@ -66,8 +66,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(authenticationFilter())
                 .addFilter(authorizationFilter())
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .logout()
                 .logoutUrl("/api/logout")
                 .clearAuthentication(true)

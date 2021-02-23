@@ -15,9 +15,7 @@ public class WorkingHour {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     private Day day;
-    
     private Time startHour;
     private Time endHour;
 
