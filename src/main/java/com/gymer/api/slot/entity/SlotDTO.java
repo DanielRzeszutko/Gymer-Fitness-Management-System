@@ -20,6 +20,7 @@ public class SlotDTO extends RepresentationModel<SlotDTO> {
     private Time endTime;
     private String slotType;
     private boolean isPrivate;
+    private Integer size;
 
     public SlotDTO(Slot slot) {
         this.id = slot.getId();
@@ -29,6 +30,7 @@ public class SlotDTO extends RepresentationModel<SlotDTO> {
         this.endTime = slot.getEndTime();
         this.slotType = slot.getSlotType();
         this.isPrivate = slot.isPrivate();
+        this.size = slot.getSize();
     }
 
 }

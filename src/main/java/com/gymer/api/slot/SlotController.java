@@ -138,7 +138,7 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
     @GetMapping("/api/users/{userId}/slots")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @accountOwnerValidator.isOwnerLoggedIn(#userId))")
     public PagedModel<EntityModel<SlotDTO>> getUserSlots(@PathVariable Long userId, Pageable pageable,
-                                      PagedResourcesAssembler<SlotDTO> assembler) {
+                                                         PagedResourcesAssembler<SlotDTO> assembler) {
         User user = userService.getElementById(userId);
         Page<Slot> slots = ((SlotService) service).findAllSlotsForUser(pageable, user);
         return super.getCollectionModel(slots, assembler);
