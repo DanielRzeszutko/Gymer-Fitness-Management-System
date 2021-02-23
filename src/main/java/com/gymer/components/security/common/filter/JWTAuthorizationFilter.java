@@ -35,41 +35,20 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     @Autowired
     private CredentialService credentialService;
 
-    private final String TOKEN_HEADER_NAME = "Authorization";
-    final String TOKEN_STARTER = "Bearer ";
-    final String COOKIE_STARTER = "exo";
-
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String cookieToken = isTokenExistAndIfGetTokenFromCookie(request.getCookies());
-        if (cookieToken == null || !cookieToken.startsWith(COOKIE_STARTER)) {
+        String jwtToken = request.getHeader("Authorization");
+        if (jwtToken == null || !jwtToken.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
         }
 
-        String jwtToken = request.getHeader(TOKEN_HEADER_NAME);
-        if (jwtToken == null || !jwtToken.startsWith(TOKEN_STARTER)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        UsernamePasswordAuthenticationToken cookieAuthentication = getAuthentication(cookieToken, TokenType.COOKIE);
-        if (cookieAuthentication == null) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        UsernamePasswordAuthenticationToken jwtAuthentication = getAuthentication(jwtToken, TokenType.JWT);
+        UsernamePasswordAuthenticationToken jwtAuthentication = getAuthentication(jwtToken);
         if (jwtAuthentication == null) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        if (!authenticationUserEquals(cookieAuthentication, jwtAuthentication)) {
             chain.doFilter(request, response);
             return;
         }
@@ -78,24 +57,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
-    private boolean authenticationUserEquals(UsernamePasswordAuthenticationToken cookieAuthentication,
-                                             UsernamePasswordAuthenticationToken jwtAuthentication) {
-        return (cookieAuthentication.getPrincipal()).equals(jwtAuthentication.getPrincipal());
-    }
-
-    private String isTokenExistAndIfGetTokenFromCookie(Cookie[] cookies) {
-        if (cookies == null) return null;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(TOKEN_HEADER_NAME)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
-
-    private UsernamePasswordAuthenticationToken getAuthentication(String token, TokenType tokenType) {
+    private UsernamePasswordAuthenticationToken getAuthentication(String token) {
         if (token == null) return null;
-        String userEmail = decodeToken(token, tokenType);
+        String userEmail = decodeToken(token);
         return tryToGetAuthenticationToken(userEmail);
     }
 
@@ -112,10 +76,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         return null;
     }
 
-    private String decodeToken(String token, TokenType tokenType) {
-        if (tokenType.equals(TokenType.COOKIE)) {
-            return decodeTokenFromCookie(token);
-        }
+    private String decodeToken(String token) {
         return decodeTokenFromJwt(token);
     }
 
@@ -124,15 +85,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         DecodedJWT decodedJWT = verifier.verify(token);
 
         return decodedJWT.getSubject();
-    }
-
-    private String decodeTokenFromCookie(String token) {
-        token = token.substring(3);
-        String cookieSecretKey = environment.getProperty("cookie.secret.password");
-        cookieSecretKey = cookieSecretKey != null ? cookieSecretKey : "";
-        Algorithm algorithm = Algorithm.HMAC384(cookieSecretKey);
-
-        return decodeTokenWithAlgorithm(token, algorithm);
     }
 
     private String decodeTokenFromJwt(String token) {

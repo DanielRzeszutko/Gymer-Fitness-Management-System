@@ -71,7 +71,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutUrl("/api/logout")
                 .clearAuthentication(true)
-                .deleteCookies("Authorization")
                 .logoutSuccessHandler(logoutSuccessHandler)
                 .logoutSuccessUrl(frontUrl);
     }

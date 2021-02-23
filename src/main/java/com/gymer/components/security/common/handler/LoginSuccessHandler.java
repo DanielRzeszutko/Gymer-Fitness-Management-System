@@ -25,7 +25,6 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final Environment environment;
 
     final String TOKEN_HEADER_NAME = "Authorization";
-    private final int COOKIE_MAX_AGE = 864000000;
 
     @Autowired
     public LoginSuccessHandler(Environment environment) {
@@ -34,11 +33,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        Cookie cookie = new Cookie(TOKEN_HEADER_NAME, createToken(authentication, TokenType.COOKIE));
-        cookie.setMaxAge(COOKIE_MAX_AGE);
-        response.addCookie(cookie);
-
-        response.setHeader(TOKEN_HEADER_NAME, createToken(authentication, TokenType.JWT));
+        response.setHeader(TOKEN_HEADER_NAME, createToken(authentication));
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json");
 
@@ -48,12 +43,11 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         clearAuthenticationAttributes(request);
     }
 
-    private String createToken(Authentication authentication, TokenType tokenType) {
-        String starter = tokenType.equals(TokenType.COOKIE) ? "exo" : "Bearer ";
-        String attribute = tokenType.equals(TokenType.COOKIE) ? "cookie" : "jwt";
-        String secretKey = environment.getProperty(attribute + ".secret.password");
+    private String createToken(Authentication authentication) {
+        String starter = "Bearer ";
+        String secretKey = environment.getProperty("jwt.secret.password");
         secretKey = secretKey != null ? secretKey : "";
-        Algorithm algorithm = tokenType.equals(TokenType.COOKIE) ? Algorithm.HMAC384(secretKey) : Algorithm.HMAC512(secretKey);
+        Algorithm algorithm = Algorithm.HMAC512(secretKey);
         return createNewJwt(authentication, starter, algorithm);
     }
 
@@ -63,7 +57,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .withSubject(authentication.getName())
                 .withClaim("roles", String.valueOf(authentication.getAuthorities()))
                 .withIssuedAt(new Date(now))
-                .withExpiresAt(new Date(now + COOKIE_MAX_AGE))
+                .withExpiresAt(new Date(now + 864000000))
                 .sign(algorithm);
     }
 
