@@ -30,7 +30,7 @@ public class ReservationController {
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @accountOwnerValidator.isOwnerLoggedIn(#userId))")
     public JsonResponse reserveAsUser(@RequestBody UserReservationDetails details, @PathVariable Long slotId) {
         if (details.getSlotId().equals(slotId)) return reservationService.updateReservationForUser(details);
         throw new ResponseStatusException(HttpStatus.CONFLICT);

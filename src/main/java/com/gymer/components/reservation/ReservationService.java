@@ -10,6 +10,7 @@ import com.gymer.api.user.entity.User;
 import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.reservation.entity.GuestReservationDetails;
 import com.gymer.components.reservation.entity.UserReservationDetails;
+import com.gymer.components.security.validation.AccountOwnerValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,14 @@ class ReservationService {
     private final UserService userService;
     private final SlotService slotService;
     private final CredentialService credentialService;
+    private final AccountOwnerValidator accountOwnerValidator;
 
     @Autowired
-    public ReservationService(UserService userService, SlotService slotService, CredentialService credentialService) {
+    public ReservationService(UserService userService, SlotService slotService, CredentialService credentialService, AccountOwnerValidator accountOwnerValidator) {
         this.userService = userService;
         this.slotService = slotService;
         this.credentialService = credentialService;
+        this.accountOwnerValidator = accountOwnerValidator;
     }
 
     /**
@@ -57,6 +60,9 @@ class ReservationService {
     public JsonResponse updateReservationForUser(UserReservationDetails details) {
         Slot slot = slotService.getElementById(details.getSlotId());
         User user = userService.getElementById(details.getUserId());
+        if (!accountOwnerValidator.isOwnerLoggedIn(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
 
         if (details.isCancel()) return removeUserFromSlot(slot, user);
         if (slot.getUsers().contains(user)) return alreadyReservedResponse();

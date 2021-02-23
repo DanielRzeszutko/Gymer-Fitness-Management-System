@@ -134,7 +134,7 @@ class RandomDataGenerator {
         String endHourString = endHour < 10 ? "0" + endHour : Integer.toString(endHour);
         boolean isPrivate = startHour > 12;
         Integer size = isPrivate ? 1 : 10;
-        return new Slot("Lorem ipsum" + createRandomWord(20), Date.valueOf("2021-02-10"), Time.valueOf(startHourString + ":00:00"),
+        return new Slot("Lorem ipsum" + createRandomWord(20), Date.valueOf("2021-05-15"), Time.valueOf(startHourString + ":00:00"),
                 Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, "Full body workout", isPrivate, size);
     }
 
