@@ -12,6 +12,7 @@ import com.gymer.api.user.entity.User;
 import com.gymer.api.workinghours.entity.Day;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -37,6 +38,7 @@ class RandomDataGenerator {
     private final List<String> usedEmails = new ArrayList<>();
     private final PartnerService partnerService;
     private final UserService userService;
+    private final BCryptPasswordEncoder passwordEncoder;
     private List<String> cities;
     private List<String> nameList;
     private List<String> surnameList;
@@ -45,9 +47,10 @@ class RandomDataGenerator {
     private List<String> companies;
 
     @Autowired
-    public RandomDataGenerator(PartnerService partnerService, UserService userService) {
+    public RandomDataGenerator(PartnerService partnerService, UserService userService, BCryptPasswordEncoder passwordEncoder) {
         this.partnerService = partnerService;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostConstruct
@@ -59,9 +62,24 @@ class RandomDataGenerator {
         streets = readDataFromFile("streets.txt");
         companies = readDataFromFile("companies.txt");
 
+        Timestamp time = new Timestamp(new java.util.Date().getTime());
+        User testUser = new User("TEST", "TEST", new Credential("test@gmail.com", "$2a$10$7aFEbq/nmgvT1kuMhjXUc.g3jlk4.Bt7FfQMAF61m1Y78MhdS/6b2",
+                "999999999", Role.USER, true, time));
+        User adminUser = new User("ADMIN", "ADMIN", new Credential("admin@gmail.com", "$2a$10$OyyKn5189yggrUjbPsZytezro033h6qYCQaMAVz2RaUtZ6hBWFAOy",
+                "000000000", Role.ADMIN, true, time));
+        userService.updateElement(testUser);
+        userService.updateElement(adminUser);
+
         for (int i = 0; i < 10; i++) {
-            partnerService.updateElement(getRandomPartner());
-            userService.updateElement(getRandomUser());
+            User user = getRandomUser();
+            userService.updateElement(user);
+            Partner partner = getRandomPartner();
+            Slot slot = partner.getSlots().get(i);
+            if(slot.isPrivate() && slot.getUsers().size()==0){
+                slot.setUsers(List.of(user));
+            }
+            partner.getSlots().get(i).setUsers(List.of(testUser));
+            partnerService.updateElement(partner);
         }
     }
 
@@ -115,8 +133,10 @@ class RandomDataGenerator {
         int endHour = startHour + 1;
         String startHourString = startHour < 10 ? "0" + startHour : Integer.toString(startHour);
         String endHourString = endHour < 10 ? "0" + endHour : Integer.toString(endHour);
+        boolean isPrivate = startHour > 12;
+        Integer size = isPrivate ? 1 : 10;
         return new Slot("Lorem ipsum" + createRandomWord(20), Date.valueOf("2021-02-10"), Time.valueOf(startHourString + ":00:00"),
-                Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, "Full body workout", startHour < 12);
+                Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, "Full body workout", isPrivate, size);
     }
 
     private List<Employee> getRandomEmployees(int howMuch) {
@@ -175,7 +195,8 @@ class RandomDataGenerator {
             password.append(chars.charAt(getRandomNumberBetween(0, chars.length() - 1)));
         }
         password.append(specialChars.charAt(getRandomNumberBetween(0, specialChars.length() - 1)));
-        return password.toString();
+        return passwordEncoder.encode(password);
+
     }
 
     private String getRandomEmail(String name, String surname) {
