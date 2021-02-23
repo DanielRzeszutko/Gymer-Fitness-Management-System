@@ -42,6 +42,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String jwtToken = request.getHeader("Authorization");
+        System.out.println(jwtToken);
         if (jwtToken == null || !jwtToken.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
@@ -66,6 +67,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken tryToGetAuthenticationToken(String userEmail) {
         if (userEmail != null) {
             try {
+                System.out.println(userEmail);
                 Credential credential = credentialService.getCredentialByEmail(userEmail);
                 GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + credential.getRole());
                 return new UsernamePasswordAuthenticationToken(userEmail, null, Collections.singletonList(authority));
