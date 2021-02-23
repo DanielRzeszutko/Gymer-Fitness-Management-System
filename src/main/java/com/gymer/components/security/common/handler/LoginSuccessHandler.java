@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gymer.components.common.entity.JsonResponse;
-import com.gymer.components.security.common.entity.TokenType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -21,10 +19,9 @@ import java.util.Date;
 @Component
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    final String TOKEN_HEADER_NAME = "Authorization";
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Environment environment;
-
-    final String TOKEN_HEADER_NAME = "Authorization";
 
     @Autowired
     public LoginSuccessHandler(Environment environment) {

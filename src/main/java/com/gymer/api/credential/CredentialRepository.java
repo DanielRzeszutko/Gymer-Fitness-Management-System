@@ -2,7 +2,6 @@ package com.gymer.api.credential;
 
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.Role;
-import com.gymer.api.partner.entity.Partner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;

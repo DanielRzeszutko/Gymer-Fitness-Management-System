@@ -4,7 +4,6 @@ import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.employee.entity.Employee;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
-import com.gymer.api.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;

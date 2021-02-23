@@ -3,7 +3,6 @@ package com.gymer.api.user;
 import com.gymer.api.common.service.AbstractRestApiService;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.Role;
-import com.gymer.api.partner.PartnerRepository;
 import com.gymer.api.slot.SlotService;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.user.entity.User;

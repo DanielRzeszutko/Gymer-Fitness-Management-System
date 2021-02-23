@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -74,7 +73,7 @@ class RandomDataGenerator {
             userService.updateElement(user);
             Partner partner = getRandomPartner();
             Slot slot = partner.getSlots().get(i);
-            if(slot.isPrivate() && slot.getUsers().size()==0){
+            if (slot.isPrivate() && slot.getUsers().size() == 0) {
                 slot.setUsers(List.of(user));
             }
             partner.getSlots().get(i).setUsers(List.of(testUser));

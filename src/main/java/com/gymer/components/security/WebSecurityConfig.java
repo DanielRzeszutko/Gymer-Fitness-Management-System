@@ -1,11 +1,11 @@
 package com.gymer.components.security;
 
 import com.gymer.components.security.common.filter.JWTAuthorizationFilter;
-import com.gymer.components.security.login.LoginService;
 import com.gymer.components.security.common.filter.JsonAuthenticationFilter;
 import com.gymer.components.security.common.handler.JsonLogoutSuccessHandler;
 import com.gymer.components.security.common.handler.LoginFailureHandler;
 import com.gymer.components.security.common.handler.LoginSuccessHandler;
+import com.gymer.components.security.login.LoginService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;

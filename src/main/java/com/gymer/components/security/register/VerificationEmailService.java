@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 @Service
 class VerificationEmailService {
 
-	private final Environment environment;
-	private final EmailSender emailSender;
+    private final Environment environment;
+    private final EmailSender emailSender;
 
 
-	public VerificationEmailService(Environment environment, EmailSender emailSender) {
-		this.environment = environment;
-		this.emailSender = emailSender;
-	}
+    public VerificationEmailService(Environment environment, EmailSender emailSender) {
+        this.environment = environment;
+        this.emailSender = emailSender;
+    }
 
     public void sendVerificationEmail(Credential credential) {
         String emailTo = credential.getEmail();
@@ -33,9 +33,9 @@ class VerificationEmailService {
                 + "Thank you,<br>"
                 + "Team Gymer.";
 
-		String verifyURL = environment.getProperty("server.address.frontend") + "/verify?code=" + credential.getVerificationCode();
-		return content.replace("[[URL]]", verifyURL);
-	}
+        String verifyURL = environment.getProperty("server.address.frontend") + "/verify?code=" + credential.getVerificationCode();
+        return content.replace("[[URL]]", verifyURL);
+    }
 
     private String createSubject() {
         return "Please verify your registration";
