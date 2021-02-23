@@ -59,7 +59,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UsernamePasswordAuthenticationToken getAuthentication(String token) {
         if (token == null) return null;
-        String userEmail = decodeToken(token);
+        String userEmail = decodeTokenFromJwt(token);
         return tryToGetAuthenticationToken(userEmail);
     }
 
@@ -74,10 +74,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             }
         }
         return null;
-    }
-
-    private String decodeToken(String token) {
-        return decodeTokenFromJwt(token);
     }
 
     private String decodeTokenWithAlgorithm(String token, Algorithm algorithm) {
