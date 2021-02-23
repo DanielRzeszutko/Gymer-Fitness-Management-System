@@ -8,7 +8,10 @@ import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
 import com.gymer.api.slot.entity.SlotDTO;
 import com.gymer.api.user.UserController;
+import com.gymer.api.user.UserService;
+import com.gymer.api.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
@@ -29,11 +32,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Long> {
 
     private final PartnerService partnerService;
+    private final UserService userService;
 
     @Autowired
-    public SlotController(SlotService service, PartnerService partnerService) {
+    public SlotController(SlotService service, PartnerService partnerService, UserService userService) {
         super(service);
         this.partnerService = partnerService;
+        this.userService = userService;
     }
 
     /**
@@ -125,6 +130,18 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Endpoint showing lists of slots where user is signed in
+     */
+    @GetMapping("/api/users/{userId}/slots")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @accountOwnerValidator.isOwnerLoggedIn(#userId))")
+    public PagedModel<EntityModel<SlotDTO>> getUserSlots(@PathVariable Long userId, Pageable pageable,
+                                                         PagedResourcesAssembler<SlotDTO> assembler) {
+        User user = userService.getElementById(userId);
+        Page<Slot> slots = ((SlotService) service).findAllSlotsForUser(pageable, user);
+        return super.getCollectionModel(slots, assembler);
     }
 
     /**

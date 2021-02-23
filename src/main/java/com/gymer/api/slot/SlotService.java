@@ -3,11 +3,14 @@ package com.gymer.api.slot;
 import com.gymer.api.common.service.AbstractRestApiService;
 import com.gymer.api.partner.entity.Partner;
 import com.gymer.api.slot.entity.Slot;
+import com.gymer.api.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SlotService extends AbstractRestApiService<Slot, Long> {
@@ -38,6 +41,12 @@ public class SlotService extends AbstractRestApiService<Slot, Long> {
     public Page<Slot> findAllSlotsForPartner(Pageable pageable, Partner partner) {
         if (!partner.getCredential().isActivated()) return Page.empty();
         return new PageImpl<>(partner.getSlots(), pageable, partner.getSlots().size());
+    }
+
+    public Page<Slot> findAllSlotsForUser(Pageable pageable, User user) {
+        if (!user.getCredential().isActivated()) return Page.empty();
+        List<Slot> slots = ((SlotRepository) repository).findAllByUsersContains(user);
+        return new PageImpl<>(slots, pageable, slots.size());
     }
 
 }
