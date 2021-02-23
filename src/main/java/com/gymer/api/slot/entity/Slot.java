@@ -41,10 +41,13 @@ public class Slot {
 
     private String slotType;
 
+    @Column(columnDefinition = "integer default 1")
+    private Integer size;
+
     @Column(columnDefinition = "boolean default true")
     private boolean isPrivate = true;
 
-    public Slot(String description, Date date, Time startTime, Time endTime, List<User> users, Employee employee, String slotType, boolean isPrivate) {
+    public Slot(String description, Date date, Time startTime, Time endTime, List<User> users, Employee employee, String slotType, boolean isPrivate, Integer size) {
         this.description = description;
         this.date = date;
         this.startTime = startTime;
@@ -53,6 +56,7 @@ public class Slot {
         this.employee = employee;
         this.slotType = slotType;
         this.isPrivate = isPrivate;
+        this.size = size;
     }
 
     public Slot(SlotDTO slotDTO) {
@@ -63,6 +67,7 @@ public class Slot {
         this.endTime = slotDTO.getEndTime();
         this.slotType = slotDTO.getSlotType();
         this.isPrivate = slotDTO.isPrivate();
+        this.size = slotDTO.getSize();
     }
 
 }
