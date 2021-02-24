@@ -1,5 +1,6 @@
 package com.gymer.components.security.register;
 
+import com.gymer.api.credential.entity.Role;
 import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.security.register.entity.RegistrationDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,12 @@ public class RegistrationController {
 
     @PostMapping("/user")
     public JsonResponse registerUser(@RequestBody RegistrationDetails registrationDetails) {
-        return registrationService.registerUser(registrationDetails);
+        return registrationService.registerAccount(registrationDetails, Role.USER);
     }
 
     @PostMapping("/partner")
     public JsonResponse registerPartner(@RequestBody RegistrationDetails registrationDetails) {
-        return registrationService.registerPartner(registrationDetails);
+        return registrationService.registerAccount(registrationDetails, Role.PARTNER);
     }
 
 }

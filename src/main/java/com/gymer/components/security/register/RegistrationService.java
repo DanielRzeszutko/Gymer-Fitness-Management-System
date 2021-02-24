@@ -38,45 +38,53 @@ class RegistrationService {
         this.emailService = emailService;
     }
 
-    public JsonResponse registerUser(RegistrationDetails details) {
+    public JsonResponse registerAccount(RegistrationDetails details, Role role) {
         JsonResponse response = createJsonResponse(details);
         if (response.isError()) return response;
 
         if (credentialService.isCredentialExistsByEmail(details.getEmail())) {
-                overrideAccountIfExistAndSendEmail(details);
+            Credential existedCredential = credentialService.getCredentialByEmail(details.getEmail());
+            updateCredential(details, existedCredential, role);
+            emailService.sendVerificationEmail(existedCredential);
         } else {
-            Credential credential = createCredentialBy(details, Role.USER);
-            User user = new User("", "", credential);
-            userService.updateElement(user);
-            emailService.sendVerificationEmail(credential);
+            switch (role) {
+                case USER -> registerUser(details);
+                case PARTNER -> registerPartner(details);
+            }
         }
         return response;
     }
 
-    public JsonResponse registerPartner(RegistrationDetails details) {
-        JsonResponse response = createJsonResponse(details);
-        if (response.isError()) return response;
-        if (credentialService.isCredentialExistsByEmail(details.getEmail())) {
-            overrideAccountIfExistAndSendEmail(details);
-        } else {
-            Credential credential = createCredentialBy(details, Role.PARTNER);
-            Address address = new Address("", "", "", "");
-            Partner partner = new Partner("", "", "", "", "", credential, address,
-                    Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-            partnerService.updateElement(partner);
-            emailService.sendVerificationEmail(credential);
-        }
-
-        return response;
+    private void registerUser(RegistrationDetails details) {
+        User user = createNewUser(details);
+        userService.updateElement(user);
+        emailService.sendVerificationEmail(user.getCredential());
     }
 
-    private void overrideAccountIfExistAndSendEmail(RegistrationDetails details) {
-        Credential existedCredential = credentialService.getCredentialByEmail(details.getEmail());
-        existedCredential.setVerificationCode(RandomString.make(64));
-        existedCredential.setPassword(details.getPassword());
-        credentialService.updateElement(existedCredential);
-        emailService.sendVerificationEmail(existedCredential);
-        }
+    private void registerPartner(RegistrationDetails details) {
+        Partner partner = createNewPartner(details);
+        partnerService.updateElement(partner);
+        emailService.sendVerificationEmail(partner.getCredential());
+    }
+
+    private void updateCredential(RegistrationDetails details, Credential credential, Role role) {
+        credential.setVerificationCode(RandomString.make(64));
+        credential.setPassword(passwordEncoder.encode(details.getPassword()));
+        credential.setRole(role);
+        credentialService.updateElement(credential);
+    }
+
+    private User createNewUser(RegistrationDetails details) {
+        Credential credential = createCredentialBy(details, Role.USER);
+        return new User("", "", credential);
+    }
+
+    private Partner createNewPartner(RegistrationDetails details) {
+        Credential credential = createCredentialBy(details, Role.PARTNER);
+        Address address = new Address("", "", "", "");
+        return new Partner("", "", "", "", "", credential, address,
+                Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+    }
 
     private JsonResponse createJsonResponse(RegistrationDetails userDetails) {
         if (userDetails.getEmail() == null || userDetails.getPassword() == null || userDetails.getConfirmPassword() == null) {
