@@ -38,30 +38,52 @@ class RegistrationService {
         this.emailService = emailService;
     }
 
-    public JsonResponse registerUser(RegistrationDetails details) {
+    public JsonResponse registerAccount(RegistrationDetails details, Role role) {
         JsonResponse response = createJsonResponse(details);
         if (response.isError()) return response;
 
-        Credential credential = createCredentialBy(details, Role.USER);
-        User user = new User("", "", credential);
-        userService.updateElement(user);
-        emailService.sendVerificationEmail(credential);
-
+        if (credentialService.isCredentialExistsByEmail(details.getEmail())) {
+            Credential existedCredential = credentialService.getCredentialByEmail(details.getEmail());
+            updateCredential(details, existedCredential, role);
+            emailService.sendVerificationEmail(existedCredential);
+        } else {
+            switch (role) {
+                case USER -> registerUser(details);
+                case PARTNER -> registerPartner(details);
+            }
+        }
         return response;
     }
 
-    public JsonResponse registerPartner(RegistrationDetails details) {
-        JsonResponse response = createJsonResponse(details);
-        if (response.isError()) return response;
+    private void registerUser(RegistrationDetails details) {
+        User user = createNewUser(details);
+        userService.updateElement(user);
+        emailService.sendVerificationEmail(user.getCredential());
+    }
 
+    private void registerPartner(RegistrationDetails details) {
+        Partner partner = createNewPartner(details);
+        partnerService.updateElement(partner);
+        emailService.sendVerificationEmail(partner.getCredential());
+    }
+
+    private void updateCredential(RegistrationDetails details, Credential credential, Role role) {
+        credential.setVerificationCode(RandomString.make(64));
+        credential.setPassword(passwordEncoder.encode(details.getPassword()));
+        credential.setRole(role);
+        credentialService.updateElement(credential);
+    }
+
+    private User createNewUser(RegistrationDetails details) {
+        Credential credential = createCredentialBy(details, Role.USER);
+        return new User("", "", credential);
+    }
+
+    private Partner createNewPartner(RegistrationDetails details) {
         Credential credential = createCredentialBy(details, Role.PARTNER);
         Address address = new Address("", "", "", "");
-        Partner partner = new Partner("", "", "", "", "", credential, address,
+        return new Partner("", "", "", "", "", credential, address,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-        partnerService.updateElement(partner);
-        emailService.sendVerificationEmail(credential);
-
-        return response;
     }
 
     private JsonResponse createJsonResponse(RegistrationDetails userDetails) {
@@ -71,7 +93,7 @@ class RegistrationService {
         if (!userDetails.getPassword().equals(userDetails.getConfirmPassword())) {
             return new JsonResponse("Passwords do not match.", true);
         }
-        if (credentialService.isCredentialExistsByEmail(userDetails.getEmail())) {
+        if (credentialService.isActivatedCredentialExistsByEmail(userDetails.getEmail())) {
             return new JsonResponse("Account with this email already exists.", true);
         }
         return new JsonResponse("Registered successfully. Please check your email to verify your account", false);

@@ -64,10 +64,17 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
     }
 
     /**
+     * Service method returning boolean if Credential with given email exists and account is activated.
+     */
+    public boolean isActivatedCredentialExistsByEmail(String email) {
+        return ((CredentialRepository) repository).existsCredentialByEmailAndActivatedIsTrue(email);
+    }
+
+    /**
      * Service method returning boolean if Credential with given email exists.
      */
     public boolean isCredentialExistsByEmail(String email) {
-        return ((CredentialRepository) repository).existsCredentialByEmailAndActivatedIsTrue(email);
+        return ((CredentialRepository) repository).existsCredentialByEmail(email);
     }
 
     /**
