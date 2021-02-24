@@ -55,13 +55,9 @@ class RandomDataGenerator {
         this.credentialservice = credentialservice;
     }
 
+
     public void init() throws FileNotFoundException {
-        nameList = readDataFromFile("names.txt");
-        surnameList = readDataFromFile("surnames.txt");
-        emails = readDataFromFile("emails.txt");
-        cities = readDataFromFile("cities.txt");
-        streets = readDataFromFile("streets.txt");
-        companies = readDataFromFile("companies.txt");
+        fillListsWithData();
 
         Timestamp time = new Timestamp(new java.util.Date().getTime());
         User testUser = new User("TEST", "TEST", new Credential("test@gmail.com", "$2a$10$7aFEbq/nmgvT1kuMhjXUc.g3jlk4.Bt7FfQMAF61m1Y78MhdS/6b2",
@@ -81,6 +77,15 @@ class RandomDataGenerator {
             partner.getSlots().get(i).setUsers(List.of(testUser));
             partnerService.updateElement(partner);
         }
+    }
+
+    private void fillListsWithData() throws FileNotFoundException {
+        nameList = readDataFromFile("names.txt");
+        surnameList = readDataFromFile("surnames.txt");
+        emails = readDataFromFile("emails.txt");
+        cities = readDataFromFile("cities.txt");
+        streets = readDataFromFile("streets.txt");
+        companies = readDataFromFile("companies.txt");
     }
 
     private void addAdminAndTestUserIfDoesntExists(User testUser, User adminUser) {
