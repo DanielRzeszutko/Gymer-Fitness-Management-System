@@ -42,27 +42,41 @@ class RegistrationService {
         JsonResponse response = createJsonResponse(details);
         if (response.isError()) return response;
 
-        Credential credential = createCredentialBy(details, Role.USER);
-        User user = new User("", "", credential);
-        userService.updateElement(user);
-        emailService.sendVerificationEmail(credential);
-
+        if (credentialService.isCredentialExistsByEmail(details.getEmail())) {
+                overrideAccountIfExistAndSendEmail(details);
+        } else {
+            Credential credential = createCredentialBy(details, Role.USER);
+            User user = new User("", "", credential);
+            userService.updateElement(user);
+            emailService.sendVerificationEmail(credential);
+        }
         return response;
     }
 
     public JsonResponse registerPartner(RegistrationDetails details) {
         JsonResponse response = createJsonResponse(details);
         if (response.isError()) return response;
-
-        Credential credential = createCredentialBy(details, Role.PARTNER);
-        Address address = new Address("", "", "", "");
-        Partner partner = new Partner("", "", "", "", "", credential, address,
-                Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-        partnerService.updateElement(partner);
-        emailService.sendVerificationEmail(credential);
+        if (credentialService.isCredentialExistsByEmail(details.getEmail())) {
+            overrideAccountIfExistAndSendEmail(details);
+        } else {
+            Credential credential = createCredentialBy(details, Role.PARTNER);
+            Address address = new Address("", "", "", "");
+            Partner partner = new Partner("", "", "", "", "", credential, address,
+                    Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+            partnerService.updateElement(partner);
+            emailService.sendVerificationEmail(credential);
+        }
 
         return response;
     }
+
+    private void overrideAccountIfExistAndSendEmail(RegistrationDetails details) {
+        Credential existedCredential = credentialService.getCredentialByEmail(details.getEmail());
+        existedCredential.setVerificationCode(RandomString.make(64));
+        existedCredential.setPassword(details.getPassword());
+        credentialService.updateElement(existedCredential);
+        emailService.sendVerificationEmail(existedCredential);
+        }
 
     private JsonResponse createJsonResponse(RegistrationDetails userDetails) {
         if (userDetails.getEmail() == null || userDetails.getPassword() == null || userDetails.getConfirmPassword() == null) {
@@ -71,7 +85,7 @@ class RegistrationService {
         if (!userDetails.getPassword().equals(userDetails.getConfirmPassword())) {
             return new JsonResponse("Passwords do not match.", true);
         }
-        if (credentialService.isCredentialExistsByEmail(userDetails.getEmail())) {
+        if (credentialService.isActivatedCredentialExistsByEmail(userDetails.getEmail())) {
             return new JsonResponse("Account with this email already exists.", true);
         }
         return new JsonResponse("Registered successfully. Please check your email to verify your account", false);
