@@ -1,6 +1,7 @@
 package com.gymer.components.common.sampledatagenerator;
 
 import com.gymer.api.address.entity.Address;
+import com.gymer.api.credential.CredentialService;
 import com.gymer.api.credential.entity.Credential;
 import com.gymer.api.credential.entity.Role;
 import com.gymer.api.employee.entity.Employee;
@@ -38,6 +39,7 @@ class RandomDataGenerator {
     private final PartnerService partnerService;
     private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final CredentialService credentialservice;
     private List<String> cities;
     private List<String> nameList;
     private List<String> surnameList;
@@ -46,10 +48,11 @@ class RandomDataGenerator {
     private List<String> companies;
 
     @Autowired
-    public RandomDataGenerator(PartnerService partnerService, UserService userService, BCryptPasswordEncoder passwordEncoder) {
+    public RandomDataGenerator(PartnerService partnerService, UserService userService, BCryptPasswordEncoder passwordEncoder, CredentialService credentialservice) {
         this.partnerService = partnerService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.credentialservice = credentialservice;
     }
 
     public void init() throws FileNotFoundException {
@@ -65,8 +68,7 @@ class RandomDataGenerator {
                 "999999999", Role.USER, true, time));
         User adminUser = new User("ADMIN", "ADMIN", new Credential("admin@gmail.com", "$2a$10$OyyKn5189yggrUjbPsZytezro033h6qYCQaMAVz2RaUtZ6hBWFAOy",
                 "000000000", Role.ADMIN, true, time));
-        userService.updateElement(testUser);
-        userService.updateElement(adminUser);
+        addAdminAndTestUserIfDoesntExists(testUser, adminUser);
 
         for (int i = 0; i < 10; i++) {
             User user = getRandomUser();
@@ -78,6 +80,15 @@ class RandomDataGenerator {
             }
             partner.getSlots().get(i).setUsers(List.of(testUser));
             partnerService.updateElement(partner);
+        }
+    }
+
+    private void addAdminAndTestUserIfDoesntExists(User testUser, User adminUser) {
+        if (credentialservice.isCredentialExistsByEmail(testUser.getCredential().getEmail())) {
+            userService.updateElement(testUser);
+        }
+        if (credentialservice.isCredentialExistsByEmail(adminUser.getCredential().getEmail())){
+            userService.updateElement(adminUser);
         }
     }
 
