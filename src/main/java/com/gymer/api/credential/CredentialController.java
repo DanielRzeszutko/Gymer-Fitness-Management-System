@@ -132,8 +132,9 @@ public class CredentialController extends AbstractRestApiController<CredentialDT
     }
 
     private void updateCredentialInsideDatabase(CredentialDTO credentialDTO) {
-        Credential credential = convertToEntity(credentialDTO);
-        credential.setId(credentialDTO.getId());
+        Credential credential = service.getElementById(credentialDTO.getId());
+        credential.setPhoneNumber(credentialDTO.getPhoneNumber());
+        credential.setPassword(credentialDTO.getPassword());
         service.updateElement(credential);
     }
 
