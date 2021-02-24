@@ -58,13 +58,8 @@ class RandomDataGenerator {
 
     public void init() throws FileNotFoundException {
         fillListsWithData();
-
-        Timestamp time = new Timestamp(new java.util.Date().getTime());
-        User testUser = new User("TEST", "TEST", new Credential("test@gmail.com", "$2a$10$7aFEbq/nmgvT1kuMhjXUc.g3jlk4.Bt7FfQMAF61m1Y78MhdS/6b2",
-                "999999999", Role.USER, true, time));
-        User adminUser = new User("ADMIN", "ADMIN", new Credential("admin@gmail.com", "$2a$10$OyyKn5189yggrUjbPsZytezro033h6qYCQaMAVz2RaUtZ6hBWFAOy",
-                "000000000", Role.ADMIN, true, time));
-        addAdminAndTestUserIfDoesntExists(testUser, adminUser);
+        addAdminIfDoesntExists();
+        User testUser = getUserIfExist();
 
         for (int i = 0; i < 10; i++) {
             User user = getRandomUser();
@@ -79,6 +74,18 @@ class RandomDataGenerator {
         }
     }
 
+    private User getUserIfExist() {
+        Timestamp time = new Timestamp(new java.util.Date().getTime());
+        if (!credentialservice.isCredentialExistsByEmail("test@gmail.com")) {
+            User testUser = new User("TEST", "TEST", new Credential("test@gmail.com", "$2a$10$7aFEbq/nmgvT1kuMhjXUc.g3jlk4.Bt7FfQMAF61m1Y78MhdS/6b2",
+                    "999999999", Role.USER, true, time));
+            userService.updateElement(testUser);
+            return testUser;
+        } else {
+           return userService.getByCredentials(credentialservice.getCredentialByEmail("test@gmail.com"));
+        }
+    }
+
     private void fillListsWithData() throws FileNotFoundException {
         nameList = readDataFromFile("names.txt");
         surnameList = readDataFromFile("surnames.txt");
@@ -88,11 +95,11 @@ class RandomDataGenerator {
         companies = readDataFromFile("companies.txt");
     }
 
-    private void addAdminAndTestUserIfDoesntExists(User testUser, User adminUser) {
-        if (credentialservice.isCredentialExistsByEmail(testUser.getCredential().getEmail())) {
-            userService.updateElement(testUser);
-        }
-        if (credentialservice.isCredentialExistsByEmail(adminUser.getCredential().getEmail())){
+    private void addAdminIfDoesntExists() {
+        Timestamp time = new Timestamp(new java.util.Date().getTime());
+        User adminUser = new User("ADMIN", "ADMIN", new Credential("admin@gmail.com", "$2a$10$OyyKn5189yggrUjbPsZytezro033h6qYCQaMAVz2RaUtZ6hBWFAOy",
+                "000000000", Role.ADMIN, true, time));
+        if (!credentialservice.isCredentialExistsByEmail(adminUser.getCredential().getEmail())){
             userService.updateElement(adminUser);
         }
     }
