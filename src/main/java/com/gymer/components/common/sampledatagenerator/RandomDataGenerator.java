@@ -82,7 +82,7 @@ class RandomDataGenerator {
             userService.updateElement(testUser);
             return testUser;
         } else {
-           return userService.getByCredentials(credentialservice.getCredentialByEmail("test@gmail.com"));
+            return userService.getByCredentials(credentialservice.getCredentialByEmail("test@gmail.com"));
         }
     }
 
@@ -99,7 +99,7 @@ class RandomDataGenerator {
         Timestamp time = new Timestamp(new java.util.Date().getTime());
         User adminUser = new User("ADMIN", "ADMIN", new Credential("admin@gmail.com", "$2a$10$OyyKn5189yggrUjbPsZytezro033h6qYCQaMAVz2RaUtZ6hBWFAOy",
                 "000000000", Role.ADMIN, true, time));
-        if (!credentialservice.isCredentialExistsByEmail(adminUser.getCredential().getEmail())){
+        if (!credentialservice.isCredentialExistsByEmail(adminUser.getCredential().getEmail())) {
             userService.updateElement(adminUser);
         }
     }
