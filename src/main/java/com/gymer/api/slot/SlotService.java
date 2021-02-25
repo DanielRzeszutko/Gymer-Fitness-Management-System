@@ -15,15 +15,19 @@ import java.util.List;
 @Service
 public class SlotService extends AbstractRestApiService<Slot, Long> {
 
+    private final SlotMailService slotMailService;
+
     @Autowired
-    public SlotService(SlotRepository repository) {
+    public SlotService(SlotRepository repository, SlotMailService slotMailService) {
         super(repository);
+        this.slotMailService = slotMailService;
     }
 
     /**
      * Service method responsible for deleting slot from database completely
      */
-    public void deleteSlot(Slot slot) {
+    public void deleteSlot(Partner partner, Slot slot) {
+        slotMailService.sendEmail(partner, slot);
         repository.delete(slot);
     }
 

@@ -12,7 +12,6 @@ class VerificationEmailService {
     private final Environment environment;
     private final EmailSender emailSender;
 
-
     public VerificationEmailService(Environment environment, EmailSender emailSender) {
         this.environment = environment;
         this.emailSender = emailSender;
