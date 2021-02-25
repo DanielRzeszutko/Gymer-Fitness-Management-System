@@ -26,8 +26,8 @@ public class SlotService extends AbstractRestApiService<Slot, Long> {
     /**
      * Service method responsible for deleting slot from database completely
      */
-    public void deleteSlot(Slot slot) {
-        slotMailService.sendEmail(slot);
+    public void deleteSlot(Partner partner, Slot slot) {
+        slotMailService.sendEmail(partner, slot);
         repository.delete(slot);
     }
 

@@ -18,19 +18,16 @@ public class SlotMailService {
 
     private final Environment environment;
     private final EmailSender emailSender;
-    private final PartnerService partnerService;
 
     @Autowired
-    public SlotMailService(Environment environment, EmailSender emailSender, PartnerService partnerService) {
+    public SlotMailService(Environment environment, EmailSender emailSender) {
         this.environment = environment;
         this.emailSender = emailSender;
-        this.partnerService = partnerService;
     }
 
-    public void sendEmail(Slot slot) {
+    public void sendEmail(Partner partner, Slot slot) {
         List<User> usersSignedToSlot = slot.getUsers();
 
-        Partner partner = partnerService.findPartnerContainingSlot(slot);
         String subject = createSubject();
 
         for (User user : usersSignedToSlot) {

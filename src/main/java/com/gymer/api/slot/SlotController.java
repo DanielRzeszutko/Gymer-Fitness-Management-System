@@ -111,6 +111,7 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
         for (Slot slot : slots) {
             if (slot.getId().equals(slotId)) {
                 service.updateElement(convertToEntity(slotDTO));
+                throw new ResponseStatusException(HttpStatus.NO_CONTENT);
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -126,7 +127,10 @@ public class SlotController extends AbstractRestApiController<SlotDTO, Slot, Lon
         List<Slot> slots = partner.getSlots();
         for (Slot slot : slots) {
             if (slot.getId().equals(slotId)) {
-                ((SlotService) service).deleteSlot(slot);
+                slots.remove(slot);
+                partnerService.updateElement(partner);
+                ((SlotService) service).deleteSlot(partner, slot);
+                throw new ResponseStatusException(HttpStatus.NO_CONTENT);
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
