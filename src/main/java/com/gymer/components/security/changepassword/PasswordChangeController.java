@@ -37,6 +37,10 @@ public class PasswordChangeController {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
+        if (passwordDetails.getNewPassword() == null || passwordDetails.getNewPassword().length() < 3) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
         String newPassword = passwordEncoder.encode(passwordDetails.getNewPassword());
         credential.setPassword(newPassword);
         credentialService.updateElement(credential);
