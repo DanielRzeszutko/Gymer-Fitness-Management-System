@@ -91,7 +91,7 @@ class RegistrationService {
             return new JsonResponse("Invalid Json format. Should contain email password and confirmPassword", true);
         }
         if (userDetails.getEmail().equals("") || userDetails.getPassword().equals("") || userDetails.getConfirmPassword().equals("")) {
-            return new JsonResponse("Fields cannot be empty!", false);
+            return new JsonResponse("Fields cannot be empty!", true);
         }
 
         if (!userDetails.getPassword().equals(userDetails.getConfirmPassword())) {
