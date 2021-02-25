@@ -18,24 +18,28 @@ public class PasswordChangeController {
 
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final CredentialService credentialService;
 
     @Autowired
-    public PasswordChangeController(PasswordEncoder passwordEncoder, UserService userService) {
+    public PasswordChangeController(PasswordEncoder passwordEncoder, UserService userService, CredentialService credentialService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.credentialService = credentialService;
     }
 
     @PutMapping("/api/users/{userId}/password")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @accountOwnerValidator.isOwnerLoggedIn(#userId))")
     public void changeUsersPassword(@RequestBody PasswordDetails passwordDetails, @PathVariable Long userId) {
         User user = userService.getElementById(userId);
-        Credential credentials = user.getCredential();
+        Credential credential = credentialService.getElementById(user.getCredential().getId());
 
-        if (!passwordEncoder.matches(passwordDetails.getOldPassword(), credentials.getPassword())) {
+        if (!passwordEncoder.matches(passwordDetails.getOldPassword(), credential.getPassword())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
-        credentials.setPassword(passwordEncoder.encode(passwordDetails.getNewPassword()));
-        userService.updateElement(user);
+
+        String newPassword = passwordEncoder.encode(passwordDetails.getNewPassword());
+        credential.setPassword(newPassword);
+        credentialService.updateElement(credential);
     }
 
 }

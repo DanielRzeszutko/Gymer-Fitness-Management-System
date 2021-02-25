@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class PasswordDetails {
 
-    String oldPassword;
-    String newPassword;
+    private String oldPassword;
+    private String newPassword;
 
 }
