@@ -46,6 +46,7 @@ class RandomDataGenerator {
     private List<String> emails;
     private List<String> streets;
     private List<String> companies;
+    private List<String> descriptions;
 
     @Autowired
     public RandomDataGenerator(PartnerService partnerService, UserService userService, BCryptPasswordEncoder passwordEncoder, CredentialService credentialservice) {
@@ -93,6 +94,7 @@ class RandomDataGenerator {
         cities = readDataFromFile("cities.txt");
         streets = readDataFromFile("streets.txt");
         companies = readDataFromFile("companies.txt");
+        descriptions = readDataFromFile("descriptions.txt");
     }
 
     private void addAdminIfDoesntExists() {
@@ -129,7 +131,7 @@ class RandomDataGenerator {
             slots.addAll(getRandomSlots(employee));
         }
         String gymName = getRandomGymName();
-        return new Partner(gymName, "../images/logo_transparent.png", "../images/gym8.jpg", "Lorem ipsum" + createRandomWord(20),
+        return new Partner(gymName, "../../images/randomLogoGym.jpg", "../../images/gym8.jpg", getRandomDescription(),
                 getRandomWebsite(gymName), getRandomCredential(gymName, "business", Role.PARTNER),
                 getRandomAddress(), employees, slots, getRandomWorkingHours());
     }
@@ -156,7 +158,8 @@ class RandomDataGenerator {
         String endHourString = endHour < 10 ? "0" + endHour : Integer.toString(endHour);
         boolean isPrivate = startHour > 12;
         Integer size = isPrivate ? 1 : 10;
-        return new Slot("Lorem ipsum" + createRandomWord(20), Date.valueOf("2021-05-15"), Time.valueOf(startHourString + ":00:00"),
+        String description = isPrivate ? "Personal Training" : getRandomSlotDescription();
+        return new Slot(description, Date.valueOf("2021-05-15"), Time.valueOf(startHourString + ":00:00"),
                 Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, "Full body workout", isPrivate, size);
     }
 
@@ -182,8 +185,10 @@ class RandomDataGenerator {
     }
 
     private Employee getRandomEmployee() {
-        return new Employee(getRandomName(), getRandomSurname(),
-                "Lorem Ipsum Lorem Ipsum", "image", getRandomWorkingHours());
+        String name = getRandomName();
+        String surname = getRandomSurname();
+        return new Employee(name, surname, "Hello. My name is " + name + " " + surname,
+                "../../images/employee.jpg", getRandomWorkingHours());
     }
 
     private Address getRandomAddress() {
@@ -205,6 +210,12 @@ class RandomDataGenerator {
             word.append(c);
         }
         return word.toString();
+    }
+
+    private String getRandomSlotDescription() {
+        List<String> list = List.of("Full body workout", "Dance step", "Indoor cycling",
+                "Kettlebells", "Mobility & Stability", "Stretching", "TRX");
+        return list.get(getRandomNumberBetween(0, list.size()));
     }
 
     private String getRandomPassword() {
@@ -258,16 +269,19 @@ class RandomDataGenerator {
     }
 
     private String getRandomZipcode() {
-        return getRandomNumberBetween(10, 100) + "-"
-                + getRandomNumberBetween(100, 1000);
+        return "" + getRandomNumberBetween(10, 100) + getRandomNumberBetween(100, 1000);
     }
 
     private String getRandomWebsite(String gymName) {
-        return "www." + gymName.toLowerCase().replace(" ", "") + ".pl";
+        return "www." + gymName.toLowerCase().replace(" ", "") + ".com";
     }
 
     private String getRandomPhoneNumber() {
         return String.valueOf(getRandomNumberBetween(100000000, 999999999));
+    }
+
+    private String getRandomDescription() {
+        return descriptions.get(getRandomNumberBetween(0, descriptions.size() - 1));
     }
 
 }
