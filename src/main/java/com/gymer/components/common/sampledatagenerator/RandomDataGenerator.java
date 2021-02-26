@@ -13,7 +13,7 @@ import com.gymer.api.user.entity.User;
 import com.gymer.api.workinghours.entity.Day;
 import com.gymer.api.workinghours.entity.WorkingHour;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -38,7 +38,7 @@ class RandomDataGenerator {
     private final List<String> usedEmails = new ArrayList<>();
     private final PartnerService partnerService;
     private final UserService userService;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final CredentialService credentialservice;
     private List<String> cities;
     private List<String> nameList;
@@ -49,13 +49,12 @@ class RandomDataGenerator {
     private List<String> descriptions;
 
     @Autowired
-    public RandomDataGenerator(PartnerService partnerService, UserService userService, BCryptPasswordEncoder passwordEncoder, CredentialService credentialservice) {
+    public RandomDataGenerator(PartnerService partnerService, UserService userService, PasswordEncoder passwordEncoder, CredentialService credentialservice) {
         this.partnerService = partnerService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.credentialservice = credentialservice;
     }
-
 
     public void init() throws FileNotFoundException {
         fillListsWithData();
@@ -142,7 +141,6 @@ class RandomDataGenerator {
         return new User(name, surname, getRandomCredential(name, surname, Role.USER));
     }
 
-
     private List<Slot> getRandomSlots(Employee employee) {
         List<Slot> slots = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
@@ -202,16 +200,6 @@ class RandomDataGenerator {
         return new Credential(getRandomEmail(name, secondName), getRandomPassword(), getRandomPhoneNumber(), role, true, timestamp);
     }
 
-    private String createRandomWord(int length) {
-        StringBuilder word = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            int v = 1 + (int) (Math.random() * 26);
-            char c = (char) (v + (i == 0 ? 'A' : 'a') - 1);
-            word.append(c);
-        }
-        return word.toString();
-    }
-
     private String getRandomSlotDescription() {
         List<String> list = List.of("Full body workout", "Dance step", "Indoor cycling",
                 "Kettlebells", "Mobility & Stability", "Stretching", "TRX");
@@ -228,7 +216,6 @@ class RandomDataGenerator {
         }
         password.append(specialChars.charAt(getRandomNumberBetween(0, specialChars.length() - 1)));
         return passwordEncoder.encode(password);
-
     }
 
     private String getRandomEmail(String name, String surname) {
