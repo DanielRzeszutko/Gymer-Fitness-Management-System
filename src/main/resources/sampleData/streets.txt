@@ -1,223 +1,100 @@
-1 Maja
-Agatowa
-Agawy
-Akacjowa
-Ametystowa
-Apteczna
-Asnyka
-Azaliowa
-Baśniowa
-Błękitna
-Boczna
-Borkowska
-Broniewskiego
-Brzoskwiniowa
-Brzozowa
-Bukowa
-Bursztynowa
-Cedrowa
-Chodkiewicza
-Chopina
-Ciasna
-Cicha
-Ciekawa
-Cienista
-Cieplarniana
-Cisowa
-Cyprysowa
-Czarnieckiego
-Czereśniowa
-Daglezji
-Dębowa
-Diamentowa
-Długa
-Dobra
-Dowcip
-Dwernickiego
-Dworkowa
-Dzielna
-Dziewanny
-Dzika
-Fabryczna
-Fiołków
-Flory
-Forsycji
-Fredry
-Gajowa
-Głowackiego
-Głucha
-Godebskiego
-Gościniec
-Górna
-Graniczna
-Granitowa
-Grzybowa
-Hebanowa
-Hiacyntowa
-Hipoteczna
-Husarska
-Idzikowskiego
-Jagiellońska
-Jarzębinowa
-Jasna
-Jaśminowa
-Jaworowa
-Jesionowa
-Jeździecka
-Jodłowa
-Jutrzenki
-Kalinowa
-Kameliowa
-Kamienna
-Kasprowicza
-Kasztanowa
-Kilińskiego
-Klimatyczna
-Klonowa
-Kochanowskiego
-Konopnickiej
-Konwaliowa
-Kopernika
-Koralowa
-Kostki-Napierskiego
-Kościelna
-Kościuszki
-Kozia
-Krasickiego
-Kraszewskiego
-Krokusów
-Krótka
-Kryształowa
-Kubusia Puchatka
-Kwiatowa
-Lawendowa
-Leszczynowa
-Leśna
-Letnia
-Limby
-Lipowa
-Liryczna
-Literacka
-Lotnicza
-Łagodna
-Łąkowa
-Macierzanki
-Magnolii
-Majowa
-Malachitowa
-Malinowa
-Mała
-Marmurowa
-Matejki
-Mazowiecka
-Mickiewicza
-Miła
-Modrzewiowa
-Mokra
-Moniuszki
-Morelowa
-Nefrytowa
-Niemcewicza
-Nizinna
-Norwida
-Nowa
-Objazdowa
-Ogrodowa
-Okuniewska
-Olchy
-Orla
-Orzechowa
-Orzeszkowej
-Parkowa
-Perłowa
-Piaskowa
-Piastowska
-Piękna
-Platynowa
-Podleśna
-Poezji
-Pogodna
-Polna
-Promienna
-Prosta
-Prusa
-Przechodnia
-Przejazdowa
-Przyleśna
-Ptasia
-Radosna
-Reja
-Rejtana
-Rodziewiczówny
-Rolna
-Równa
-Różana
-Rubinowa
-Rumiankowa
-Rysia
-Sadowa
-Sarenki
-Sasanki
-Sienkiewicza
-Skargi
-Skłodowskiej-Curie
-Słoneczna
-Słowackiego
-Słowicza
-Sosnowa
-Spacerowa
-Spokojna
-Sportowa
-Spółdzielcza
-Starzyńskiego
-Staszica
-Stokrotki
-Stwosza
-Syrokomli
-Szafirowa
-Szarych Szeregów
-Szeroka
-Szklarniowa
-Szkolna
-Szlachecka
-Szmaragdowa
-Śliska
-Śmiała
-Śnieżna
-Środkowa
-Świerkowa
-Tęczowa
-Topazowa
-Topolowa
-Turkusowa
-Tuwima
-Tymiankowa
-Ułańska
-Urocza
-Wapienna
-Warszawska
-Wawerska
-Wąska
-Wczasowa
-Wiejska
-Wierzbowa
-Wilanowska
-Wiosenna
-Wiślana
-Wiśniowa
-Wrzosowa
-Wschodnia
-Wspólna
-Współczesna
-Zaciszna
-Zagajnikowa
-Zakątek
-Zapiecek
-Zaułek
-Zdrojowa
-Złotej Jesieni
-Źródlana
-Żeglarska
-Żeromskiego
-Żółkiewskiego
-Żytnia
+Main Street
+Church Street
+Main Street North
+Main Street South
+High Street
+Elm Street
+Main Street West
+Washington Street
+Park Avenue
+Main Street East
+Walnut Street
+2nd Street
+Chestnut Street
+Maple Avenue
+Maple Street
+Broad Street
+Oak Street
+Center Street
+River Road
+Pine Street
+Water Street
+Market Street
+South Street
+Union Street
+Park Street
+3rd Street
+Washington Avenue
+Cherry Street
+Highland Avenue
+Court Street
+North Street
+Mill Street
+4th Street
+Spring Street
+School Street
+Prospect Street
+Franklin Street
+Central Avenue
+1st Street
+State Street
+West Street
+Front Street
+Jefferson Street
+Cedar Street
+Park Place
+Locust Street
+Bridge Street
+Madison Avenue
+Jackson Street
+Spruce Street
+Ridge Road
+Meadow Lane
+Grove Street
+5th Street
+Pearl Street
+Lincoln Street
+Pleasant Street
+Pennsylvania Avenue
+Dogwood Drive
+Madison Street
+Lincoln Avenue
+Jefferson Avenue
+Adams Street
+Academy Street
+7th Street
+4th Street West
+Route 1
+Green Street
+East Street
+3rd Street West
+11th Street
+Summit Avenue
+River Street
+Elizabeth Street
+Cherry Lane
+9th Street
+6th Street
+2nd Avenue
+12th Street
+Virginia Avenue
+Hill Street
+Hickory Lane
+Charles Street
+5th Avenue
+10th Street
+Liberty Street
+Fairway Drive
+Woodland Drive
+Winding Way
+Vine Street
+Route 30
+Monroe Street
+Delaware Avenue
+Colonial Drive
+Church Road
+Broadway
+1st Avenue
+Valley Road
+Sunset Drive
+Krakowska Street
