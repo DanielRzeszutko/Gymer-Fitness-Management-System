@@ -20,10 +20,14 @@ class UserPartnerCommunicationService {
     private final MessageToPartnerService messageToPartnerService;
 
     /**
-     *
-     * @param details
-     * @param partnerId
-     * @return
+     * Method receiving all objects from controller, like CommunicationDetails and partnerId.
+     * First of all response is build based on needed checks. Second if there is valid response the
+     * rest of method is launched, like creating message with detailed service and sending to the partner.
+     * @param details - object containing three fields, partnerId - addressee of a mail, userId - sender
+     *                and message in text format.
+     * @param partnerId - addressee ID, must be equal to the partnerID provided in details object.
+     * @return JsonResponse - object with message and valid status if data is filled successfully or
+     * message and invalid status if any error occurs during reading the text files.
      */
     public JsonResponse sendMailToPartner(CommunicationDetails details, Long partnerId) {
         JsonResponse response = isUserSendingFromLoggedInAccount(details, partnerId);

@@ -14,10 +14,10 @@ class MessageToPartnerService {
     private final EmailSender emailSender;
 
     /**
-     *
-     * @param partner
-     * @param user
-     * @param message
+     * Method taking three parameters and using emailSender component to send message with email service.
+     * @param partner - entity containing business partner, addressee of mail.
+     * @param user - entity containing user sending message to the provided partner.
+     * @param message - content of the message which will be send by email to the partner.
      */
     public void sendMessageToPartner(Partner partner, User user, String message) {
         String emailTo = partner.getCredential().getEmail();
