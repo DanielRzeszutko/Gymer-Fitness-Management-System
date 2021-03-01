@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @AllArgsConstructor
-public class SlotsEmployeeController {
+class SlotsEmployeeController {
 
     private final SlotsEmployeeService service;
 
@@ -33,7 +33,7 @@ public class SlotsEmployeeController {
     public JsonResponse updateEmployeeInSlot(@RequestBody SlotsEmployeeDetails details, @PathVariable Long slotId) {
         if (!details.getSlotId().equals(slotId))
             throw new ResponseStatusException(HttpStatus.CONFLICT);
-        return service.updateEmployeeSigningAttribute(details, slotId);
+        return service.updateEmployeeSigningAttribute(details);
     }
 
 }

@@ -14,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @AllArgsConstructor
-public class SessionController {
+class SessionController {
 
     private final SessionService service;
 

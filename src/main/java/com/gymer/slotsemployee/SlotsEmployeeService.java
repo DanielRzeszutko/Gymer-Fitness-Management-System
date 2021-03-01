@@ -26,16 +26,12 @@ class SlotsEmployeeService {
      * @param details - Object holding information about employeeId which should be added to the
      *                slot, slotId which should be modified and remove field, taking boolean value
      *                which tells we want remove employee or update him instead.
-     * @param slotId - Valid slot ID, must be equal to the slot ID provided in details body.
      * @return JsonResponse - object with message and valid status if data is filled successfully or
      * message and invalid status if any error occurs during reading the text files.
      */
-    public JsonResponse updateEmployeeSigningAttribute(SlotsEmployeeDetails details, Long slotId) {
-        if (details.isRemoveEmployee()) {
-            return removeEmployeeFromSlot(details.getSlotId());
-        }
-
-        return updateEmployeeInSlot(details.getSlotId(), details.getEmployeeId());
+    public JsonResponse updateEmployeeSigningAttribute(SlotsEmployeeDetails details) {
+        if (details.isRemoveEmployee()) return clearSlot(details.getSlotId());
+        return updateSlot(details.getSlotId(), details.getEmployeeId());
     }
 
     /**
@@ -44,24 +40,28 @@ class SlotsEmployeeService {
      * @return JsonResponse - object with message and valid status if data is filled successfully or
      * message and invalid status if any error occurs during reading the text files.
      */
-    public JsonResponse removeEmployeeFromSlot(Long slotId) {
+    public JsonResponse clearSlot(Long slotId) {
         Slot slot = slotService.getElementById(slotId);
-        return updateSlotWithNewEmployee(slot, null);
+        return saveUpdatedSlotInDatabase(slot, null);
     }
 
-    private JsonResponse updateEmployeeInSlot(Long slotId, Long employeeId) {
+    private JsonResponse updateSlot(Long slotId, Long employeeId) {
         Slot slot = slotService.getElementById(slotId);
-        Partner partner = partnerService.findPartnerContainingSlot(slot);
         Employee employee = employeeService.getElementById(employeeId);
 
-        if (partner.getEmployees().contains(employee)) {
+        if (isPartnerNotContainsThisEmployee(slot, employee)) {
             return JsonResponse.invalidMessage("Can't add Employee because he's not working for you.");
         }
 
-        return updateSlotWithNewEmployee(slot, employee);
+        return saveUpdatedSlotInDatabase(slot, employee);
     }
 
-    private JsonResponse updateSlotWithNewEmployee(Slot slot, Employee employee) {
+    private boolean isPartnerNotContainsThisEmployee(Slot slot, Employee employee) {
+        Partner partner = partnerService.findPartnerContainingSlot(slot);
+        return !partner.getEmployees().contains(employee);
+    }
+
+    private JsonResponse saveUpdatedSlotInDatabase(Slot slot, Employee employee) {
         slot.setEmployee(employee);
         slotService.updateElement(slot);
         return JsonResponse.validMessage("Successfully changed Employee in Slot.");

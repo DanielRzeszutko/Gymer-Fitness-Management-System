@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-public class RegistrationController {
+class RegistrationController {
 
     private final RegistrationService registrationService;
 

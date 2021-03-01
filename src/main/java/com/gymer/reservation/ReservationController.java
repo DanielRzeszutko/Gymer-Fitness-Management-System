@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @AllArgsConstructor
-public class ReservationController {
+class ReservationController {
 
     private final ReservationService reservationService;
 

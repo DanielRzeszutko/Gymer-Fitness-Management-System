@@ -13,6 +13,12 @@ class MessageToPartnerService {
 
     private final EmailSender emailSender;
 
+    /**
+     *
+     * @param partner
+     * @param user
+     * @param message
+     */
     public void sendMessageToPartner(Partner partner, User user, String message) {
         String emailTo = partner.getCredential().getEmail();
         String content = createContent(partner, user, message);

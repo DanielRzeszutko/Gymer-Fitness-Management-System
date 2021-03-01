@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
  */
 @RestController
 @AllArgsConstructor
-public class PopulateController {
+class PopulateController {
 
     private final RandomDataGenerator dataGenerator;
 

@@ -19,6 +19,12 @@ class UserPartnerCommunicationService {
     private final AccountOwnerValidator accountOwnerValidator;
     private final MessageToPartnerService messageToPartnerService;
 
+    /**
+     *
+     * @param details
+     * @param partnerId
+     * @return
+     */
     public JsonResponse sendMailToPartner(CommunicationDetails details, Long partnerId) {
         JsonResponse response = isUserSendingFromLoggedInAccount(details, partnerId);
         if (response.isResponseNotValid()) return response;

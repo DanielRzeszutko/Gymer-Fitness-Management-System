@@ -14,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @AllArgsConstructor
-public class PasswordChangeController {
+class PasswordChangeController {
 
     private final PasswordChangeService passwordChangeService;
 

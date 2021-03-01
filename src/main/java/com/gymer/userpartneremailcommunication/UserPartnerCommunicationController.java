@@ -10,10 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class UserPartnerCommunicationController {
+class UserPartnerCommunicationController {
 
     private final UserPartnerCommunicationService communicationService;
 
+    /**
+     *
+     * @param details
+     * @param partnerId
+     * @return
+     */
     @PostMapping("/api/partners/{partnerId}/message")
     public JsonResponse postMessageToPartner(@RequestBody CommunicationDetails details, @PathVariable Long partnerId) {
         return communicationService.sendMailToPartner(details, partnerId);
