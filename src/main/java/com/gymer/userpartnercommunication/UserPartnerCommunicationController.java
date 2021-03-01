@@ -17,8 +17,9 @@ class UserPartnerCommunicationController {
     /**
      * Controller endpoint receiving CommunicationDetails object in body. Checking all rights to
      * sending emails from valid account and to valid partner message is send by service class.
-     * @param details - object containing three fields, partnerId - addressee of a mail, userId - sender
-     *                and message in text format.
+     *
+     * @param details   - object containing three fields, partnerId - addressee of a mail, userId - sender
+     *                  and message in text format.
      * @param partnerId - addressee ID, must be equal to the partnerID provided in details object.
      * @return JsonResponse - object with message and valid status if data is filled successfully or
      * message and invalid status if any error occurs during reading the text files.

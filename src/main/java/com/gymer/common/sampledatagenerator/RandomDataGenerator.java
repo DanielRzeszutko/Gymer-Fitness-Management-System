@@ -52,6 +52,7 @@ class RandomDataGenerator {
     /**
      * Initial method that fills database with 10 random partners, 10 random users and with
      * test_user and admin_user for tests if they not exist already in database
+     *
      * @throws FileNotFoundException - if any file not exist in resources.
      */
     public void init() throws FileNotFoundException {

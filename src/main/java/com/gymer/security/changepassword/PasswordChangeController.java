@@ -1,7 +1,7 @@
 package com.gymer.security.changepassword;
 
-import com.gymer.common.entity.JsonResponse;
 import com.gymer.common.crudresources.credential.entity.Credential;
+import com.gymer.common.entity.JsonResponse;
 import com.gymer.security.changepassword.entity.PasswordDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

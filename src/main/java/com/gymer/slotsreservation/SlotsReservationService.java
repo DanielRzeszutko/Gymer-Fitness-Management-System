@@ -1,8 +1,5 @@
 package com.gymer.slotsreservation;
 
-import com.gymer.common.entity.JsonResponse;
-import com.gymer.slotsreservation.entity.GuestReservationDetails;
-import com.gymer.slotsreservation.entity.UserReservationDetails;
 import com.gymer.common.crudresources.credential.CredentialService;
 import com.gymer.common.crudresources.credential.entity.Credential;
 import com.gymer.common.crudresources.credential.entity.Role;
@@ -10,7 +7,10 @@ import com.gymer.common.crudresources.slot.SlotService;
 import com.gymer.common.crudresources.slot.entity.Slot;
 import com.gymer.common.crudresources.user.UserService;
 import com.gymer.common.crudresources.user.entity.User;
+import com.gymer.common.entity.JsonResponse;
 import com.gymer.security.validation.AccountOwnerValidator;
+import com.gymer.slotsreservation.entity.GuestReservationDetails;
+import com.gymer.slotsreservation.entity.UserReservationDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,7 @@ class SlotsReservationService {
      * Service method that returns response in JSON format and adds guest to slot and saves this in database
      * When guests credentials exists they are requested from database in another case new User with blank credentials is created instead
      * When in details field cancel is set to true Guest is removed from the slot
+     *
      * @param details - Object with userId, slotId and boolean deciding if record need to be removed.
      *                Custom object holding information only for reservation feature.
      * @return JsonResponse - object with message and valid status if data is filled successfully or
@@ -53,6 +54,7 @@ class SlotsReservationService {
     /**
      * Service method that returns response in JSON format and adds user to slot and saves this in database.
      * When in details field cancel is set to true User is removed from the slot.
+     *
      * @param details - Object with userId, slotId and boolean deciding if record need to be removed.
      *                Custom object holding information only for reservation feature.
      * @return JsonResponse - object with message and valid status if data is filled successfully or

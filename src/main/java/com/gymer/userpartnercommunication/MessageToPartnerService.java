@@ -1,9 +1,9 @@
 package com.gymer.userpartnercommunication;
 
-import com.gymer.common.entity.MailingDetails;
-import com.gymer.common.mailing.EmailSender;
 import com.gymer.common.crudresources.partner.entity.Partner;
 import com.gymer.common.crudresources.user.entity.User;
+import com.gymer.common.entity.MailingDetails;
+import com.gymer.common.mailing.EmailSender;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +15,9 @@ class MessageToPartnerService {
 
     /**
      * Method taking three parameters and using emailSender component to send message with email service.
+     *
      * @param partner - entity containing business partner, addressee of mail.
-     * @param user - entity containing user sending message to the provided partner.
+     * @param user    - entity containing user sending message to the provided partner.
      * @param message - content of the message which will be send by email to the partner.
      */
     public void sendMessageToPartner(Partner partner, User user, String message) {

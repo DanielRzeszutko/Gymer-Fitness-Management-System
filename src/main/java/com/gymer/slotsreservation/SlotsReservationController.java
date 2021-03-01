@@ -19,9 +19,10 @@ class SlotsReservationController {
      * Method that returns response in JSON format. For guests only. First checking if there is not conflict with
      * provided slotId and @RequestBody slotId and next updating/adding reservation or throwing
      * CONFLICT status in response.
+     *
      * @param details - Object with userId, slotId and boolean deciding if record need to be removed.
      *                Custom object holding information only for reservation feature.
-     * @param slotId - Id of the slot which to user want to reserve. Must be the same as ID in body object.
+     * @param slotId  - Id of the slot which to user want to reserve. Must be the same as ID in body object.
      * @return JsonResponse - object with message and valid status if data is filled successfully or
      * message and invalid status if any error occurs during reading the text files.
      */
@@ -35,11 +36,12 @@ class SlotsReservationController {
 
     /**
      * Method that returns response in JSON format. For logged user only. First checking if there is not conflict with
-     *      * provided slotId and @RequestBody slotId and next updating/adding reservation or throwing
-     *      * CONFLICT status in response.
+     * * provided slotId and @RequestBody slotId and next updating/adding reservation or throwing
+     * * CONFLICT status in response.
+     *
      * @param details - Object with userId, slotId and boolean deciding if record need to be removed.
      *                Custom object holding information only for reservation feature.
-     * @param slotId - Id of the slot which to user want to reserve. Must be the same as ID in body object.
+     * @param slotId  - Id of the slot which to user want to reserve. Must be the same as ID in body object.
      * @return JsonResponse - object with message and valid status if data is filled successfully or
      * message and invalid status if any error occurs during reading the text files.
      */

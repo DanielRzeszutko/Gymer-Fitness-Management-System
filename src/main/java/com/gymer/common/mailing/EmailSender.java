@@ -28,6 +28,7 @@ public class EmailSender {
      * Main method that sends emails - starts with reading template files from the resources folder.
      * After building template method connects to the external email service provider and establish
      * connection. Next is sending email to the inputted address with inputted message.
+     *
      * @param mailingDetails - Object providing three fields: emailTo, subject and emailContent.
      */
     public void sendEmail(MailingDetails mailingDetails) {

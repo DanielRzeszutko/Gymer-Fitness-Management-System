@@ -20,6 +20,7 @@ class PopulateController {
 
     /**
      * Endpoint that fills database with randomized data.
+     *
      * @return JsonResponse - object with message and valid status if data is filled successfully or
      * message and invalid status if any error occurs during reading the text files.
      */

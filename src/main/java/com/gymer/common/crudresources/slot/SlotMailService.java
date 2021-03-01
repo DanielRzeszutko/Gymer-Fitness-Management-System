@@ -1,10 +1,10 @@
 package com.gymer.common.crudresources.slot;
 
-import com.gymer.common.entity.MailingDetails;
-import com.gymer.common.mailing.EmailSender;
 import com.gymer.common.crudresources.partner.entity.Partner;
 import com.gymer.common.crudresources.slot.entity.Slot;
 import com.gymer.common.crudresources.user.entity.User;
+import com.gymer.common.entity.MailingDetails;
+import com.gymer.common.mailing.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;

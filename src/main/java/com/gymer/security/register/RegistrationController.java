@@ -1,7 +1,7 @@
 package com.gymer.security.register;
 
-import com.gymer.common.entity.JsonResponse;
 import com.gymer.common.crudresources.credential.entity.Role;
+import com.gymer.common.entity.JsonResponse;
 import com.gymer.security.register.entity.RegistrationDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

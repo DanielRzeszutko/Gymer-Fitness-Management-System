@@ -1,6 +1,5 @@
 package com.gymer.security.register;
 
-import com.gymer.common.entity.JsonResponse;
 import com.gymer.common.crudresources.address.entity.Address;
 import com.gymer.common.crudresources.credential.CredentialService;
 import com.gymer.common.crudresources.credential.entity.Credential;
@@ -9,6 +8,7 @@ import com.gymer.common.crudresources.partner.PartnerService;
 import com.gymer.common.crudresources.partner.entity.Partner;
 import com.gymer.common.crudresources.user.UserService;
 import com.gymer.common.crudresources.user.entity.User;
+import com.gymer.common.entity.JsonResponse;
 import com.gymer.security.register.entity.RegistrationDetails;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
