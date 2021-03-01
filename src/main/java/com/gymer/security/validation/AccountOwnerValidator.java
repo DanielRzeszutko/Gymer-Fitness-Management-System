@@ -1,12 +1,12 @@
 package com.gymer.security.validation;
 
-import com.gymer.resources.credential.entity.Role;
-import com.gymer.resources.partner.PartnerService;
-import com.gymer.resources.partner.entity.Partner;
-import com.gymer.resources.partner.entity.PartnerDTO;
-import com.gymer.resources.slot.SlotService;
-import com.gymer.resources.slot.entity.Slot;
-import com.gymer.resources.user.entity.UserDTO;
+import com.gymer.common.crudresources.credential.entity.Role;
+import com.gymer.common.crudresources.partner.PartnerService;
+import com.gymer.common.crudresources.partner.entity.Partner;
+import com.gymer.common.crudresources.partner.entity.PartnerDTO;
+import com.gymer.common.crudresources.slot.SlotService;
+import com.gymer.common.crudresources.slot.entity.Slot;
+import com.gymer.common.crudresources.user.entity.UserDTO;
 import com.gymer.security.session.SessionService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

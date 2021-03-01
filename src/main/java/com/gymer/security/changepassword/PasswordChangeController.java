@@ -1,7 +1,7 @@
 package com.gymer.security.changepassword;
 
 import com.gymer.common.entity.JsonResponse;
-import com.gymer.resources.credential.entity.Credential;
+import com.gymer.common.crudresources.credential.entity.Credential;
 import com.gymer.security.changepassword.entity.PasswordDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,6 +33,12 @@ class PasswordChangeController {
 
         passwordChangeService.changePassword(passwordDetails, credential);
         return JsonResponse.validMessage("Successfully changed password");
+    }
+
+    @PutMapping("/api/partners/{partnerId}/password")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
+    public JsonResponse changePartnersPassword(@RequestBody PasswordDetails passwordDetails, @PathVariable Long partnerId) {
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented yet!");
     }
 
 }

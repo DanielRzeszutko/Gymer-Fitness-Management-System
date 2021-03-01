@@ -1,9 +1,9 @@
 package com.gymer.security.changepassword;
 
-import com.gymer.resources.credential.CredentialService;
-import com.gymer.resources.credential.entity.Credential;
-import com.gymer.resources.user.UserService;
-import com.gymer.resources.user.entity.User;
+import com.gymer.common.crudresources.credential.CredentialService;
+import com.gymer.common.crudresources.credential.entity.Credential;
+import com.gymer.common.crudresources.user.UserService;
+import com.gymer.common.crudresources.user.entity.User;
 import com.gymer.security.changepassword.entity.PasswordDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

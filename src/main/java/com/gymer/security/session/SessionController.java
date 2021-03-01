@@ -1,8 +1,8 @@
 package com.gymer.security.session;
 
-import com.gymer.resources.credential.entity.Role;
-import com.gymer.resources.partner.entity.PartnerDTO;
-import com.gymer.resources.user.entity.UserDTO;
+import com.gymer.common.crudresources.credential.entity.Role;
+import com.gymer.common.crudresources.partner.entity.PartnerDTO;
+import com.gymer.common.crudresources.user.entity.UserDTO;
 import com.gymer.security.session.entity.ActiveAccount;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -2,7 +2,7 @@ package com.gymer.security.register;
 
 import com.gymer.common.entity.MailingDetails;
 import com.gymer.common.mailing.EmailSender;
-import com.gymer.resources.credential.entity.Credential;
+import com.gymer.common.crudresources.credential.entity.Credential;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
