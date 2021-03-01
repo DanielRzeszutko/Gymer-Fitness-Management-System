@@ -1,8 +1,8 @@
 package com.gymer.components.security.session;
 
-import com.gymer.api.credential.entity.Role;
-import com.gymer.api.partner.entity.PartnerDTO;
-import com.gymer.api.user.entity.UserDTO;
+import com.gymer.resources.credential.entity.Role;
+import com.gymer.resources.partner.entity.PartnerDTO;
+import com.gymer.resources.user.entity.UserDTO;
 import com.gymer.components.security.session.entity.ActiveAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

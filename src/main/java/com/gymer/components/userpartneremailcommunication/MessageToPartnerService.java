@@ -1,7 +1,7 @@
 package com.gymer.components.userpartneremailcommunication;
 
-import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.user.entity.User;
+import com.gymer.resources.partner.entity.Partner;
+import com.gymer.resources.user.entity.User;
 import com.gymer.components.common.entity.MailingDetails;
 import com.gymer.components.common.mailing.EmailSender;
 import org.springframework.stereotype.Service;

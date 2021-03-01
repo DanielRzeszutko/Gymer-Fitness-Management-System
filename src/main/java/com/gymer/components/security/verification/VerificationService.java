@@ -1,7 +1,7 @@
 package com.gymer.components.security.verification;
 
-import com.gymer.api.credential.CredentialService;
-import com.gymer.api.credential.entity.Credential;
+import com.gymer.resources.credential.CredentialService;
+import com.gymer.resources.credential.entity.Credential;
 import com.gymer.components.common.entity.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

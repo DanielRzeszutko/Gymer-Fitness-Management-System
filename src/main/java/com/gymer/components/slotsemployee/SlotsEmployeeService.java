@@ -1,11 +1,11 @@
 package com.gymer.components.slotsemployee;
 
-import com.gymer.api.employee.EmployeeService;
-import com.gymer.api.employee.entity.Employee;
-import com.gymer.api.partner.PartnerService;
-import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.slot.SlotService;
-import com.gymer.api.slot.entity.Slot;
+import com.gymer.resources.employee.EmployeeService;
+import com.gymer.resources.employee.entity.Employee;
+import com.gymer.resources.partner.PartnerService;
+import com.gymer.resources.partner.entity.Partner;
+import com.gymer.resources.slot.SlotService;
+import com.gymer.resources.slot.entity.Slot;
 import com.gymer.components.common.entity.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

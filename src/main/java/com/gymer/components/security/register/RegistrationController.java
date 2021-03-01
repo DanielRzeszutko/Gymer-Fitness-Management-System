@@ -1,6 +1,6 @@
 package com.gymer.components.security.register;
 
-import com.gymer.api.credential.entity.Role;
+import com.gymer.resources.credential.entity.Role;
 import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.security.register.entity.RegistrationDetails;
 import org.springframework.beans.factory.annotation.Autowired;

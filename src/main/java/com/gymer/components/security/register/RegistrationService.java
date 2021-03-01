@@ -1,13 +1,13 @@
 package com.gymer.components.security.register;
 
-import com.gymer.api.address.entity.Address;
-import com.gymer.api.credential.CredentialService;
-import com.gymer.api.credential.entity.Credential;
-import com.gymer.api.credential.entity.Role;
-import com.gymer.api.partner.PartnerService;
-import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.user.UserService;
-import com.gymer.api.user.entity.User;
+import com.gymer.resources.address.entity.Address;
+import com.gymer.resources.credential.CredentialService;
+import com.gymer.resources.credential.entity.Credential;
+import com.gymer.resources.credential.entity.Role;
+import com.gymer.resources.partner.PartnerService;
+import com.gymer.resources.partner.entity.Partner;
+import com.gymer.resources.user.UserService;
+import com.gymer.resources.user.entity.User;
 import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.security.register.entity.RegistrationDetails;
 import net.bytebuddy.utility.RandomString;

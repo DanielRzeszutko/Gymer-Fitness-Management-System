@@ -1,14 +1,14 @@
 package com.gymer.components.security.session;
 
-import com.gymer.api.credential.CredentialService;
-import com.gymer.api.credential.entity.Credential;
-import com.gymer.api.credential.entity.Role;
-import com.gymer.api.partner.PartnerService;
-import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.partner.entity.PartnerDTO;
-import com.gymer.api.user.UserService;
-import com.gymer.api.user.entity.User;
-import com.gymer.api.user.entity.UserDTO;
+import com.gymer.resources.credential.CredentialService;
+import com.gymer.resources.credential.entity.Credential;
+import com.gymer.resources.credential.entity.Role;
+import com.gymer.resources.partner.PartnerService;
+import com.gymer.resources.partner.entity.Partner;
+import com.gymer.resources.partner.entity.PartnerDTO;
+import com.gymer.resources.user.UserService;
+import com.gymer.resources.user.entity.User;
+import com.gymer.resources.user.entity.UserDTO;
 import com.gymer.components.security.session.entity.ActiveAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

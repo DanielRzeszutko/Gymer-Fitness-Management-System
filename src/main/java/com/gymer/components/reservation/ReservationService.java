@@ -1,12 +1,12 @@
 package com.gymer.components.reservation;
 
-import com.gymer.api.credential.CredentialService;
-import com.gymer.api.credential.entity.Credential;
-import com.gymer.api.credential.entity.Role;
-import com.gymer.api.slot.SlotService;
-import com.gymer.api.slot.entity.Slot;
-import com.gymer.api.user.UserService;
-import com.gymer.api.user.entity.User;
+import com.gymer.resources.credential.CredentialService;
+import com.gymer.resources.credential.entity.Credential;
+import com.gymer.resources.credential.entity.Role;
+import com.gymer.resources.slot.SlotService;
+import com.gymer.resources.slot.entity.Slot;
+import com.gymer.resources.user.UserService;
+import com.gymer.resources.user.entity.User;
 import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.reservation.entity.GuestReservationDetails;
 import com.gymer.components.reservation.entity.UserReservationDetails;

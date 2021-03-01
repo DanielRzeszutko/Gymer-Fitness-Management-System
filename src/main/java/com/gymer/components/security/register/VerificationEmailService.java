@@ -1,6 +1,6 @@
 package com.gymer.components.security.register;
 
-import com.gymer.api.credential.entity.Credential;
+import com.gymer.resources.credential.entity.Credential;
 import com.gymer.components.common.entity.MailingDetails;
 import com.gymer.components.common.mailing.EmailSender;
 import org.springframework.core.env.Environment;

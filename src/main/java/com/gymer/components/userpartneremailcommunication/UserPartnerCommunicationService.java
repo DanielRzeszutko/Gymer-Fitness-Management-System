@@ -1,9 +1,9 @@
 package com.gymer.components.userpartneremailcommunication;
 
-import com.gymer.api.partner.PartnerService;
-import com.gymer.api.partner.entity.Partner;
-import com.gymer.api.user.UserService;
-import com.gymer.api.user.entity.User;
+import com.gymer.resources.partner.PartnerService;
+import com.gymer.resources.partner.entity.Partner;
+import com.gymer.resources.user.UserService;
+import com.gymer.resources.user.entity.User;
 import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.security.validation.AccountOwnerValidator;
 import com.gymer.components.userpartneremailcommunication.entity.CommunicationDetails;

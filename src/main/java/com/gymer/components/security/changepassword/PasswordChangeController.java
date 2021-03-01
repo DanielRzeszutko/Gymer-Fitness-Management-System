@@ -1,9 +1,9 @@
 package com.gymer.components.security.changepassword;
 
-import com.gymer.api.credential.CredentialService;
-import com.gymer.api.credential.entity.Credential;
-import com.gymer.api.user.UserService;
-import com.gymer.api.user.entity.User;
+import com.gymer.resources.credential.CredentialService;
+import com.gymer.resources.credential.entity.Credential;
+import com.gymer.resources.user.UserService;
+import com.gymer.resources.user.entity.User;
 import com.gymer.components.security.changepassword.entity.PasswordDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
