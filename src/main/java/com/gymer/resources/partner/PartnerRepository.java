@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PartnerRepository extends PagingAndSortingRepository<Partner, Long> {
+interface PartnerRepository extends PagingAndSortingRepository<Partner, Long> {
 
     boolean existsByIdAndCredentialActivatedIsTrue(Long id);
 

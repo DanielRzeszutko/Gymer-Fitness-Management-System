@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserPartnerCommunicationService {
+class UserPartnerCommunicationService {
 
     private final PartnerService partnerService;
     private final UserService userService;
@@ -21,7 +21,7 @@ public class UserPartnerCommunicationService {
 
     public JsonResponse sendMailToPartner(CommunicationDetails details, Long partnerId) {
         JsonResponse response = isUserSendingFromLoggedInAccount(details, partnerId);
-        if (!response.isResponseValid()) return response;
+        if (response.isResponseNotValid()) return response;
 
         Partner partner = partnerService.getElementById(partnerId);
         User user = userService.getElementById(details.getUserId());

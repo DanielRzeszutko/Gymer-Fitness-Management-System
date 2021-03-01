@@ -30,7 +30,7 @@ class RegistrationService {
 
     public JsonResponse registerAccount(RegistrationDetails details, Role role) {
         JsonResponse response = createJsonResponse(details);
-        if (!response.isResponseValid()) return response;
+        if (response.isResponseNotValid()) return response;
 
         if (isUserAlreadyExists(details.getEmail())) {
             ifNotActivatedUserWithThisEmailExists(details, role);

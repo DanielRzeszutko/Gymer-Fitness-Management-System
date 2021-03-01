@@ -53,8 +53,9 @@ class ReservationService {
     public JsonResponse updateReservationForUser(UserReservationDetails details) {
         Slot slot = slotService.getElementById(details.getSlotId());
         User user = userService.getElementById(details.getUserId());
+
         if (!accountOwnerValidator.isOwnerLoggedIn(user.getId())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in as valid user");
         }
 
         if (details.isCancel()) return removeUserFromSlot(slot, user);
@@ -64,8 +65,7 @@ class ReservationService {
 
     private User createGuestAccount(GuestReservationDetails details) {
         Credential credential = credentialService.getCredentialFromEmailPhoneAndRoleOrCreateNewOne(
-                details.getEmail(), details.getPhoneNumber(), Role.GUEST
-        );
+                details.getEmail(), details.getPhoneNumber(), Role.GUEST);
         User user = new User(details.getFirstName(), details.getLastName(), credential);
         userService.updateElement(user);
         return user;
@@ -75,7 +75,7 @@ class ReservationService {
         User user = slot.getUsers().stream()
                 .filter(el -> el.getCredential().getEmail().equals(email))
                 .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not exist"));
         return removeUserFromSlot(slot, user);
     }
 

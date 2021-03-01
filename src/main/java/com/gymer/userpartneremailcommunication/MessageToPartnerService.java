@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class MessageToPartnerService {
+class MessageToPartnerService {
 
     private final EmailSender emailSender;
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SlotRepository extends PagingAndSortingRepository<Slot, Long> {
+interface SlotRepository extends PagingAndSortingRepository<Slot, Long> {
 
     Page<Slot> findAllByEmployee_FirstNameOrEmployee_LastName(String firstName, String lastName, Pageable pageable);
 

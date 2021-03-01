@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Time;
 
 @Repository
-public interface WorkingHourRepository extends PagingAndSortingRepository<WorkingHour, Long> {
+interface WorkingHourRepository extends PagingAndSortingRepository<WorkingHour, Long> {
 
     Page<WorkingHour> findAllByStartHourContainsOrEndHourContains(Time startHour, Time endHour, Pageable pageable);
 

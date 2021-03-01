@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SlotMailService {
+class SlotMailService {
 
     private final Environment environment;
     private final EmailSender emailSender;
