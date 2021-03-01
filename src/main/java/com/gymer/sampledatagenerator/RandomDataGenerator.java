@@ -1,4 +1,4 @@
-package com.gymer.common.sampledatagenerator;
+package com.gymer.sampledatagenerator;
 
 import com.gymer.common.crudresources.address.entity.Address;
 import com.gymer.common.crudresources.credential.CredentialService;

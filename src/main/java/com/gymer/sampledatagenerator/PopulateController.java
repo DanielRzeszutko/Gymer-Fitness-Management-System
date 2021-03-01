@@ -1,4 +1,4 @@
-package com.gymer.common.sampledatagenerator;
+package com.gymer.sampledatagenerator;
 
 import com.gymer.common.entity.JsonResponse;
 import lombok.AllArgsConstructor;
