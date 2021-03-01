@@ -1,5 +1,8 @@
 package com.gymer.reservation;
 
+import com.gymer.common.entity.JsonResponse;
+import com.gymer.reservation.entity.GuestReservationDetails;
+import com.gymer.reservation.entity.UserReservationDetails;
 import com.gymer.resources.credential.CredentialService;
 import com.gymer.resources.credential.entity.Credential;
 import com.gymer.resources.credential.entity.Role;
@@ -7,9 +10,6 @@ import com.gymer.resources.slot.SlotService;
 import com.gymer.resources.slot.entity.Slot;
 import com.gymer.resources.user.UserService;
 import com.gymer.resources.user.entity.User;
-import com.gymer.common.entity.JsonResponse;
-import com.gymer.reservation.entity.GuestReservationDetails;
-import com.gymer.reservation.entity.UserReservationDetails;
 import com.gymer.security.validation.AccountOwnerValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

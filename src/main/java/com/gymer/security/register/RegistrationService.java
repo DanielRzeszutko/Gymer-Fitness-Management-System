@@ -1,7 +1,6 @@
 package com.gymer.security.register;
 
 import com.gymer.common.entity.JsonResponse;
-import com.gymer.security.register.entity.RegistrationDetails;
 import com.gymer.resources.address.entity.Address;
 import com.gymer.resources.credential.CredentialService;
 import com.gymer.resources.credential.entity.Credential;
@@ -10,6 +9,7 @@ import com.gymer.resources.partner.PartnerService;
 import com.gymer.resources.partner.entity.Partner;
 import com.gymer.resources.user.UserService;
 import com.gymer.resources.user.entity.User;
+import com.gymer.security.register.entity.RegistrationDetails;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;

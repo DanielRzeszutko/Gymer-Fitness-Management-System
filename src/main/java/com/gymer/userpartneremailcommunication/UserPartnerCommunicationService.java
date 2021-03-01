@@ -1,12 +1,12 @@
 package com.gymer.userpartneremailcommunication;
 
 import com.gymer.common.entity.JsonResponse;
-import com.gymer.security.validation.AccountOwnerValidator;
-import com.gymer.userpartneremailcommunication.entity.CommunicationDetails;
 import com.gymer.resources.partner.PartnerService;
 import com.gymer.resources.partner.entity.Partner;
 import com.gymer.resources.user.UserService;
 import com.gymer.resources.user.entity.User;
+import com.gymer.security.validation.AccountOwnerValidator;
+import com.gymer.userpartneremailcommunication.entity.CommunicationDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

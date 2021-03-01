@@ -1,8 +1,8 @@
 package com.gymer.security.verification;
 
+import com.gymer.common.entity.JsonResponse;
 import com.gymer.resources.credential.CredentialService;
 import com.gymer.resources.credential.entity.Credential;
-import com.gymer.common.entity.JsonResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

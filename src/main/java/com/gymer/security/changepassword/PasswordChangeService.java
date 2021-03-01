@@ -1,10 +1,10 @@
 package com.gymer.security.changepassword;
 
-import com.gymer.security.changepassword.entity.PasswordDetails;
 import com.gymer.resources.credential.CredentialService;
 import com.gymer.resources.credential.entity.Credential;
 import com.gymer.resources.user.UserService;
 import com.gymer.resources.user.entity.User;
+import com.gymer.security.changepassword.entity.PasswordDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

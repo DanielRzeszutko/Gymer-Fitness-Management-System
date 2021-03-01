@@ -1,9 +1,9 @@
 package com.gymer.userpartneremailcommunication;
 
-import com.gymer.resources.partner.entity.Partner;
-import com.gymer.resources.user.entity.User;
 import com.gymer.common.entity.MailingDetails;
 import com.gymer.common.mailing.EmailSender;
+import com.gymer.resources.partner.entity.Partner;
+import com.gymer.resources.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
