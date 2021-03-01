@@ -8,6 +8,7 @@ import com.gymer.resources.slot.SlotService;
 import com.gymer.resources.slot.entity.Slot;
 import com.gymer.resources.user.entity.UserDTO;
 import com.gymer.components.security.session.SessionService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
@@ -17,19 +18,13 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
+@AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AccountOwnerValidator {
 
     private final SessionService service;
     private final PartnerService partnerService;
     private final SlotService slotService;
-
-    @Autowired
-    public AccountOwnerValidator(SessionService service, PartnerService partnerService, SlotService slotService) {
-        this.service = service;
-        this.partnerService = partnerService;
-        this.slotService = slotService;
-    }
 
     public boolean isGuest() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

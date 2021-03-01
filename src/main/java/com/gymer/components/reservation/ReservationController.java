@@ -3,6 +3,7 @@ package com.gymer.components.reservation;
 import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.reservation.entity.GuestReservationDetails;
 import com.gymer.components.reservation.entity.UserReservationDetails;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,17 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/slotuser/{slotId}/reservation")
+@AllArgsConstructor
 public class ReservationController {
 
     private final ReservationService reservationService;
 
-    @Autowired
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
-
-    @PostMapping("/guest")
+    @PostMapping("/api/slotuser/{slotId}/reservation/guest")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN') or @accountOwnerValidator.isGuest()")
     public JsonResponse reserveAsGuest(@RequestBody GuestReservationDetails details, @PathVariable Long slotId) {
@@ -28,7 +24,7 @@ public class ReservationController {
         throw new ResponseStatusException(HttpStatus.CONFLICT);
     }
 
-    @PostMapping("/user")
+    @PostMapping("/api/slotuser/{slotId}/reservation/user")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public JsonResponse reserveAsUser(@RequestBody UserReservationDetails details, @PathVariable Long slotId) {

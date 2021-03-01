@@ -10,24 +10,19 @@ import com.gymer.resources.user.UserService;
 import com.gymer.resources.user.entity.User;
 import com.gymer.resources.user.entity.UserDTO;
 import com.gymer.components.security.session.entity.ActiveAccount;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@AllArgsConstructor
 public final class SessionService {
 
     private final PartnerService partnerService;
     private final UserService userService;
     private final CredentialService credentialService;
-
-    @Autowired
-    public SessionService(PartnerService partnerService, UserService userService, CredentialService credentialService) {
-        this.partnerService = partnerService;
-        this.userService = userService;
-        this.credentialService = credentialService;
-    }
 
     public ActiveAccount getActiveAccountIdFromDetails(Authentication authentication) {
         try {

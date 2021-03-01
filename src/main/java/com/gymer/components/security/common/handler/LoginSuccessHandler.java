@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gymer.components.common.entity.JsonResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -17,16 +18,12 @@ import java.io.IOException;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     final String TOKEN_HEADER_NAME = "Authorization";
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Environment environment;
-
-    @Autowired
-    public LoginSuccessHandler(Environment environment) {
-        this.environment = environment;
-    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {

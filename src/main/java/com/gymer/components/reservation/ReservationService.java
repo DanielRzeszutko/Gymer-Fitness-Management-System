@@ -11,6 +11,7 @@ import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.reservation.entity.GuestReservationDetails;
 import com.gymer.components.reservation.entity.UserReservationDetails;
 import com.gymer.components.security.validation.AccountOwnerValidator;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,20 +22,13 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
+@AllArgsConstructor
 class ReservationService {
 
     private final UserService userService;
     private final SlotService slotService;
     private final CredentialService credentialService;
     private final AccountOwnerValidator accountOwnerValidator;
-
-    @Autowired
-    public ReservationService(UserService userService, SlotService slotService, CredentialService credentialService, AccountOwnerValidator accountOwnerValidator) {
-        this.userService = userService;
-        this.slotService = slotService;
-        this.credentialService = credentialService;
-        this.accountOwnerValidator = accountOwnerValidator;
-    }
 
     /**
      * Service method that returns response in JSON format and adds guest to slot and saves this in database

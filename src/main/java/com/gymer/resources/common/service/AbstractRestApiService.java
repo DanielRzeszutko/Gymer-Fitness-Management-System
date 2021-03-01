@@ -1,18 +1,16 @@
 package com.gymer.resources.common.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+@AllArgsConstructor
 public abstract class AbstractRestApiService<T, V> implements RestApiServiceBehaviour<T, V> {
 
     protected final PagingAndSortingRepository<T, V> repository;
-
-    public AbstractRestApiService(PagingAndSortingRepository<T, V> repository) {
-        this.repository = repository;
-    }
 
     /**
      * {@inheritDoc}

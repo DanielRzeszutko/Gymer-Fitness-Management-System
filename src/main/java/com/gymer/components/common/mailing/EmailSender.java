@@ -1,6 +1,7 @@
 package com.gymer.components.common.mailing;
 
 import com.gymer.components.common.entity.MailingDetails;
+import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,15 +13,11 @@ import java.io.*;
 import java.util.Scanner;
 
 @Component
+@AllArgsConstructor
 public class EmailSender {
 
     private final Environment environment;
     private final JavaMailSender javaMailSender;
-
-    public EmailSender(Environment environment, JavaMailSender mailSender) {
-        this.environment = environment;
-        this.javaMailSender = mailSender;
-    }
 
     public void sendEmail(MailingDetails mailingDetails) {
         try {

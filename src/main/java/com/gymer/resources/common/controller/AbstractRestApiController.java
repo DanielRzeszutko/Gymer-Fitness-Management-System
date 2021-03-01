@@ -1,19 +1,17 @@
 package com.gymer.resources.common.controller;
 
 import com.gymer.resources.common.service.RestApiServiceBehaviour;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 
+@AllArgsConstructor
 public abstract class AbstractRestApiController<K, T, V> implements RestApiControllerBehaviour<K, T, V> {
 
     protected final RestApiServiceBehaviour<T, V> service;
-
-    public AbstractRestApiController(RestApiServiceBehaviour<T, V> service) {
-        this.service = service;
-    }
 
     /**
      * {@inheritDoc}

@@ -4,6 +4,7 @@ import com.gymer.resources.credential.entity.Role;
 import com.gymer.resources.partner.entity.PartnerDTO;
 import com.gymer.resources.user.entity.UserDTO;
 import com.gymer.components.security.session.entity.ActiveAccount;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,14 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@AllArgsConstructor
 public class SessionController {
 
     private final SessionService service;
-
-    @Autowired
-    public SessionController(SessionService sessionService) {
-        this.service = sessionService;
-    }
 
     @GetMapping("/api/me")
     @PreAuthorize("hasRole('USER') or hasRole('PARTNER')")

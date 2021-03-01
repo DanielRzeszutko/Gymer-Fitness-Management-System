@@ -6,6 +6,7 @@ import com.gymer.components.security.common.handler.JsonLogoutSuccessHandler;
 import com.gymer.components.security.common.handler.LoginFailureHandler;
 import com.gymer.components.security.common.handler.LoginSuccessHandler;
 import com.gymer.components.security.login.LoginService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -26,22 +27,14 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JsonLogoutSuccessHandler logoutSuccessHandler;
     private final LoginSuccessHandler successHandler;
     private final LoginFailureHandler failureHandler;
     private final LoginService loginService;
-    private final String frontUrl;
-
-    public WebSecurityConfig(JsonLogoutSuccessHandler logoutSuccessHandler, LoginSuccessHandler successHandler,
-                             LoginFailureHandler failureHandler, LoginService loginService, Environment environment) {
-        this.logoutSuccessHandler = logoutSuccessHandler;
-        this.successHandler = successHandler;
-        this.failureHandler = failureHandler;
-        this.loginService = loginService;
-        this.frontUrl = environment.getProperty("server.address.frontend");
-    }
+    private final Environment environment;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -72,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/api/logout")
                 .clearAuthentication(true)
                 .logoutSuccessHandler(logoutSuccessHandler)
-                .logoutSuccessUrl(frontUrl);
+                .logoutSuccessUrl(environment.getProperty("server.address.frontend"));
     }
 
     @Override
@@ -88,6 +81,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        String frontUrl = environment.getProperty("server.address.frontend");
         configuration.setAllowedOrigins(Collections.singletonList(frontUrl));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "X-Requested-With", "remember-me", "Authorization"));

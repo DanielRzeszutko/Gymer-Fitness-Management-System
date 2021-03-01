@@ -7,22 +7,17 @@ import com.gymer.resources.partner.entity.Partner;
 import com.gymer.resources.slot.SlotService;
 import com.gymer.resources.slot.entity.Slot;
 import com.gymer.components.common.entity.JsonResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 class SlotsEmployeeService {
 
     private final SlotService slotService;
     private final EmployeeService employeeService;
     private final PartnerService partnerService;
-
-    @Autowired
-    public SlotsEmployeeService(SlotService slotService, EmployeeService employeeService, PartnerService partnerService) {
-        this.slotService = slotService;
-        this.employeeService = employeeService;
-        this.partnerService = partnerService;
-    }
 
     /**
      * Service method responsible for adding or updating employee connected with specified slot

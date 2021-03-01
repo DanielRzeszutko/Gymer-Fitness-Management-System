@@ -4,16 +4,14 @@ import com.gymer.resources.partner.entity.Partner;
 import com.gymer.resources.user.entity.User;
 import com.gymer.components.common.entity.MailingDetails;
 import com.gymer.components.common.mailing.EmailSender;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class MessageToPartnerService {
 
     private final EmailSender emailSender;
-
-    public MessageToPartnerService(EmailSender emailSender) {
-        this.emailSender = emailSender;
-    }
 
     public void sendMessageToPartner(Partner partner, User user, String message) {
         String emailTo = partner.getCredential().getEmail();

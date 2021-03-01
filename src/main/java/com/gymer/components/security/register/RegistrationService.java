@@ -10,6 +10,7 @@ import com.gymer.resources.user.UserService;
 import com.gymer.resources.user.entity.User;
 import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.security.register.entity.RegistrationDetails;
+import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import java.sql.Timestamp;
 import java.util.Collections;
 
 @Service
+@AllArgsConstructor
 class RegistrationService {
 
     private final PasswordEncoder passwordEncoder;
@@ -26,17 +28,6 @@ class RegistrationService {
     private final PartnerService partnerService;
     private final CredentialService credentialService;
     private final VerificationEmailService emailService;
-
-    @Autowired
-    public RegistrationService(PasswordEncoder passwordEncoder, UserService userService,
-                               PartnerService partnerService, CredentialService credentialService,
-                               VerificationEmailService emailService) {
-        this.passwordEncoder = passwordEncoder;
-        this.userService = userService;
-        this.partnerService = partnerService;
-        this.credentialService = credentialService;
-        this.emailService = emailService;
-    }
 
     public JsonResponse registerAccount(RegistrationDetails details, Role role) {
         JsonResponse response = createJsonResponse(details);

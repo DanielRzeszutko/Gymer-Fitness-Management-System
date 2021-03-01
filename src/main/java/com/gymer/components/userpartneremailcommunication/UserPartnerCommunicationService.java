@@ -1,33 +1,23 @@
 package com.gymer.components.userpartneremailcommunication;
 
+import com.gymer.components.common.entity.JsonResponse;
+import com.gymer.components.security.validation.AccountOwnerValidator;
+import com.gymer.components.userpartneremailcommunication.entity.CommunicationDetails;
 import com.gymer.resources.partner.PartnerService;
 import com.gymer.resources.partner.entity.Partner;
 import com.gymer.resources.user.UserService;
 import com.gymer.resources.user.entity.User;
-import com.gymer.components.common.entity.JsonResponse;
-import com.gymer.components.security.validation.AccountOwnerValidator;
-import com.gymer.components.userpartneremailcommunication.entity.CommunicationDetails;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class UserPartnerCommunicationService {
 
     private final PartnerService partnerService;
     private final UserService userService;
     private final AccountOwnerValidator accountOwnerValidator;
     private final MessageToPartnerService messageToPartnerService;
-
-    @Autowired
-    public UserPartnerCommunicationService(PartnerService partnerService,
-                                           UserService userService,
-                                           AccountOwnerValidator accountOwnerValidator,
-                                           MessageToPartnerService messageToPartnerService) {
-        this.partnerService = partnerService;
-        this.userService = userService;
-        this.accountOwnerValidator = accountOwnerValidator;
-        this.messageToPartnerService = messageToPartnerService;
-    }
 
     public JsonResponse sendMailToPartner(CommunicationDetails details, Long partnerId) {
         JsonResponse response = isUserSendingFromLoggedInAccount(details, partnerId);

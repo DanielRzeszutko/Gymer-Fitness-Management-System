@@ -12,6 +12,8 @@ import com.gymer.resources.user.UserService;
 import com.gymer.resources.user.entity.User;
 import com.gymer.resources.workinghours.entity.Day;
 import com.gymer.resources.workinghours.entity.WorkingHour;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 class RandomDataGenerator {
 
     /**
@@ -47,14 +50,6 @@ class RandomDataGenerator {
     private List<String> streets;
     private List<String> companies;
     private List<String> descriptions;
-
-    @Autowired
-    public RandomDataGenerator(PartnerService partnerService, UserService userService, PasswordEncoder passwordEncoder, CredentialService credentialservice) {
-        this.partnerService = partnerService;
-        this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-        this.credentialservice = credentialservice;
-    }
 
     public void init() throws FileNotFoundException {
         fillListsWithData();
