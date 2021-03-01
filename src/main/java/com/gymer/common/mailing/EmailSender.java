@@ -10,8 +10,13 @@ import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
+import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * One class mail system - component responsible for connecting with external email server.
+ * Provides functionality of adding HTML body to the mail from predefined resources.
+ */
 @Component
 @AllArgsConstructor
 public class EmailSender {
@@ -19,24 +24,26 @@ public class EmailSender {
     private final Environment environment;
     private final JavaMailSender javaMailSender;
 
+    /**
+     * Main method that sends emails - starts with reading template files from the resources folder.
+     * After building template method connects to the external email service provider and establish
+     * connection. Next is sending email to the inputted address with inputted message.
+     * @param mailingDetails - Object providing three fields: emailTo, subject and emailContent.
+     */
     public void sendEmail(MailingDetails mailingDetails) {
         try {
-            String mailBefore = readFileFromResourcesToString("src/main/resources/mailTemplate/mailBefore.html");
-            String mailAfter = readFileFromResourcesToString("src/main/resources/mailTemplate/mailAfter.html");
-            String addressFrom = environment.getProperty("spring.mail.username");
-            String content = mailBefore + mailingDetails.getMessage() + mailAfter;
+            String addressFrom = Objects.requireNonNull(environment.getProperty("spring.mail.username"));
+            String content = getMailContent(mailingDetails);
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
 
-            assert addressFrom != null;
             helper.setFrom(addressFrom, "Team Gymer");
             helper.setTo(mailingDetails.getMailTo());
             helper.setSubject(mailingDetails.getSubject());
-
             helper.setText(content, true);
-            javaMailSender.send(message);
 
+            javaMailSender.send(message);
         } catch (FileNotFoundException e) {
             System.out.println("Read html files from resource folder unsuccessful");
         } catch (
@@ -45,6 +52,12 @@ public class EmailSender {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getMailContent(MailingDetails mailingDetails) throws FileNotFoundException {
+        String mailBefore = readFileFromResourcesToString("src/main/resources/mailTemplate/mailBefore.html");
+        String mailAfter = readFileFromResourcesToString("src/main/resources/mailTemplate/mailAfter.html");
+        return mailBefore + mailingDetails.getMessage() + mailAfter;
     }
 
     private String readFileFromResourcesToString(String filename) throws FileNotFoundException {

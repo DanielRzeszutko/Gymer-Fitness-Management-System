@@ -25,15 +25,15 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
 
+/**
+ * Generator class providing generating all random data for our project needs.
+ * For proper operation of our generator there should be 'sampleData' folder
+ * with text files in the resources directory.
+ * Necessary txt files: 'cities.txt', 'companies.txt', 'emails.txt', 'names.txt', 'streets.txt', 'surnames.txt'
+ */
 @Component
 @RequiredArgsConstructor
 class RandomDataGenerator {
-
-    /**
-     * For proper operation of our generator there should be 'sampleData' folder
-     * with text files in the resources directory.
-     * Necessary txt files: 'cities.txt', 'companies.txt', 'emails.txt', 'names.txt', 'streets.txt', 'surnames.txt'
-     */
 
     private final Random RANDOM = new Random();
     private final List<String> usedEmails = new ArrayList<>();
@@ -49,6 +49,11 @@ class RandomDataGenerator {
     private List<String> companies;
     private List<String> descriptions;
 
+    /**
+     * Initial method that fills database with 10 random partners, 10 random users and with
+     * test_user and admin_user for tests if they not exist already in database
+     * @throws FileNotFoundException
+     */
     public void init() throws FileNotFoundException {
         fillListsWithData();
         addAdminIfDoesntExists();
