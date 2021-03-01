@@ -2,6 +2,7 @@ package com.gymer.components.security.common.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gymer.components.common.entity.JsonResponse;
+import com.gymer.components.common.entity.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -18,7 +19,7 @@ public class JsonLogoutSuccessHandler implements LogoutSuccessHandler {
 
     @Override
     public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse response, Authentication authentication) throws IOException {
-        JsonResponse message = new JsonResponse("Successfully logged out.", false);
+        JsonResponse message = JsonResponse.validMessage("Successfully logged out.");
 
         response.setHeader("Authorization", "");
         response.setStatus(HttpStatus.OK.value());

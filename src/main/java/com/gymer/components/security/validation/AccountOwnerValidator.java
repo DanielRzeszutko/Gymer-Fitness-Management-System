@@ -27,12 +27,13 @@ public class AccountOwnerValidator {
     private final SlotService slotService;
 
     public boolean isGuest() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return service.isPrincipalNonExist(authentication) || service.isLoggedAsRole(authentication, Role.ADMIN);
+        Authentication authentication = getActiveAuthentication();
+        return isNoOneLoggedInOrIsAdmin(authentication);
     }
 
     public boolean isOwnerLoggedIn(Long accountId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = getActiveAuthentication();
+
         if (service.isPrincipalNonExist(authentication)) return false;
         if (service.isLoggedAsRole(authentication, Role.ADMIN)) return true;
 
@@ -50,7 +51,8 @@ public class AccountOwnerValidator {
     }
 
     public boolean isOwnerManipulatingSlot(Long slotId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = getActiveAuthentication();
+
         if (service.isPrincipalNonExist(authentication)) return false;
         if (service.isLoggedAsRole(authentication, Role.ADMIN)) return true;
         if (!service.isLoggedAsRole(authentication, Role.PARTNER)) return false;
@@ -60,6 +62,14 @@ public class AccountOwnerValidator {
         Partner partner = partnerService.findPartnerContainingSlot(slot);
 
         return Objects.requireNonNull(partnerDTO).getId().equals(partner.getId());
+    }
+
+    private Authentication getActiveAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    private boolean isNoOneLoggedInOrIsAdmin(Authentication authentication) {
+        return service.isPrincipalNonExist(authentication) || service.isLoggedAsRole(authentication, Role.ADMIN);
     }
 
 }

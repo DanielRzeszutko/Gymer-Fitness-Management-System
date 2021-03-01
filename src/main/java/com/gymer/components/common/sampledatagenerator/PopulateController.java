@@ -1,6 +1,7 @@
 package com.gymer.components.common.sampledatagenerator;
 
 import com.gymer.components.common.entity.JsonResponse;
+import com.gymer.components.common.entity.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +20,9 @@ public class PopulateController {
     public JsonResponse populateDB() {
         try {
             dataGenerator.init();
-            return new JsonResponse("Test data initialized.", false);
+            return JsonResponse.validMessage("Test data initialized.");
         } catch (FileNotFoundException e) {
-            return new JsonResponse("Error with initializing test data.", true);
+            return JsonResponse.invalidMessage("Error with initializing test data.");
         }
     }
 

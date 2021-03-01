@@ -2,6 +2,7 @@ package com.gymer.components.security.common.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gymer.components.common.entity.JsonResponse;
+import com.gymer.components.common.entity.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -18,7 +19,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        JsonResponse message = new JsonResponse(exception.getMessage(), true);
+        JsonResponse message = JsonResponse.invalidMessage(exception.getMessage());
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");

@@ -22,7 +22,8 @@ public class SessionController {
     @GetMapping("/api/me")
     @PreAuthorize("hasRole('USER') or hasRole('PARTNER')")
     public ActiveAccount getActiveAccount(Authentication authentication) {
-        if (service.isPrincipalNonExist(authentication)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        if (service.isPrincipalNonExist(authentication))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         return service.getActiveAccountIdFromDetails(authentication);
     }
 

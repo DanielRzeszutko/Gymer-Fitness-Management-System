@@ -1,5 +1,6 @@
 package com.gymer.components.security.changepassword;
 
+import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.resources.credential.CredentialService;
 import com.gymer.resources.credential.entity.Credential;
 import com.gymer.resources.user.UserService;
@@ -17,27 +18,23 @@ import org.springframework.web.server.ResponseStatusException;
 @AllArgsConstructor
 public class PasswordChangeController {
 
-    private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
-    private final CredentialService credentialService;
+    private final PasswordChangeService passwordChangeService;
 
     @PutMapping("/api/users/{userId}/password")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @accountOwnerValidator.isOwnerLoggedIn(#userId))")
-    public void changeUsersPassword(@RequestBody PasswordDetails passwordDetails, @PathVariable Long userId) {
-        User user = userService.getElementById(userId);
-        Credential credential = credentialService.getElementById(user.getCredential().getId());
+    public JsonResponse changeUsersPassword(@RequestBody PasswordDetails passwordDetails, @PathVariable Long userId) {
+        Credential credential = passwordChangeService.getUsersCredential(userId);
 
-        if (!passwordEncoder.matches(passwordDetails.getOldPassword(), credential.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        if (passwordChangeService.isPasswordNotEqual(passwordDetails, credential)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Passwords are not equal");
         }
 
         if (passwordDetails.getNewPassword() == null || passwordDetails.getNewPassword().length() < 3) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid new password");
         }
 
-        String newPassword = passwordEncoder.encode(passwordDetails.getNewPassword());
-        credential.setPassword(newPassword);
-        credentialService.updateElement(credential);
+        passwordChangeService.changePassword(passwordDetails, credential);
+        return JsonResponse.validMessage("Successfully changed password");
     }
 
 }

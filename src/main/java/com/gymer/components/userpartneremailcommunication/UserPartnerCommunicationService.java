@@ -21,7 +21,7 @@ public class UserPartnerCommunicationService {
 
     public JsonResponse sendMailToPartner(CommunicationDetails details, Long partnerId) {
         JsonResponse response = isUserSendingFromLoggedInAccount(details, partnerId);
-        if (response.isError()) return response;
+        if (!response.isResponseValid()) return response;
 
         Partner partner = partnerService.getElementById(partnerId);
         User user = userService.getElementById(details.getUserId());
@@ -31,16 +31,28 @@ public class UserPartnerCommunicationService {
     }
 
     private JsonResponse isUserSendingFromLoggedInAccount(CommunicationDetails details, Long partnerId) {
-        if (!accountOwnerValidator.isOwnerLoggedIn(details.getUserId())) {
-            return new JsonResponse("You don't have rights to send message.", true);
+        if (isOwnerNotSendingMessage(details)) {
+            return JsonResponse.invalidMessage("You don't have rights to send message.");
         }
-        if (!partnerService.isElementExistById(details.getPartnerId())) {
-            return new JsonResponse("Selected partner don't exists.", true);
+        if (isElementNotExistInDatabase(details)) {
+            return JsonResponse.invalidMessage("Selected partner don't exists.");
         }
-        if (!details.getPartnerId().equals(partnerId)) {
-            return new JsonResponse("Conflict with partnerId in credentials or URL", true);
+        if (isConflictWithPartnerIdAndOwner(details, partnerId)) {
+            return JsonResponse.invalidMessage("Conflict with partnerId in credentials or URL");
         }
-        return new JsonResponse("Mail successfully send.", false);
+        return JsonResponse.validMessage("Mail successfully send.");
+    }
+
+    private boolean isOwnerNotSendingMessage(CommunicationDetails details) {
+        return !accountOwnerValidator.isOwnerLoggedIn(details.getUserId());
+    }
+
+    private boolean isElementNotExistInDatabase(CommunicationDetails details) {
+        return !partnerService.isElementExistById(details.getPartnerId());
+    }
+
+    private boolean isConflictWithPartnerIdAndOwner(CommunicationDetails details, Long partnerId) {
+        return !details.getPartnerId().equals(partnerId);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.gymer.components.reservation;
 
+import com.gymer.components.common.entity.Response;
 import com.gymer.resources.credential.CredentialService;
 import com.gymer.resources.credential.entity.Credential;
 import com.gymer.resources.credential.entity.Role;
@@ -84,10 +85,10 @@ class ReservationService {
         if (isMoreThan24HBeforeVisit(slot)) {
             slot.getUsers().remove(user);
             slotService.updateElement(slot);
-            return new JsonResponse("Successfully unreserved visit.", false);
+            return JsonResponse.validMessage("Successfully unreserved visit.");
         }
 
-        return new JsonResponse("You can't drop visit now, too late.", true);
+        return JsonResponse.invalidMessage("You can't drop visit now, too late.");
     }
 
     private boolean isMoreThan24HBeforeVisit(Slot slot) {
@@ -98,17 +99,17 @@ class ReservationService {
     }
 
     private JsonResponse userAlreadyExistsResponse() {
-        return new JsonResponse("User with this email already exists.", true);
+        return JsonResponse.invalidMessage("User with this email already exists.");
     }
 
     private JsonResponse alreadyReservedResponse() {
-        return new JsonResponse("Already reserved this slot.", true);
+        return JsonResponse.invalidMessage("Already reserved this slot.");
     }
 
     private JsonResponse reserveUserInSlot(Slot slot, User user) {
         slot.getUsers().add(user);
         slotService.updateElement(slot);
-        return new JsonResponse("Successfully reserved this slot.", false);
+        return JsonResponse.validMessage("Successfully reserved this slot.");
     }
 
 }

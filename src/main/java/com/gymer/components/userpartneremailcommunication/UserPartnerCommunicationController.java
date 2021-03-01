@@ -2,15 +2,14 @@ package com.gymer.components.userpartneremailcommunication;
 
 import com.gymer.components.common.entity.JsonResponse;
 import com.gymer.components.userpartneremailcommunication.entity.CommunicationDetails;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserPartnerCommunicationController {
 
     private final UserPartnerCommunicationService communicationService;

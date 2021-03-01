@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gymer.components.common.entity.JsonResponse;
+import com.gymer.components.common.entity.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -31,7 +32,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType("application/json");
 
-        JsonResponse message = new JsonResponse("Successfully logged in.", false);
+        JsonResponse message = JsonResponse.validMessage("Successfully logged in.");
         response.getWriter().write(objectMapper.writeValueAsString(message));
         response.getWriter().flush();
         clearAuthenticationAttributes(request);

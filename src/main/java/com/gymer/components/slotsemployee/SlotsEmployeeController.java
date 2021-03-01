@@ -18,9 +18,9 @@ public class SlotsEmployeeController {
     @PostMapping("/api/slotemployee/{slotId}/employee")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerManipulatingSlot(#slotId))")
     public JsonResponse updateEmployeeInSlot(@RequestBody SlotsEmployeeDetails details, @PathVariable Long slotId) {
-        if (!details.getSlotId().equals(slotId)) throw new ResponseStatusException(HttpStatus.CONFLICT);
-        if (details.isRemoveEmployee()) return service.removeEmployeeFromSlot(details.getSlotId());
-        return service.updateEmployeeInSlot(details.getSlotId(), details.getEmployeeId());
+        if (!details.getSlotId().equals(slotId))
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        return service.updateEmployeeSigningAttribute(details, slotId);
     }
 
 }

@@ -21,7 +21,7 @@ public class ReservationController {
     @PreAuthorize("hasRole('ADMIN') or @accountOwnerValidator.isGuest()")
     public JsonResponse reserveAsGuest(@RequestBody GuestReservationDetails details, @PathVariable Long slotId) {
         if (details.getSlotId().equals(slotId)) return reservationService.updateReservationForGuest(details);
-        throw new ResponseStatusException(HttpStatus.CONFLICT);
+        throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid slot id");
     }
 
     @PostMapping("/api/slotuser/{slotId}/reservation/user")
@@ -29,7 +29,7 @@ public class ReservationController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public JsonResponse reserveAsUser(@RequestBody UserReservationDetails details, @PathVariable Long slotId) {
         if (details.getSlotId().equals(slotId)) return reservationService.updateReservationForUser(details);
-        throw new ResponseStatusException(HttpStatus.CONFLICT);
+        throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid slot id");
     }
 
 }

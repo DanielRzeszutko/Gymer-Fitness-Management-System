@@ -1,5 +1,8 @@
 package com.gymer.components.security.register;
 
+import com.gymer.components.common.entity.JsonResponse;
+import com.gymer.components.common.entity.Response;
+import com.gymer.components.security.register.entity.RegistrationDetails;
 import com.gymer.resources.address.entity.Address;
 import com.gymer.resources.credential.CredentialService;
 import com.gymer.resources.credential.entity.Credential;
@@ -8,11 +11,8 @@ import com.gymer.resources.partner.PartnerService;
 import com.gymer.resources.partner.entity.Partner;
 import com.gymer.resources.user.UserService;
 import com.gymer.resources.user.entity.User;
-import com.gymer.components.common.entity.JsonResponse;
-import com.gymer.components.security.register.entity.RegistrationDetails;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,19 +31,74 @@ class RegistrationService {
 
     public JsonResponse registerAccount(RegistrationDetails details, Role role) {
         JsonResponse response = createJsonResponse(details);
-        if (response.isError()) return response;
+        if (!response.isResponseValid()) return response;
 
-        if (credentialService.isCredentialExistsByEmail(details.getEmail())) {
-            Credential existedCredential = credentialService.getCredentialByEmail(details.getEmail());
-            updateCredential(details, existedCredential, role);
-            emailService.sendVerificationEmail(existedCredential);
-        } else {
-            switch (role) {
-                case USER -> registerUser(details);
-                case PARTNER -> registerPartner(details);
-            }
+        if (isUserAlreadyExists(details.getEmail())) {
+            ifNotActivatedUserWithThisEmailExists(details, role);
+            return response;
         }
+
+        registerNewAccountWithSpecificRole(details, role);
         return response;
+    }
+
+    private JsonResponse createJsonResponse(RegistrationDetails userDetails) {
+        if (isAnyFieldBlankOrEmpty(userDetails)) {
+            return JsonResponse.invalidMessage("Fields cannot be empty!");
+        }
+
+        if (isPasswordAndConfirmPasswordNotEqual(userDetails)) {
+            return JsonResponse.validMessage("Passwords do not match.");
+        }
+
+        if (isAccountAlreadyExists(userDetails)) {
+            return JsonResponse.invalidMessage("Account with this email already exists.");
+        }
+
+        return JsonResponse.validMessage("Registered successfully. Please check your email to verify your account");
+    }
+
+    private boolean isAnyFieldBlankOrEmpty(RegistrationDetails userDetails) {
+        return isEmailBlankOrEmpty(userDetails.getEmail())
+                || isPasswordBlankOrEmpty(userDetails.getPassword())
+                || isConfirmPasswordBlankOrEmpty(userDetails.getConfirmPassword());
+    }
+
+    private boolean isEmailBlankOrEmpty(String email) {
+        return email == null || email.equals("");
+    }
+
+    private boolean isPasswordBlankOrEmpty(String password) {
+        return password == null || password.equals("");
+    }
+
+    private boolean isConfirmPasswordBlankOrEmpty(String confirmPassword) {
+        return confirmPassword == null || confirmPassword.equals("");
+    }
+
+    private boolean isPasswordAndConfirmPasswordNotEqual(RegistrationDetails userDetails) {
+        return !userDetails.getPassword().equals(userDetails.getConfirmPassword());
+    }
+
+    private boolean isAccountAlreadyExists(RegistrationDetails userDetails) {
+        return credentialService.isActivatedCredentialExistsByEmail(userDetails.getEmail());
+    }
+
+    private boolean isUserAlreadyExists(String email) {
+        return credentialService.isCredentialExistsByEmail(email);
+    }
+
+    private void ifNotActivatedUserWithThisEmailExists(RegistrationDetails details, Role role) {
+        Credential existedCredential = credentialService.getCredentialByEmail(details.getEmail());
+        updateCredential(details, existedCredential, role);
+        emailService.sendVerificationEmail(existedCredential);
+    }
+
+    private void registerNewAccountWithSpecificRole(RegistrationDetails details, Role role) {
+        switch (role) {
+            case USER -> registerUser(details);
+            case PARTNER -> registerPartner(details);
+        }
     }
 
     private void registerUser(RegistrationDetails details) {
@@ -75,23 +130,6 @@ class RegistrationService {
         Address address = new Address("", "", "", "");
         return new Partner("", "", "", "", "", credential, address,
                 Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-    }
-
-    private JsonResponse createJsonResponse(RegistrationDetails userDetails) {
-        if (userDetails.getEmail() == null || userDetails.getPassword() == null || userDetails.getConfirmPassword() == null) {
-            return new JsonResponse("Invalid Json format. Should contain email password and confirmPassword", true);
-        }
-        if (userDetails.getEmail().equals("") || userDetails.getPassword().equals("") || userDetails.getConfirmPassword().equals("")) {
-            return new JsonResponse("Fields cannot be empty!", true);
-        }
-
-        if (!userDetails.getPassword().equals(userDetails.getConfirmPassword())) {
-            return new JsonResponse("Passwords do not match.", true);
-        }
-        if (credentialService.isActivatedCredentialExistsByEmail(userDetails.getEmail())) {
-            return new JsonResponse("Account with this email already exists.", true);
-        }
-        return new JsonResponse("Registered successfully. Please check your email to verify your account", false);
     }
 
     private Credential createCredentialBy(RegistrationDetails userDetails, Role role) {
