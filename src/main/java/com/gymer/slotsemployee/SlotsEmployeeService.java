@@ -20,7 +20,15 @@ class SlotsEmployeeService {
     private final PartnerService partnerService;
 
     /**
-     * Service method responsible for adding or updating employee connected with specified slot
+     * Service method responsible for adding or updating employee connected with specified slot.
+     * If remove field is true employee is removed from the slot, instead employee with provided
+     * ID is added to slot by slotId in URL and SlotsEmployeeDetails object.
+     * @param details - Object holding information about employeeId which should be added to the
+     *                slot, slotId which should be modified and remove field, taking boolean value
+     *                which tells we want remove employee or update him instead.
+     * @param slotId - Valid slot ID, must be equal to the slot ID provided in details body.
+     * @return JsonResponse - object with message and valid status if data is filled successfully or
+     * message and invalid status if any error occurs during reading the text files.
      */
     public JsonResponse updateEmployeeSigningAttribute(SlotsEmployeeDetails details, Long slotId) {
         if (details.isRemoveEmployee()) {
@@ -31,7 +39,10 @@ class SlotsEmployeeService {
     }
 
     /**
-     * Service method responsible for removing employee connected with specified slot
+     * Service method responsible for removing employee connected with specified slot.
+     * @param slotId - Valid slot ID, must be equal to the slot ID provided in details body.
+     * @return JsonResponse - object with message and valid status if data is filled successfully or
+     * message and invalid status if any error occurs during reading the text files.
      */
     public JsonResponse removeEmployeeFromSlot(Long slotId) {
         Slot slot = slotService.getElementById(slotId);

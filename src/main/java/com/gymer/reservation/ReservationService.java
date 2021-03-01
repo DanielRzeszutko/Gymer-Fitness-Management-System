@@ -33,6 +33,10 @@ class ReservationService {
      * Service method that returns response in JSON format and adds guest to slot and saves this in database
      * When guests credentials exists they are requested from database in another case new User with blank credentials is created instead
      * When in details field cancel is set to true Guest is removed from the slot
+     * @param details - Object with userId, slotId and boolean deciding if record need to be removed.
+     *                Custom object holding information only for reservation feature.
+     * @return JsonResponse - object with message and valid status if data is filled successfully or
+     * message and invalid status if any error occurs during reading the text files.
      */
     public JsonResponse updateReservationForGuest(GuestReservationDetails details) {
         Slot slot = slotService.getElementById(details.getSlotId());
@@ -47,8 +51,12 @@ class ReservationService {
     }
 
     /**
-     * Service method that returns response in JSON format and adds user to slot and saves this in database
-     * When in details field cancel is set to true User is removed from the slot
+     * Service method that returns response in JSON format and adds user to slot and saves this in database.
+     * When in details field cancel is set to true User is removed from the slot.
+     * @param details - Object with userId, slotId and boolean deciding if record need to be removed.
+     *                Custom object holding information only for reservation feature.
+     * @return JsonResponse - object with message and valid status if data is filled successfully or
+     * message and invalid status if any error occurs during reading the text files.
      */
     public JsonResponse updateReservationForUser(UserReservationDetails details) {
         Slot slot = slotService.getElementById(details.getSlotId());

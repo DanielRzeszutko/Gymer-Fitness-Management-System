@@ -17,6 +17,17 @@ public class SlotsEmployeeController {
 
     private final SlotsEmployeeService service;
 
+    /**
+     * Controller endpoint that change selected employee in selected slot. Method provides
+     * various of actions, like: If slot Id and json body slot Id are not equal, throws CONFLICT status,
+     * but if are equal selected slot is updated with selected employee, or removed if field 'remove' is TRUE.
+     * @param details - Object holding information about employeeId which should be added to the
+     *                slot, slotId which should be modified and remove field, taking boolean value
+     *                which tells we want remove employee or update him instead.
+     * @param slotId - Valid slot ID, must be equal to the slot ID provided in details body.
+     * @return JsonResponse - object with message and valid status if data is filled successfully or
+     * message and invalid status if any error occurs during reading the text files.
+     */
     @PostMapping("/api/slotemployee/{slotId}/employee")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerManipulatingSlot(#slotId))")
     public JsonResponse updateEmployeeInSlot(@RequestBody SlotsEmployeeDetails details, @PathVariable Long slotId) {
