@@ -29,6 +29,10 @@ public class OAuth2JWTController {
 
     @GetMapping("/api/google")
     public void obtainJWTIfLoggedByGoogle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        if (authentication == null || authentication.getPrincipal() == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not logged by Google account.");
+        }
+
         try {
             String userEmail = (String) authentication.getPrincipal();
             Credential credential = credentialService.getCredentialByEmail(userEmail);
