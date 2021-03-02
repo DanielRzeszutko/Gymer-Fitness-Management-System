@@ -24,11 +24,11 @@ class PasswordChangeController {
         Credential credential = passwordChangeService.getUsersCredential(userId);
 
         if (passwordChangeService.isPasswordNotEqual(passwordDetails, credential)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Passwords are not equal");
+            return JsonResponse.invalidMessage("Passwords are not equal");
         }
 
         if (passwordDetails.getNewPassword() == null || passwordDetails.getNewPassword().length() < 3) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid new password");
+            return JsonResponse.invalidMessage("Invalid new password");
         }
 
         passwordChangeService.changePassword(passwordDetails, credential);

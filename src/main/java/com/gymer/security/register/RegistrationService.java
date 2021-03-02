@@ -47,7 +47,7 @@ class RegistrationService {
         }
 
         if (isPasswordAndConfirmPasswordNotEqual(userDetails)) {
-            return JsonResponse.validMessage("Passwords do not match.");
+            return JsonResponse.invalidMessage("Passwords do not match.");
         }
 
         if (isAccountAlreadyExists(userDetails)) {
