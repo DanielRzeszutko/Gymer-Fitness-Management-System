@@ -1,5 +1,6 @@
 package com.gymer.common.crudresources.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gymer.common.crudresources.credential.entity.Credential;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JsonIgnore
+    private Long providerId;
 
     private String firstName;
     private String lastName;
