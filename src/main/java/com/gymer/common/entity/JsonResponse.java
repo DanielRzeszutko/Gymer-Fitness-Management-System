@@ -1,5 +1,6 @@
 package com.gymer.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -18,6 +19,7 @@ public class JsonResponse {
         return new JsonResponse(message, false);
     }
 
+    @JsonIgnore
     public boolean isResponseNotValid() {
         return !error;
     }
