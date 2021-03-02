@@ -93,4 +93,11 @@ public class UserService extends AbstractRestApiService<User, Long> {
         return user.isPresent() && user.get().getCredential().getRole().equals(Role.USER);
     }
 
+    /**
+     * Service method that returns user or null when user is connected with provider account
+     */
+    public User findByProviderId(String providerId) {
+        return ((UserRepository) repository).findByProviderId(providerId).orElse(null);
+    }
+
 }

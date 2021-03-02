@@ -17,7 +17,7 @@ public class User {
     private Long id;
 
     @JsonIgnore
-    private Long providerId;
+    private String providerId;
 
     private String firstName;
     private String lastName;
