@@ -1,4 +1,4 @@
-package com.gymer.security.common.filter;
+package com.gymer.security.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gymer.security.login.entity.LoginDetails;
