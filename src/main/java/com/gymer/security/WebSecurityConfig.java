@@ -6,6 +6,7 @@ import com.gymer.security.common.handler.JsonLogoutSuccessHandler;
 import com.gymer.security.common.handler.LoginFailureHandler;
 import com.gymer.security.common.handler.LoginSuccessHandler;
 import com.gymer.security.login.LoginService;
+import com.gymer.security.oauth2.OAuth2SuccessHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final LoginFailureHandler failureHandler;
     private final LoginService loginService;
     private final Environment environment;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -48,6 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/v2/**", "/js/**", "/css/**", "/img/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/me/**", "/api/logout", "/api/verify").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/login", "/api/registration/**").permitAll()
+
+                .antMatchers(HttpMethod.GET, "/oauth2/**").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/api/populate").permitAll()
 
@@ -65,7 +69,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/api/logout")
                 .clearAuthentication(true)
                 .logoutSuccessHandler(logoutSuccessHandler)
-                .logoutSuccessUrl(environment.getProperty("server.address.frontend"));
+                .logoutSuccessUrl(environment.getProperty("server.address.frontend"))
+                .and()
+                .oauth2Login()
+                .successHandler(oAuth2SuccessHandler)
+                .failureHandler(failureHandler);
     }
 
     @Override
