@@ -1,10 +1,10 @@
 package com.gymer.security;
 
 import com.gymer.security.common.filter.JWTAuthorizationFilter;
-import com.gymer.security.common.filter.JsonAuthenticationFilter;
+import com.gymer.security.login.JsonAuthenticationFilter;
 import com.gymer.security.common.handler.JsonLogoutSuccessHandler;
 import com.gymer.security.common.handler.LoginFailureHandler;
-import com.gymer.security.common.handler.LoginSuccessHandler;
+import com.gymer.security.login.LoginSuccessHandler;
 import com.gymer.security.login.LoginService;
 import com.gymer.security.oauth2.OAuth2SuccessHandler;
 import lombok.AllArgsConstructor;
@@ -51,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/me/**", "/api/logout", "/api/verify").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/login", "/api/registration/**").permitAll()
 
-                .antMatchers(HttpMethod.GET, "/oauth2/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/authorization").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/api/populate").permitAll()
 
