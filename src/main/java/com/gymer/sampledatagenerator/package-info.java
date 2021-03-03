@@ -1,6 +1,5 @@
 /**
- * Component responsible for creating randomized data which next is placed in database with using crudresources
- * component in common package with usage of jpa repository functionalities.
+ * Package responsible for generating random data in database.
  *
  * @author everybody
  */

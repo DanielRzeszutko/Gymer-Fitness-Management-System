@@ -1,6 +1,5 @@
 /**
- * Component responsible for "Logged user can send mail to partner with build in message system".
- * Controller class gets requests from specified url and Service class do magic.
+ * Package responsible for sending message to partner by user.
  *
  * @author everybody
  */

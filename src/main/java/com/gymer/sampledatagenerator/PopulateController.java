@@ -1,9 +1,10 @@
 package com.gymer.sampledatagenerator;
 
-import com.gymer.common.entity.JsonResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.FileNotFoundException;
 
@@ -25,12 +26,12 @@ class PopulateController {
      * message and invalid status if any error occurs during reading the text files.
      */
     @GetMapping("/api/populate")
-    public JsonResponse populateDB() {
+    public void populateDB() {
         try {
             dataGenerator.init();
-            return JsonResponse.validMessage("Test data initialized.");
+            throw new ResponseStatusException(HttpStatus.CREATED, "Test data initialized.");
         } catch (FileNotFoundException e) {
-            return JsonResponse.invalidMessage("Error with initializing test data.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error with initializing test data.");
         }
     }
 
