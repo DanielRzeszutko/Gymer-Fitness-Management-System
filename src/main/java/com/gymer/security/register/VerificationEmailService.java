@@ -1,6 +1,6 @@
 package com.gymer.security.register;
 
-import com.gymer.common.crudresources.credential.entity.Credential;
+import com.gymer.crudresources.credential.entity.Credential;
 import com.gymer.common.entity.MailingDetails;
 import com.gymer.common.mailing.EmailSender;
 import lombok.AllArgsConstructor;

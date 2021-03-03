@@ -1,8 +1,8 @@
 package com.gymer.security.changepassword;
 
-import com.gymer.common.crudresources.credential.entity.Credential;
-import com.gymer.common.crudresources.user.UserService;
-import com.gymer.common.crudresources.user.entity.User;
+import com.gymer.crudresources.credential.entity.Credential;
+import com.gymer.crudresources.user.UserService;
+import com.gymer.crudresources.user.entity.User;
 import com.gymer.common.entity.JsonResponse;
 import com.gymer.security.changepassword.entity.PasswordDetails;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Objects;
 
 @RestController
 @AllArgsConstructor

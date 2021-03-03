@@ -1,6 +1,6 @@
 package com.gymer.security;
 
-import com.gymer.common.crudresources.credential.CredentialService;
+import com.gymer.crudresources.credential.CredentialService;
 import com.gymer.security.common.filter.JWTAuthorizationFilter;
 import com.gymer.security.login.JsonAuthenticationFilter;
 import com.gymer.security.common.handler.JsonLogoutSuccessHandler;

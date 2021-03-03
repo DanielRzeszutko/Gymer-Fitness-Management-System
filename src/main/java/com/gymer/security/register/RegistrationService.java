@@ -1,13 +1,13 @@
 package com.gymer.security.register;
 
-import com.gymer.common.crudresources.address.entity.Address;
-import com.gymer.common.crudresources.credential.CredentialService;
-import com.gymer.common.crudresources.credential.entity.Credential;
-import com.gymer.common.crudresources.credential.entity.Role;
-import com.gymer.common.crudresources.partner.PartnerService;
-import com.gymer.common.crudresources.partner.entity.Partner;
-import com.gymer.common.crudresources.user.UserService;
-import com.gymer.common.crudresources.user.entity.User;
+import com.gymer.crudresources.address.entity.Address;
+import com.gymer.crudresources.credential.CredentialService;
+import com.gymer.crudresources.credential.entity.Credential;
+import com.gymer.crudresources.credential.entity.Role;
+import com.gymer.crudresources.partner.PartnerService;
+import com.gymer.crudresources.partner.entity.Partner;
+import com.gymer.crudresources.user.UserService;
+import com.gymer.crudresources.user.entity.User;
 import com.gymer.common.entity.JsonResponse;
 import com.gymer.security.register.entity.RegistrationDetails;
 import lombok.AllArgsConstructor;

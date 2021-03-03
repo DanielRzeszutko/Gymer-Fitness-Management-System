@@ -1,7 +1,7 @@
 package com.gymer.slotsemployee;
 
-import com.gymer.common.crudresources.employee.entity.Employee;
-import com.gymer.common.crudresources.slot.entity.Slot;
+import com.gymer.crudresources.employee.entity.Employee;
+import com.gymer.crudresources.slot.entity.Slot;
 import com.gymer.common.entity.JsonResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

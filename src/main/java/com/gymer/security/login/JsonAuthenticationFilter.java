@@ -1,10 +1,8 @@
 package com.gymer.security.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gymer.common.crudresources.credential.CredentialService;
-import com.gymer.common.crudresources.credential.entity.Credential;
-import com.gymer.common.crudresources.user.UserService;
-import com.gymer.common.crudresources.user.entity.User;
+import com.gymer.crudresources.credential.CredentialService;
+import com.gymer.crudresources.credential.entity.Credential;
 import com.gymer.security.login.entity.LoginDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;

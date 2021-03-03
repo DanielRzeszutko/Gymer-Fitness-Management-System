@@ -1,11 +1,11 @@
 package com.gymer.slotsemployee;
 
-import com.gymer.common.crudresources.employee.EmployeeService;
-import com.gymer.common.crudresources.employee.entity.Employee;
-import com.gymer.common.crudresources.partner.PartnerService;
-import com.gymer.common.crudresources.partner.entity.Partner;
-import com.gymer.common.crudresources.slot.SlotService;
-import com.gymer.common.crudresources.slot.entity.Slot;
+import com.gymer.crudresources.employee.EmployeeService;
+import com.gymer.crudresources.employee.entity.Employee;
+import com.gymer.crudresources.partner.PartnerService;
+import com.gymer.crudresources.partner.entity.Partner;
+import com.gymer.crudresources.slot.SlotService;
+import com.gymer.crudresources.slot.entity.Slot;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

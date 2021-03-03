@@ -1,14 +1,14 @@
 package com.gymer.security.session;
 
-import com.gymer.common.crudresources.credential.CredentialService;
-import com.gymer.common.crudresources.credential.entity.Credential;
-import com.gymer.common.crudresources.credential.entity.Role;
-import com.gymer.common.crudresources.partner.PartnerService;
-import com.gymer.common.crudresources.partner.entity.Partner;
-import com.gymer.common.crudresources.partner.entity.PartnerDTO;
-import com.gymer.common.crudresources.user.UserService;
-import com.gymer.common.crudresources.user.entity.User;
-import com.gymer.common.crudresources.user.entity.UserDTO;
+import com.gymer.crudresources.credential.CredentialService;
+import com.gymer.crudresources.credential.entity.Credential;
+import com.gymer.crudresources.credential.entity.Role;
+import com.gymer.crudresources.partner.PartnerService;
+import com.gymer.crudresources.partner.entity.Partner;
+import com.gymer.crudresources.partner.entity.PartnerDTO;
+import com.gymer.crudresources.user.UserService;
+import com.gymer.crudresources.user.entity.User;
+import com.gymer.crudresources.user.entity.UserDTO;
 import com.gymer.security.session.entity.ActiveAccount;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;

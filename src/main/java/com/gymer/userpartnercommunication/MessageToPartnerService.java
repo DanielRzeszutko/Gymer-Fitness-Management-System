@@ -1,7 +1,7 @@
 package com.gymer.userpartnercommunication;
 
-import com.gymer.common.crudresources.partner.entity.Partner;
-import com.gymer.common.crudresources.user.entity.User;
+import com.gymer.crudresources.partner.entity.Partner;
+import com.gymer.crudresources.user.entity.User;
 import com.gymer.common.entity.MailingDetails;
 import com.gymer.common.mailing.EmailSender;
 import lombok.AllArgsConstructor;

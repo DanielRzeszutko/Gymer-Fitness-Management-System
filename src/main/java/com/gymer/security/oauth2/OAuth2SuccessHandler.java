@@ -1,11 +1,11 @@
 package com.gymer.security.oauth2;
 
-import com.gymer.common.crudresources.credential.CredentialService;
-import com.gymer.common.crudresources.credential.entity.Credential;
-import com.gymer.common.crudresources.credential.entity.Role;
-import com.gymer.common.crudresources.partner.PartnerService;
-import com.gymer.common.crudresources.user.UserService;
-import com.gymer.common.crudresources.user.entity.User;
+import com.gymer.crudresources.credential.CredentialService;
+import com.gymer.crudresources.credential.entity.Credential;
+import com.gymer.crudresources.credential.entity.Role;
+import com.gymer.crudresources.partner.PartnerService;
+import com.gymer.crudresources.user.UserService;
+import com.gymer.crudresources.user.entity.User;
 import com.gymer.security.login.LoginSuccessHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
