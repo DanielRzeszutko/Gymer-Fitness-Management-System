@@ -1,5 +1,6 @@
 package com.gymer.security;
 
+import com.gymer.common.crudresources.credential.CredentialService;
 import com.gymer.security.common.filter.JWTAuthorizationFilter;
 import com.gymer.security.login.JsonAuthenticationFilter;
 import com.gymer.security.common.handler.JsonLogoutSuccessHandler;
@@ -31,6 +32,7 @@ import java.util.Collections;
 @AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final CredentialService credentialService;
     private final JsonLogoutSuccessHandler logoutSuccessHandler;
     private final LoginSuccessHandler successHandler;
     private final LoginFailureHandler failureHandler;
@@ -113,7 +115,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JsonAuthenticationFilter authenticationFilter() throws Exception {
-        JsonAuthenticationFilter filter = new JsonAuthenticationFilter();
+        JsonAuthenticationFilter filter = new JsonAuthenticationFilter(getPasswordEncoder(), credentialService);
         filter.setFilterProcessesUrl("/api/login");
         filter.setAuthenticationSuccessHandler(successHandler);
         filter.setAuthenticationFailureHandler(failureHandler);

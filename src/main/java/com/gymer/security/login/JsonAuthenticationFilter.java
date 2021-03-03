@@ -1,22 +1,35 @@
 package com.gymer.security.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gymer.common.crudresources.credential.CredentialService;
+import com.gymer.common.crudresources.credential.entity.Credential;
+import com.gymer.common.crudresources.user.UserService;
+import com.gymer.common.crudresources.user.entity.User;
 import com.gymer.security.login.entity.LoginDetails;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Collections;
 
+@RequiredArgsConstructor
 public class JsonAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final PasswordEncoder passwordEncoder;
+    private final CredentialService credentialService;
     private String username = "";
     private String password = "";
 
@@ -35,11 +48,25 @@ public class JsonAuthenticationFilter extends UsernamePasswordAuthenticationFilt
             }
             areCredentialsEmpty(username, password);
 
-            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
-            this.setDetails(request, authRequest);
-            setUsernameParameter(username);
-            setPasswordParameter(password);
-            return this.getAuthenticationManager().authenticate(authRequest);
+            if (!credentialService.isCredentialExistsByEmail(username)) {
+                throw new AuthenticationCredentialsNotFoundException("Username or password is empty.");
+            }
+
+            Credential credential = credentialService.getCredentialByEmail(username);
+
+            if (!passwordEncoder.matches(password, credential.getPassword())) {
+                throw new AuthenticationCredentialsNotFoundException("Username or password is empty.");
+            }
+
+            GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + credential.getRole());
+            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(authority));
+            SecurityContextHolder.getContext().setAuthentication(authRequest);
+            return authRequest;
+
+//            this.setDetails(request, authRequest);
+//            setUsernameParameter(username);
+//            setPasswordParameter(password);
+//            return this.getAuthenticationManager().authenticate(authRequest);
         } catch (IOException e) {
             throw new AuthenticationCredentialsNotFoundException("Unknown error, sorry. Please be patient.");
         }
