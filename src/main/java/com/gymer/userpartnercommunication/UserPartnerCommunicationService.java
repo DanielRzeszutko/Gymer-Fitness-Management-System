@@ -4,7 +4,6 @@ import com.gymer.common.crudresources.partner.PartnerService;
 import com.gymer.common.crudresources.partner.entity.Partner;
 import com.gymer.common.crudresources.user.UserService;
 import com.gymer.common.crudresources.user.entity.User;
-import com.gymer.common.entity.JsonResponse;
 import com.gymer.security.validation.AccountOwnerValidator;
 import com.gymer.userpartnercommunication.entity.CommunicationDetails;
 import lombok.AllArgsConstructor;
@@ -30,39 +29,21 @@ class UserPartnerCommunicationService {
      * @return JsonResponse - object with message and valid status if data is filled successfully or
      * message and invalid status if any error occurs during reading the text files.
      */
-    public JsonResponse sendMailToPartner(CommunicationDetails details, Long partnerId) {
-        JsonResponse response = isUserSendingFromLoggedInAccount(details, partnerId);
-        if (response.isResponseNotValid()) return response;
-
+    public void sendMailToPartner(CommunicationDetails details, Long partnerId) {
         Partner partner = partnerService.getElementById(partnerId);
         User user = userService.getElementById(details.getUserId());
-
         messageToPartnerService.sendMessageToPartner(partner, user, details.getMessage());
-        return response;
     }
 
-    private JsonResponse isUserSendingFromLoggedInAccount(CommunicationDetails details, Long partnerId) {
-        if (isOwnerNotSendingMessage(details)) {
-            return JsonResponse.invalidMessage("You don't have rights to send message.");
-        }
-        if (isElementNotExistInDatabase(details)) {
-            return JsonResponse.invalidMessage("Selected partner don't exists.");
-        }
-        if (isConflictWithPartnerIdAndOwner(details, partnerId)) {
-            return JsonResponse.invalidMessage("Conflict with partnerId in credentials or URL");
-        }
-        return JsonResponse.validMessage("Mail successfully send.");
-    }
-
-    private boolean isOwnerNotSendingMessage(CommunicationDetails details) {
+    public boolean isOwnerNotSendingMessage(CommunicationDetails details) {
         return !accountOwnerValidator.isOwnerLoggedIn(details.getUserId());
     }
 
-    private boolean isElementNotExistInDatabase(CommunicationDetails details) {
+    public boolean isElementNotExistInDatabase(CommunicationDetails details) {
         return !partnerService.isElementExistById(details.getPartnerId());
     }
 
-    private boolean isConflictWithPartnerIdAndOwner(CommunicationDetails details, Long partnerId) {
+    public boolean isConflictWithPartnerIdAndOwner(CommunicationDetails details, Long partnerId) {
         return !details.getPartnerId().equals(partnerId);
     }
 
