@@ -74,6 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl(environment.getProperty("server.address.frontend"))
                 .and()
                 .oauth2Login()
+                .loginPage(environment.getProperty("server.address.frontend") + "/login")
                 .successHandler(oAuth2SuccessHandler)
                 .failureHandler(failureHandler);
     }

@@ -62,11 +62,6 @@ public class JsonAuthenticationFilter extends UsernamePasswordAuthenticationFilt
             UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(authority));
             SecurityContextHolder.getContext().setAuthentication(authRequest);
             return authRequest;
-
-//            this.setDetails(request, authRequest);
-//            setUsernameParameter(username);
-//            setPasswordParameter(password);
-//            return this.getAuthenticationManager().authenticate(authRequest);
         } catch (IOException e) {
             throw new AuthenticationCredentialsNotFoundException("Unknown error, sorry. Please be patient.");
         }
