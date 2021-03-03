@@ -57,7 +57,7 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             return;
         }
 
-        if (userService.isUserExistByEmailAnyActivatedOrNot(userEmail)) {
+        if (userService.isUserExistsByEmail(userEmail)) {
             Credential credential = credentialService.getCredentialByEmail(userEmail);
             User userByEmail = userService.getByCredentials(credential);
             userByEmail.setProviderId(providerId);
