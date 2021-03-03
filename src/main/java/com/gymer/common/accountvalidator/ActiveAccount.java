@@ -1,4 +1,4 @@
-package com.gymer.accountsession;
+package com.gymer.common.accountvalidator;
 
 import com.gymer.common.resources.credential.entity.Credential;
 import lombok.AllArgsConstructor;

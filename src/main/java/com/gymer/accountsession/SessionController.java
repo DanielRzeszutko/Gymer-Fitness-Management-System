@@ -1,5 +1,6 @@
 package com.gymer.accountsession;
 
+import com.gymer.common.accountvalidator.AccountOwnerValidator;
 import com.gymer.common.resources.credential.entity.Role;
 import com.gymer.common.resources.partner.entity.PartnerDTO;
 import com.gymer.common.resources.user.entity.UserDTO;
@@ -15,30 +16,30 @@ import org.springframework.web.server.ResponseStatusException;
 @AllArgsConstructor
 class SessionController {
 
-    private final SessionService service;
+    private final AccountOwnerValidator validator;
 
     @GetMapping("/api/me")
     @PreAuthorize("hasRole('USER') or hasRole('PARTNER')")
-    public ActiveAccount getActiveAccount(Authentication authentication) {
-        if (service.isPrincipalNonExist(authentication))
+    public Object getActiveAccount(Authentication authentication) {
+        if (validator.isPrincipalNonExist(authentication))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User or partner not logged in.");
-        return service.getActiveAccountIdFromDetails(authentication);
+        return validator.getActiveAccountIdFromDetails(authentication);
     }
 
     @GetMapping("/api/me/partner")
     @PreAuthorize("hasRole('PARTNER')")
     public PartnerDTO getActivePartner(Authentication authentication) {
-        if (!service.isLoggedAsRole(authentication, Role.PARTNER))
+        if (!validator.isLoggedAsRole(authentication, Role.PARTNER))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Partner not logged in.");
-        return service.getActivePartnerAccountFromCredentials(authentication);
+        return validator.getActivePartnerAccountFromCredentials(authentication);
     }
 
     @GetMapping("/api/me/user")
     @PreAuthorize("hasRole('USER')")
     public UserDTO getActiveUser(Authentication authentication) {
-        if (!service.isLoggedAsRole(authentication, Role.USER))
+        if (!validator.isLoggedAsRole(authentication, Role.USER))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not logged in.");
-        return service.getActiveUserAccountFromCredentials(authentication);
+        return validator.getActiveUserAccountFromCredentials(authentication);
     }
 
 }

@@ -46,13 +46,13 @@ class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             areCredentialsEmpty(username, password);
 
             if (!credentialService.isCredentialExistsByEmail(username)) {
-                throw new AuthenticationCredentialsNotFoundException("Username or password is empty.");
+                throw new AuthenticationCredentialsNotFoundException("Username or password is not valid.");
             }
 
             Credential credential = credentialService.getCredentialByEmail(username);
 
             if (!passwordEncoder.matches(password, credential.getPassword())) {
-                throw new AuthenticationCredentialsNotFoundException("Username or password is empty.");
+                throw new AuthenticationCredentialsNotFoundException("Username or password is not valid.");
             }
 
             GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + credential.getRole());
