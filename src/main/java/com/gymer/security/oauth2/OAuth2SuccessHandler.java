@@ -1,16 +1,12 @@
 package com.gymer.security.oauth2;
 
-import com.gymer.common.crudresources.address.entity.Address;
 import com.gymer.common.crudresources.credential.CredentialService;
 import com.gymer.common.crudresources.credential.entity.Credential;
 import com.gymer.common.crudresources.credential.entity.Role;
-import com.gymer.common.crudresources.partner.entity.Partner;
 import com.gymer.common.crudresources.user.UserService;
 import com.gymer.common.crudresources.user.entity.User;
 import com.gymer.security.login.LoginSuccessHandler;
-import com.gymer.security.register.entity.RegistrationDetails;
 import lombok.AllArgsConstructor;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -60,7 +57,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             return;
         }
 
-        User newUser = createNewUser(userEmail, providerId);
+        User newUser = createNewUser(token);
         userService.updateElement(newUser);
         continueSettingAuthentication(request, response, userEmail);
     }
@@ -75,9 +72,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         successHandler.onAuthenticationSuccess(request, response, authentication);
     }
 
-    private User createNewUser(String userEmail, String providerId) {
-        Credential credential = createCredentialBy(userEmail);
-        User user = new User("", "", credential);
+    private User createNewUser(OAuth2AuthenticationToken token) {
+        OAuth2User attributes = token.getPrincipal();
+        String email = attributes.getAttribute("email");
+        String providerId = attributes.getAttribute("sub");
+        String name = attributes.getAttribute("given_name");
+        String surname = attributes.getAttribute("family_name");
+        Credential credential = createCredentialBy(email);
+        User user = new User(name, surname, credential);
         user.setProviderId(providerId);
         return user;
     }
