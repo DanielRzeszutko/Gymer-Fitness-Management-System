@@ -1,6 +1,6 @@
 package com.gymer.accountverification;
 
-import com.gymer.common.resources.credential.entity.Credential;
+import com.gymer.commonresources.credential.entity.Credential;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

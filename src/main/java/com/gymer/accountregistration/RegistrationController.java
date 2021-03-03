@@ -1,6 +1,6 @@
 package com.gymer.accountregistration;
 
-import com.gymer.common.resources.credential.entity.Role;
+import com.gymer.commonresources.credential.entity.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;

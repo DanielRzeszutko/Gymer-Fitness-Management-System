@@ -1,13 +1,13 @@
 package com.gymer.slotsreservation;
 
-import com.gymer.common.accountvalidator.AccountOwnerValidator;
-import com.gymer.common.resources.credential.CredentialService;
-import com.gymer.common.resources.credential.entity.Credential;
-import com.gymer.common.resources.credential.entity.Role;
-import com.gymer.common.resources.slot.SlotService;
-import com.gymer.common.resources.slot.entity.Slot;
-import com.gymer.common.resources.user.UserService;
-import com.gymer.common.resources.user.entity.User;
+import com.gymer.commoncomponents.accountvalidator.AccountOwnerValidator;
+import com.gymer.commonresources.credential.CredentialService;
+import com.gymer.commonresources.credential.entity.Credential;
+import com.gymer.commonresources.credential.entity.Role;
+import com.gymer.commonresources.slot.SlotService;
+import com.gymer.commonresources.slot.entity.Slot;
+import com.gymer.commonresources.user.UserService;
+import com.gymer.commonresources.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

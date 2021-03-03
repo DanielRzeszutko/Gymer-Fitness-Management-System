@@ -1,6 +1,6 @@
 package com.gymer.accountlogin;
 
-import com.gymer.common.resources.credential.CredentialService;
+import com.gymer.commonresources.credential.CredentialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;

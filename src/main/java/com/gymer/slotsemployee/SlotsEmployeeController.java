@@ -1,7 +1,7 @@
 package com.gymer.slotsemployee;
 
-import com.gymer.common.resources.employee.entity.Employee;
-import com.gymer.common.resources.slot.entity.Slot;
+import com.gymer.commonresources.employee.entity.Employee;
+import com.gymer.commonresources.slot.entity.Slot;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;

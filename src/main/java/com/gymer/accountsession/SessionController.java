@@ -1,9 +1,9 @@
 package com.gymer.accountsession;
 
-import com.gymer.common.accountvalidator.AccountOwnerValidator;
-import com.gymer.common.resources.credential.entity.Role;
-import com.gymer.common.resources.partner.entity.PartnerDTO;
-import com.gymer.common.resources.user.entity.UserDTO;
+import com.gymer.commoncomponents.accountvalidator.AccountOwnerValidator;
+import com.gymer.commonresources.credential.entity.Role;
+import com.gymer.commonresources.partner.entity.PartnerDTO;
+import com.gymer.commonresources.user.entity.UserDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;

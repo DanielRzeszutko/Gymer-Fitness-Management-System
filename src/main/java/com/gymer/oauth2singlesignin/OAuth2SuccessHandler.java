@@ -1,11 +1,11 @@
 package com.gymer.oauth2singlesignin;
 
-import com.gymer.common.resources.credential.CredentialService;
-import com.gymer.common.resources.credential.entity.Credential;
-import com.gymer.common.resources.credential.entity.Role;
-import com.gymer.common.resources.partner.PartnerService;
-import com.gymer.common.resources.user.UserService;
-import com.gymer.common.resources.user.entity.User;
+import com.gymer.commonresources.credential.CredentialService;
+import com.gymer.commonresources.credential.entity.Credential;
+import com.gymer.commonresources.credential.entity.Role;
+import com.gymer.commonresources.partner.PartnerService;
+import com.gymer.commonresources.user.UserService;
+import com.gymer.commonresources.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

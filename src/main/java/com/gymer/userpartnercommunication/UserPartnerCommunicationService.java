@@ -1,10 +1,10 @@
 package com.gymer.userpartnercommunication;
 
-import com.gymer.common.accountvalidator.AccountOwnerValidator;
-import com.gymer.common.resources.partner.PartnerService;
-import com.gymer.common.resources.partner.entity.Partner;
-import com.gymer.common.resources.user.UserService;
-import com.gymer.common.resources.user.entity.User;
+import com.gymer.commoncomponents.accountvalidator.AccountOwnerValidator;
+import com.gymer.commonresources.partner.PartnerService;
+import com.gymer.commonresources.partner.entity.Partner;
+import com.gymer.commonresources.user.UserService;
+import com.gymer.commonresources.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

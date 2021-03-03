@@ -1,7 +1,7 @@
 package com.gymer.accountlogin;
 
-import com.gymer.common.resources.credential.entity.Credential;
-import com.gymer.common.resources.credential.entity.Role;
+import com.gymer.commonresources.credential.entity.Credential;
+import com.gymer.commonresources.credential.entity.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

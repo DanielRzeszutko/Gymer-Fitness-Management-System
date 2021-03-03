@@ -1,8 +1,8 @@
 package com.gymer.changepassword;
 
-import com.gymer.common.resources.credential.entity.Credential;
-import com.gymer.common.resources.user.UserService;
-import com.gymer.common.resources.user.entity.User;
+import com.gymer.commonresources.credential.entity.Credential;
+import com.gymer.commonresources.user.UserService;
+import com.gymer.commonresources.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;

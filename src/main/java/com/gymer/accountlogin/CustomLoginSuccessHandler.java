@@ -1,13 +1,12 @@
 package com.gymer.accountlogin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gymer.common.jwtcreator.JWTCreatorComponent;
+import com.gymer.commoncomponents.jwtcreator.JWTCreatorComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

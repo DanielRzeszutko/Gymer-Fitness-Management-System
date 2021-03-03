@@ -1,8 +1,8 @@
 package com.gymer.accountregistration;
 
-import com.gymer.common.mailing.EmailSender;
-import com.gymer.common.mailing.MailingDetails;
-import com.gymer.common.resources.credential.entity.Credential;
+import com.gymer.commoncomponents.mailing.EmailSender;
+import com.gymer.commoncomponents.mailing.MailingDetails;
+import com.gymer.commonresources.credential.entity.Credential;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
