@@ -1,6 +1,5 @@
 /**
- * Component responsible for "Logged user or guest can reserve slot in every active partner's calendar".
- * Controller class gets requests from specified url and Service class do magic.
+ * Package responsible for changing reservation in slot by user or guest.
  *
  * @author everybody
  */

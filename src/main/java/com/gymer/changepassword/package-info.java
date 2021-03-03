@@ -1,6 +1,5 @@
 /**
- * Classes responsible for changing password for the user or partner according to the controller endpoint.
- * Password is overwritten in database and user/partner can live happily.
+ * Package responsible for changing user / partners password.
  *
  * @author everybody
  */

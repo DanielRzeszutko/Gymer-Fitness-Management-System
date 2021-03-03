@@ -1,6 +1,5 @@
 /**
- * Classes responsible for obtaining common entity: MailingDetails,
- * connecting to the mail provider and sending mails with predefined template.
+ * Package responsible for universal mailing system.
  *
  * @author everybody
  */
