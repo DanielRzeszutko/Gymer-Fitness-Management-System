@@ -87,6 +87,7 @@ public class UserController extends AbstractRestApiController<UserDTO, User, Lon
         User newUser = new User(userDTO);
         User oldUser = service.getElementById(userDTO.getId());
         newUser.setCredential(oldUser.getCredential());
+        newUser.setProviderId(oldUser.getProviderId());
         return newUser;
     }
 

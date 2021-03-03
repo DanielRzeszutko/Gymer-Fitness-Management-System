@@ -21,7 +21,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-public class OAuth2JWTController {
+class OAuth2JWTController {
 
     private final CredentialService credentialService;
     private final LoginSuccessHandler loginSuccessHandler;
