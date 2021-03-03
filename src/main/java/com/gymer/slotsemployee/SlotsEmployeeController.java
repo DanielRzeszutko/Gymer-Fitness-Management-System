@@ -1,5 +1,7 @@
 package com.gymer.slotsemployee;
 
+import com.gymer.common.crudresources.employee.entity.Employee;
+import com.gymer.common.crudresources.slot.entity.Slot;
 import com.gymer.common.entity.JsonResponse;
 import com.gymer.slotsemployee.entity.SlotsEmployeeDetails;
 import lombok.AllArgsConstructor;
@@ -32,9 +34,23 @@ class SlotsEmployeeController {
     @PostMapping("/api/slotemployee/{slotId}/employee")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerManipulatingSlot(#slotId))")
     public JsonResponse updateEmployeeInSlot(@RequestBody SlotsEmployeeDetails details, @PathVariable Long slotId) {
-        if (!details.getSlotId().equals(slotId))
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        return service.updateEmployeeSigningAttribute(details);
+        if (!details.getSlotId().equals(slotId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid slot id.");
+        }
+
+        if (details.isRemoveEmployee()) {
+            service.clearSlot(details.getSlotId());
+            throw new ResponseStatusException(HttpStatus.OK, "Successfully removed Employee from slot.");
+        }
+
+        Slot slot = service.getSlotById(slotId);
+        Employee employee = service.getEmployeeById(details.getEmployeeId());
+        if (service.isPartnerNotContainsThisEmployee(slot, employee)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't add Employee because he's not working for you.");
+        }
+
+        service.saveUpdatedSlotInDatabase(slot, employee);
+        throw new ResponseStatusException(HttpStatus.OK, "Successfully changed Employee in Slot.");
     }
 
 }
