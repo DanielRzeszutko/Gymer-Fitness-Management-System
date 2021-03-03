@@ -51,7 +51,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         }
 
         if (partnerService.isUserExistsByEmail(userEmail)) {
-            String redirectUrl = environment.getProperty("server.address.frontend") + "/login";
+            String errorMessage = "You can't login via Google because you already have partner's account. Please use your standard account.";
+            String redirectUrl = environment.getProperty("server.address.frontend") + "/login?error=" + errorMessage;
             redirectStrategy.sendRedirect(request, response, redirectUrl);
             SecurityContextHolder.getContext().setAuthentication(null);
             clearAuthenticationAttributes(request);
