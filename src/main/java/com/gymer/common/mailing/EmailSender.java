@@ -1,6 +1,5 @@
 package com.gymer.common.mailing;
 
-import com.gymer.common.entity.MailingDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
