@@ -6,8 +6,6 @@ import com.gymer.common.crudresources.partner.PartnerService;
 import com.gymer.common.crudresources.partner.entity.Partner;
 import com.gymer.common.crudresources.slot.SlotService;
 import com.gymer.common.crudresources.slot.entity.Slot;
-import com.gymer.common.entity.JsonResponse;
-import com.gymer.slotsemployee.entity.SlotsEmployeeDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

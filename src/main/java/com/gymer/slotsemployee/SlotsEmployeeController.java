@@ -3,7 +3,6 @@ package com.gymer.slotsemployee;
 import com.gymer.common.crudresources.employee.entity.Employee;
 import com.gymer.common.crudresources.slot.entity.Slot;
 import com.gymer.common.entity.JsonResponse;
-import com.gymer.slotsemployee.entity.SlotsEmployeeDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;

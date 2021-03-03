@@ -1,9 +1,9 @@
-package com.gymer.slotsreservation.entity;
+package com.gymer.slotsreservation;
 
 import lombok.Data;
 
 @Data
-public class UserReservationDetails {
+class UserReservationDetails {
 
     private Long userId;
     private Long slotId;

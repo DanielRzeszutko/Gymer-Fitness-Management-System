@@ -8,7 +8,6 @@ import com.gymer.common.crudresources.slot.entity.Slot;
 import com.gymer.common.crudresources.user.UserService;
 import com.gymer.common.crudresources.user.entity.User;
 import com.gymer.security.validation.AccountOwnerValidator;
-import com.gymer.slotsreservation.entity.GuestReservationDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

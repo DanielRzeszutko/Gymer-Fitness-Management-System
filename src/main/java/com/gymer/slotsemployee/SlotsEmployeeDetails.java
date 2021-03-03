@@ -1,9 +1,9 @@
-package com.gymer.slotsemployee.entity;
+package com.gymer.slotsemployee;
 
 import lombok.Data;
 
 @Data
-public class SlotsEmployeeDetails {
+class SlotsEmployeeDetails {
 
     private Long slotId;
     private Long employeeId;

@@ -5,7 +5,6 @@ import com.gymer.common.crudresources.partner.entity.Partner;
 import com.gymer.common.crudresources.user.UserService;
 import com.gymer.common.crudresources.user.entity.User;
 import com.gymer.security.validation.AccountOwnerValidator;
-import com.gymer.userpartnercommunication.entity.CommunicationDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

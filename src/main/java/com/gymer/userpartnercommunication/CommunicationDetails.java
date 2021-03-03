@@ -1,11 +1,11 @@
-package com.gymer.userpartnercommunication.entity;
+package com.gymer.userpartnercommunication;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CommunicationDetails {
+class CommunicationDetails {
 
     private Long partnerId;
     private Long userId;

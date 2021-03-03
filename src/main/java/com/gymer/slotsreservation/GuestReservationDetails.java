@@ -1,9 +1,9 @@
-package com.gymer.slotsreservation.entity;
+package com.gymer.slotsreservation;
 
 import lombok.Data;
 
 @Data
-public class GuestReservationDetails {
+class GuestReservationDetails {
 
     private String email;
     private String phoneNumber;

@@ -2,8 +2,6 @@ package com.gymer.slotsreservation;
 
 import com.gymer.common.crudresources.slot.entity.Slot;
 import com.gymer.common.crudresources.user.entity.User;
-import com.gymer.slotsreservation.entity.GuestReservationDetails;
-import com.gymer.slotsreservation.entity.UserReservationDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;

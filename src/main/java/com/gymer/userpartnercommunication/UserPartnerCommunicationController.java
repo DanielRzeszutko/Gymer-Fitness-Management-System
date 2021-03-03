@@ -1,6 +1,5 @@
 package com.gymer.userpartnercommunication;
 
-import com.gymer.userpartnercommunication.entity.CommunicationDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
