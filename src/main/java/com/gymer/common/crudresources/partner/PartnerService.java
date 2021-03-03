@@ -2,6 +2,7 @@ package com.gymer.common.crudresources.partner;
 
 import com.gymer.common.crudresources.common.service.AbstractRestApiService;
 import com.gymer.common.crudresources.credential.entity.Credential;
+import com.gymer.common.crudresources.credential.entity.Role;
 import com.gymer.common.crudresources.employee.entity.Employee;
 import com.gymer.common.crudresources.partner.entity.Partner;
 import com.gymer.common.crudresources.slot.entity.Slot;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Service
 public class PartnerService extends AbstractRestApiService<Partner, Long> {
@@ -83,6 +86,15 @@ public class PartnerService extends AbstractRestApiService<Partner, Long> {
     @Override
     public Page<Partner> findAllContaining(Pageable pageable, String searchBy) {
         return ((PartnerRepository) repository).findAllByNameContainsOrDescriptionContainsAndCredentialActivatedIsTrue(searchBy, searchBy, pageable);
+    }
+
+    /**
+     * Service method that returns true if email is existing in database and Role.PARTNER is set up with this account
+     * In another case when Role.GUEST is only in database new record is created
+     */
+    public boolean isUserExistsByEmail(String email) {
+        Optional<Partner> partner = ((PartnerRepository) repository).findByCredentialEmail(email);
+        return partner.isPresent() && partner.get().getCredential().getRole().equals(Role.PARTNER);
     }
 
 }

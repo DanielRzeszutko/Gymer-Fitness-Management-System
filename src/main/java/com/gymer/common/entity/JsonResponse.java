@@ -21,7 +21,7 @@ public class JsonResponse {
 
     @JsonIgnore
     public boolean isResponseNotValid() {
-        return !error;
+        return error;
     }
 
 }

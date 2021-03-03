@@ -3,6 +3,7 @@ package com.gymer.security.oauth2;
 import com.gymer.common.crudresources.credential.CredentialService;
 import com.gymer.common.crudresources.credential.entity.Credential;
 import com.gymer.common.crudresources.credential.entity.Role;
+import com.gymer.common.crudresources.partner.PartnerService;
 import com.gymer.common.crudresources.user.UserService;
 import com.gymer.common.crudresources.user.entity.User;
 import com.gymer.security.login.LoginSuccessHandler;
@@ -33,6 +34,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final LoginSuccessHandler successHandler;
     private final CredentialService credentialService;
     private final UserService userService;
+    private final PartnerService partnerService;
     private final Environment environment;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -48,7 +50,15 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             return;
         }
 
-        if (userService.isUserExistsByEmail(userEmail)) {
+        if (partnerService.isUserExistsByEmail(userEmail)) {
+            String redirectUrl = environment.getProperty("server.address.frontend") + "/login";
+            redirectStrategy.sendRedirect(request, response, redirectUrl);
+            SecurityContextHolder.getContext().setAuthentication(null);
+            clearAuthenticationAttributes(request);
+            return;
+        }
+
+        if (userService.isUserExistByEmailAnyActivatedOrNot(userEmail)) {
             Credential credential = credentialService.getCredentialByEmail(userEmail);
             User userByEmail = userService.getByCredentials(credential);
             userByEmail.setProviderId(providerId);

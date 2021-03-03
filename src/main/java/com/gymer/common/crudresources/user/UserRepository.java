@@ -24,6 +24,8 @@ interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
     Optional<User> findByCredentialEmailAndCredentialActivatedIsTrue(String email);
 
+    Optional<User> findByCredentialEmail(String email);
+
     Optional<User> findByProviderId(String providerId);
 
 }
