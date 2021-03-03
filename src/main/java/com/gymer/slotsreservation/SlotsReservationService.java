@@ -10,13 +10,13 @@ import com.gymer.common.crudresources.user.entity.User;
 import com.gymer.security.validation.AccountOwnerValidator;
 import com.gymer.slotsreservation.entity.GuestReservationDetails;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -67,22 +67,18 @@ class SlotsReservationService {
     }
 
     public void cancelReservationAsGuest(Slot slot, String email) {
-        User user = slot.getUsers().stream()
+        List<User> users = slot.getUsers().stream()
                 .filter(el -> el.getCredential().getEmail().equals(email))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not exist"));
-        removeUserFromSlot(slot, user);
+                .collect(Collectors.toList());
+        users.forEach(user -> removeUserFromSlot(slot, user));
     }
 
     public void removeUserFromSlot(Slot slot, User user) {
-        if (!isMoreThan24HBeforeVisit(slot)) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "You can't drop visit now, too late.");
-        }
         slot.getUsers().remove(user);
         slotService.updateElement(slot);
     }
 
-    private boolean isMoreThan24HBeforeVisit(Slot slot) {
+    public boolean isMoreThan24HBeforeVisit(Slot slot) {
         Timestamp timestampNow = new Timestamp(new Date().getTime());
         LocalDateTime now = timestampNow.toLocalDateTime().plusDays(1);
         LocalDateTime visitTime = LocalDateTime.of(slot.getDate().toLocalDate(), slot.getStartTime().toLocalTime());

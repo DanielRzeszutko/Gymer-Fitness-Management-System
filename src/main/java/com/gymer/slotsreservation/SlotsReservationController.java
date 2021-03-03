@@ -39,6 +39,9 @@ class SlotsReservationController {
 
         Slot slot = reservationService.getSlotFromSlotServiceById(details.getSlotId());
         if (details.isCancel()) {
+            if (!reservationService.isMoreThan24HBeforeVisit(slot)) {
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "You can't drop visit now, too late.");
+            }
             reservationService.cancelReservationAsGuest(slot, details.getEmail());
             throw new ResponseStatusException(HttpStatus.OK, "Successfully removed reservation.");
         }
@@ -81,6 +84,9 @@ class SlotsReservationController {
         Slot slot = reservationService.getSlotFromSlotServiceById(details.getSlotId());
         User user = reservationService.getUserFromUserServiceById(details.getUserId());
         if (details.isCancel()) {
+            if (!reservationService.isMoreThan24HBeforeVisit(slot)) {
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "You can't drop visit now, too late.");
+            }
             reservationService.removeUserFromSlot(slot, user);
             throw new ResponseStatusException(HttpStatus.OK, "Successfully removed reservation.");
         }

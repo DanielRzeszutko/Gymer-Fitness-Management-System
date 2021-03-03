@@ -30,12 +30,15 @@ class UserPartnerCommunicationController {
         if (communicationService.isOwnerNotSendingMessage(details)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You don't have rights to send message.");
         }
+
         if (communicationService.isElementNotExistInDatabase(details)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Selected partner don't exists.");
         }
+
         if (communicationService.isConflictWithPartnerIdAndOwner(details, partnerId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Conflict with partnerId in credentials or URL");
         }
+
         communicationService.sendMailToPartner(details, partnerId);
         throw new ResponseStatusException(HttpStatus.OK, "Mail successfully send.");
     }
