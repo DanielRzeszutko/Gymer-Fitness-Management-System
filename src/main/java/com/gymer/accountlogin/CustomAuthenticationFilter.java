@@ -51,6 +51,10 @@ class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
             Credential credential = credentialService.getCredentialByEmail(username);
 
+            if (!credentialService.isActivatedCredentialExistsByEmail(username)) {
+                throw new AuthenticationCredentialsNotFoundException("Account not activated.");
+            }
+
             if (!passwordEncoder.matches(password, credential.getPassword())) {
                 throw new AuthenticationCredentialsNotFoundException("Username or password is not valid.");
             }
