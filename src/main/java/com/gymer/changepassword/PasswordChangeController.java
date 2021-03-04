@@ -25,7 +25,7 @@ class PasswordChangeController {
         Credential credential = passwordChangeService.getUsersCredential(userId);
         User user = userService.getByCredentials(credential);
 
-        if (user.getProviderId() != null && user.getProviderId().length() > 0) {
+        if (credential.getPassword() == null || (user.getProviderId() != null && user.getProviderId().length() > 0)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are logged by Google account, you can't change your password.");
         }
 
