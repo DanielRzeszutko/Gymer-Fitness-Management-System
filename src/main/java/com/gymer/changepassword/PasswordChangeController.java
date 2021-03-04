@@ -33,7 +33,7 @@ class PasswordChangeController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Passwords are not equal. Please provide your old password.");
         }
 
-        if (passwordDetails.getNewPassword() == null || passwordDetails.getNewPassword().length() < 2) {
+        if (passwordDetails.getNewPassword() == null || passwordDetails.getNewPassword().length() < 3) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Invalid new password, please enter minimum 6 characters.");
         }
 
