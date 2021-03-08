@@ -24,7 +24,7 @@ class SmsNotificationService {
 
     public void sendNotification(User user, Slot slot) throws IOException, InterruptedException {
         String message = language.getSmsNotificationWhenSlotStartsInAnHour(user, slot);
-        SmsDetails details = new SmsDetails("", "SMSto", message, user.getCredential().getPhoneNumber());
+        SmsDetails details = new SmsDetails("", "Team Gymer", message, user.getCredential().getPhoneNumber());
         String authKey = environment.getProperty("sms.secret.password");
         authKey = authKey == null ? "" : authKey;
 
