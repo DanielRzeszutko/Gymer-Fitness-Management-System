@@ -1,5 +1,6 @@
 package com.gymer.oauth2singlesignin;
 
+import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.credential.CredentialService;
 import com.gymer.commonresources.credential.entity.Credential;
 import com.gymer.commonresources.credential.entity.Role;
@@ -34,6 +35,7 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final UserService userService;
     private final PartnerService partnerService;
     private final Environment environment;
+    private final LanguageComponent language;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Override
@@ -49,7 +51,7 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         }
 
         if (partnerService.isUserExistsByEmail(userEmail)) {
-            String errorMessage = "You can't login via Google because you already have partner's account. Please use your standard account.";
+            String errorMessage = language.cannotSignInViaOAuth2BecauseOfBeingPartner();
             String redirectUrl = environment.getProperty("server.address.frontend") + "/login?error=" + errorMessage;
             redirectStrategy.sendRedirect(request, response, redirectUrl);
             SecurityContextHolder.getContext().setAuthentication(null);

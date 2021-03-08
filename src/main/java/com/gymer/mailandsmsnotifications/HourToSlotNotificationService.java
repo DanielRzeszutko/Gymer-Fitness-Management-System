@@ -18,28 +18,21 @@ class HourToSlotNotificationService {
     private final MailNotificationService mailNotificationService;
     private final SmsNotificationService smsNotificationService;
 
+    // Method runs every 60 seconds
     @Scheduled(fixedRate = 60000)
     public void sendNotificationEveryMinute() {
         Iterable<Slot> slots = slotService.findAllSlotsTodayStartingInAnHour();
         slots.forEach(slot -> {
             List<User> users = slot.getUsers();
             users.forEach(user -> {
-                sendMailNotification(user, slot);
+                mailNotificationService.sendNotification(user, slot);
                 try {
-                    sendSmsNotification(user, slot);
+                    smsNotificationService.sendNotification(user, slot);
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             });
         });
-    }
-
-    private void sendMailNotification(User user, Slot slot) {
-        mailNotificationService.sendNotification(user, slot);
-    }
-
-    private void sendSmsNotification(User user, Slot slot) throws IOException, InterruptedException {
-        smsNotificationService.sendNotification(user, slot);
     }
 
 }

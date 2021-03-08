@@ -1,6 +1,7 @@
 package com.gymer.mailandsmsnotifications;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.slot.entity.Slot;
 import com.gymer.commonresources.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,10 @@ class SmsNotificationService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Environment environment;
+    private final LanguageComponent language;
 
     public void sendNotification(User user, Slot slot) throws IOException, InterruptedException {
-        String message = "Your slot starts in an hour: " + slot.getDescription();
+        String message = language.getSmsNotificationWhenSlotStartsInAnHour(user, slot);
         SmsDetails details = new SmsDetails("", "SMSto", message, user.getCredential().getPhoneNumber());
         String authKey = environment.getProperty("sms.secret.password");
         authKey = authKey == null ? "" : authKey;
@@ -32,7 +34,7 @@ class SmsNotificationService {
                 .header("authorization", "Bearer " + authKey)
                 .method("POST", HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(details)))
                 .build();
-        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
     }
 
 }
