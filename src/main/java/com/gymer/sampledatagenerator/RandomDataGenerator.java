@@ -156,13 +156,13 @@ class RandomDataGenerator {
         boolean isPrivate = startHour > 12;
         Integer size = isPrivate ? 1 : 10;
         String description = isPrivate ? "Personal Training" : getRandomSlotDescription();
-        return new Slot(description, getRandomDateForGivenMonth(3), Time.valueOf(startHourString + ":00:00"),
+        return new Slot(description, getRandomDateForGivenMonth("03"), Time.valueOf(startHourString + ":00:00"),
                 Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, "Full body workout", isPrivate, size);
     }
 
-    private Date getRandomDateForGivenMonth(int month) {
+    private Date getRandomDateForGivenMonth(String month) {
         int day = getRandomNumberBetween(1, 30);
-        String date = "2021-0" + month + "-" + day;
+        String date = "2021-" + month + "-" + day;
         return Date.valueOf(date);
     }
 
