@@ -149,6 +149,8 @@ class RandomDataGenerator {
     }
 
     private Slot getRandomSlot(Employee employee) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        Date dateNow = new Date(time.getTime());
         int startHour = new Random().nextInt(12) + 6;
         int endHour = startHour + 1;
         String startHourString = startHour < 10 ? "0" + startHour : Integer.toString(startHour);
@@ -156,7 +158,7 @@ class RandomDataGenerator {
         boolean isPrivate = startHour > 12;
         Integer size = isPrivate ? 1 : 10;
         String description = isPrivate ? "Personal Training" : getRandomSlotDescription();
-        return new Slot(description, Date.valueOf("2021-05-15"), Time.valueOf(startHourString + ":00:00"),
+        return new Slot(description, dateNow, Time.valueOf(startHourString + ":00:00"),
                 Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, "Full body workout", isPrivate, size);
     }
 
