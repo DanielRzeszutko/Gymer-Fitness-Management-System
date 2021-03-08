@@ -1,5 +1,6 @@
 package com.gymer.commoncomponents.languagepack;
 
+import com.gymer.commonresources.credential.entity.Credential;
 import com.gymer.commonresources.partner.entity.Partner;
 import com.gymer.commonresources.slot.entity.Slot;
 import com.gymer.commonresources.user.entity.User;
@@ -60,6 +61,82 @@ public class EnLanguageComponent implements LanguageComponent {
         return "Can't add Employee.";
     }
 
+    public String cannotChangePassword() {
+        return "You can't change your password.";
+    }
+
+    public String passwordsDoesntEqual() {
+        return "Passwords are not equal. Please provide your old password.";
+    }
+
+    public String notImplementedYet() {
+        return "Not implemented yet!";
+    }
+
+    public String alreadyVerified() {
+        return "Account is already verified. Please login.";
+    }
+
+    public String invalidVerificationCode() {
+        return "Sorry, verification code is incorrect. Please try again";
+    }
+
+    public String successfullyVerified() {
+        return "Account has been verified successfully";
+    }
+
+    public String notValidAccount() {
+        return "Not logged in as valid User.";
+    }
+
+    public String invalidNewPassword() {
+        return "Invalid new password, please enter minimum 6 characters.";
+    }
+
+    public String passwordChanged() {
+        return "Successfully changed password";
+    }
+
+    public String fieldsCannotBeEmpty() {
+        return "Fields cannot be empty!";
+    }
+
+    public String accountAlreadyExists() {
+        return "Account with this email already exists.";
+    }
+
+    public String successfullyLoggedOut() {
+        return "Successfully logged out.";
+    }
+
+    public String notVerified() {
+        return "Account not activated.";
+    }
+
+    public String unknownError() {
+        return "Unknown error, sorry. Please be patient.";
+    }
+
+    public String authenticationNotSupported() {
+        return "Authentication method not supported: ";
+    }
+
+    public String usernameOrPasswordNotValid() {
+        return "Username or password is not valid.";
+    }
+
+    public String successfullyLoggedIn() {
+        return "Successfully logged in.";
+    }
+
+    public String activationMailSend() {
+        return "Activation email resend. Please check your email to verify your account.";
+    }
+
+    public String registeredSuccessfully() {
+        return "Registered successfully. Please check your email to verify your account.";
+    }
+
     public String employeeRemoved() {
         return "Successfully removed Employee from slot.";
     }
@@ -114,12 +191,25 @@ public class EnLanguageComponent implements LanguageComponent {
                 + "Team Gymer.";
     }
 
+    public String getVerificationEmail(Credential credential, String verifyURL) {
+        String content = "Dear " + credential.getRole() + ",<br>"
+                + "Please click the link below to verify your registration:<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
+                + "Thank you,<br>"
+                + "Team Gymer.";
+        return content.replace("[[URL]]", verifyURL);
+    }
+
     public String getTitleFromUserToPartner() {
         return "You have new question from user.";
     }
 
     public String getSmsTitleWhenSlotStartsInAnHour() {
         return "Your slot starting in an hour.";
+    }
+
+    public String getVerificationTitle() {
+        return "Please verify your registration";
     }
 
 }

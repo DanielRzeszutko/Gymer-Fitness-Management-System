@@ -1,5 +1,6 @@
 package com.gymer.changepassword;
 
+import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.credential.entity.Credential;
 import com.gymer.commonresources.user.UserService;
 import com.gymer.commonresources.user.entity.User;
@@ -17,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 class PasswordChangeController {
 
     private final PasswordChangeService passwordChangeService;
+    private final LanguageComponent language;
     private final UserService userService;
 
     @PutMapping("/api/users/{userId}/password")
@@ -26,25 +28,25 @@ class PasswordChangeController {
         User user = userService.getByCredentials(credential);
 
         if (credential.getPassword() == null || (user.getProviderId() != null && user.getProviderId().length() > 0)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are logged by Google account, you can't change your password.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, language.cannotChangePassword());
         }
 
         if (passwordChangeService.isPasswordNotEqual(passwordDetails, credential)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Passwords are not equal. Please provide your old password.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.passwordsDoesntEqual());
         }
 
         if (passwordDetails.getNewPassword() == null || passwordDetails.getNewPassword().length() < 3) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Invalid new password, please enter minimum 6 characters.");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.invalidNewPassword());
         }
 
         passwordChangeService.changePassword(passwordDetails, credential);
-        throw new ResponseStatusException(HttpStatus.OK, "Successfully changed password");
+        throw new ResponseStatusException(HttpStatus.OK, language.passwordChanged());
     }
 
     @PutMapping("/api/partners/{partnerId}/password")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerLoggedIn(#partnerId))")
     public void changePartnersPassword(@RequestBody PasswordDetails passwordDetails, @PathVariable Long partnerId) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented yet!");
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, language.notImplementedYet());
     }
 
 }
