@@ -10,6 +10,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -51,6 +56,17 @@ public class SlotService extends AbstractRestApiService<Slot, Long> {
         if (!user.getCredential().isActivated()) return Page.empty();
         List<Slot> slots = ((SlotRepository) repository).findAllByUsersContains(user);
         return new PageImpl<>(slots, pageable, slots.size());
+    }
+
+    public Iterable<Slot> findAllSlotsTodayStartingInAnHour() {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        Date dateNow = new Date(time.getTime());
+
+        LocalTime startTime = LocalTime.now();
+        startTime = startTime.plusHours(1);
+        LocalTime endTime = startTime.plusMinutes(1);
+
+        return ((SlotRepository) repository).findAllByDateAndStartTimeBetween(dateNow, Time.valueOf(startTime), Time.valueOf(endTime));
     }
 
 }

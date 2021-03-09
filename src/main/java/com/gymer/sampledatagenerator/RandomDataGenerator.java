@@ -149,6 +149,8 @@ class RandomDataGenerator {
     }
 
     private Slot getRandomSlot(Employee employee) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        Date dateNow = new Date(time.getTime());
         int startHour = new Random().nextInt(12) + 6;
         int endHour = startHour + 1;
         String startHourString = startHour < 10 ? "0" + startHour : Integer.toString(startHour);

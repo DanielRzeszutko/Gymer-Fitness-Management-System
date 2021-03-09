@@ -1,5 +1,6 @@
 package com.gymer.userpartnercommunication;
 
+import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 class UserPartnerCommunicationController {
 
     private final UserPartnerCommunicationService communicationService;
+    private final LanguageComponent language;
 
     /**
      * Controller endpoint receiving CommunicationDetails object in body. Checking all rights to
@@ -27,19 +29,19 @@ class UserPartnerCommunicationController {
     @PostMapping("/api/partners/{partnerId}/message")
     public void postMessageToPartner(@RequestBody CommunicationDetails details, @PathVariable Long partnerId) {
         if (communicationService.isOwnerNotSendingMessage(details)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You don't have rights to send message.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, language.youDontHaveRightsToDoThat());
         }
 
         if (communicationService.isElementNotExistInDatabase(details)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Selected partner don't exists.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, language.partnerDoesntExists());
         }
 
         if (communicationService.isConflictWithPartnerIdAndOwner(details, partnerId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Conflict with partnerId in credentials or URL");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.conflictWithIds());
         }
 
         communicationService.sendMailToPartner(details, partnerId);
-        throw new ResponseStatusException(HttpStatus.OK, "Mail successfully send.");
+        throw new ResponseStatusException(HttpStatus.OK, language.mailSuccessfullySend());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.gymer.accountlogin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.credential.CredentialService;
 import com.gymer.commonresources.credential.entity.Credential;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    private final LanguageComponent language;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final PasswordEncoder passwordEncoder;
     private final CredentialService credentialService;
@@ -33,7 +35,7 @@ class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         if (!request.getMethod().equals("POST")) {
-            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+            throw new AuthenticationServiceException(language.authenticationNotSupported() + request.getMethod());
         }
         try {
             StringBuilder sb = getBuilder(request);
@@ -46,17 +48,17 @@ class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             areCredentialsEmpty(username, password);
 
             if (!credentialService.isCredentialExistsByEmail(username)) {
-                throw new AuthenticationCredentialsNotFoundException("Username or password is not valid.");
+                throw new AuthenticationCredentialsNotFoundException(language.usernameOrPasswordNotValid());
             }
 
             Credential credential = credentialService.getCredentialByEmail(username);
 
             if (!credentialService.isActivatedCredentialExistsByEmail(username)) {
-                throw new AuthenticationCredentialsNotFoundException("Account not activated.");
+                throw new AuthenticationCredentialsNotFoundException(language.notVerified());
             }
 
             if (!passwordEncoder.matches(password, credential.getPassword())) {
-                throw new AuthenticationCredentialsNotFoundException("Username or password is not valid.");
+                throw new AuthenticationCredentialsNotFoundException(language.usernameOrPasswordNotValid());
             }
 
             GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + credential.getRole());
@@ -64,15 +66,14 @@ class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             SecurityContextHolder.getContext().setAuthentication(authRequest);
             return authRequest;
         } catch (IOException e) {
-            throw new AuthenticationCredentialsNotFoundException("Unknown error, sorry. Please be patient.");
+            throw new AuthenticationCredentialsNotFoundException(language.unknownError());
         }
 
     }
 
     private void isJsonFormValid(StringBuilder sb) {
         if (!sb.toString().contains("password") || !sb.toString().contains("email")) {
-            throw new AuthenticationCredentialsNotFoundException("Invalid JSON request format, " +
-                    "fields needed: email and password.");
+            throw new AuthenticationCredentialsNotFoundException(language.usernameOrPasswordNotValid());
         }
     }
 
@@ -85,7 +86,7 @@ class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private void areCredentialsEmpty(String username, String password) {
         if (username.equals("") || password.equals("")) {
-            throw new AuthenticationCredentialsNotFoundException("Username or password is empty.");
+            throw new AuthenticationCredentialsNotFoundException(language.usernameOrPasswordNotValid());
         }
     }
 
