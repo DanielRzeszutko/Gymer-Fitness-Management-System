@@ -1,5 +1,6 @@
 package com.gymer.accountlogin;
 
+import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.credential.CredentialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
@@ -16,6 +17,7 @@ public class LoginAndLogoutConfig {
     private final Environment environment;
     private final PasswordEncoder passwordEncoder;
     private final CredentialService credentialService;
+    private final LanguageComponent language;
     private final CustomLoginSuccessHandler loginSuccessHandler;
     private final CustomLoginFailureHandler loginFailureHandler;
     private final CustomLogoutSuccessHandler logoutSuccessHandler;
@@ -40,7 +42,7 @@ public class LoginAndLogoutConfig {
     }
 
     public CustomAuthenticationFilter authenticationFilter(AuthenticationManager authenticationManager) {
-        CustomAuthenticationFilter filter = new CustomAuthenticationFilter(passwordEncoder, credentialService);
+        CustomAuthenticationFilter filter = new CustomAuthenticationFilter(language, passwordEncoder, credentialService);
         filter.setFilterProcessesUrl("/api/login");
         filter.setAuthenticationSuccessHandler(loginSuccessHandler);
         filter.setAuthenticationFailureHandler(loginFailureHandler);

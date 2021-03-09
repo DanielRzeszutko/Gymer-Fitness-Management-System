@@ -1,5 +1,6 @@
 package com.gymer.slotsreservation;
 
+import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.slot.entity.Slot;
 import com.gymer.commonresources.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 class SlotsReservationController {
 
     private final SlotsReservationService reservationService;
+    private final LanguageComponent language;
 
     /**
      * Method that returns response in JSON format. For guests only. First checking if there is not conflict with
@@ -32,29 +34,29 @@ class SlotsReservationController {
     @PreAuthorize("hasRole('ADMIN') or @accountOwnerValidator.isGuest()")
     public void reserveAsGuest(@RequestBody GuestReservationDetails details, @PathVariable Long slotId) {
         if (!details.getSlotId().equals(slotId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid slot id.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidSlotId());
         }
 
         Slot slot = reservationService.getSlotFromSlotServiceById(details.getSlotId());
         if (details.isCancel()) {
             if (!reservationService.isMoreThan24HBeforeVisit(slot)) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "You can't drop visit now, too late.");
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.tooLateToDropVisit());
             }
             reservationService.cancelReservationAsGuest(slot, details.getEmail());
-            throw new ResponseStatusException(HttpStatus.OK, "Successfully removed reservation.");
+            throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
 
         if (reservationService.isUserExistByEmail(details.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "User with this email already exists.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.userAlreadyExists());
         }
 
         User user = reservationService.createGuestAccount(details);
         if (slot.getUsers().contains(user)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Already reserved this slot.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.alreadyReserved());
         }
 
         reservationService.reserveUserInSlot(slot, user);
-        throw new ResponseStatusException(HttpStatus.OK, "Successfully added reservation details.");
+        throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
     }
 
     /**
@@ -72,29 +74,29 @@ class SlotsReservationController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public void reserveAsUser(@RequestBody UserReservationDetails details, @PathVariable Long slotId) {
         if (!details.getSlotId().equals(slotId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid slot id.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidSlotId());
         }
 
         if (!reservationService.isUserLoggedAsActiveUser(details.getUserId())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sign in as valid user");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, language.signInAsValidUser());
         }
 
         Slot slot = reservationService.getSlotFromSlotServiceById(details.getSlotId());
         User user = reservationService.getUserFromUserServiceById(details.getUserId());
         if (details.isCancel()) {
             if (!reservationService.isMoreThan24HBeforeVisit(slot)) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "You can't drop visit now, too late.");
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.tooLateToDropVisit());
             }
             reservationService.removeUserFromSlot(slot, user);
-            throw new ResponseStatusException(HttpStatus.OK, "Successfully removed reservation.");
+            throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
 
         if (slot.getUsers().contains(user)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Already reserved this slot.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.alreadyReserved());
         }
 
         reservationService.reserveUserInSlot(slot, user);
-        throw new ResponseStatusException(HttpStatus.OK, "Successfully added reservation details.");
+        throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
     }
 
 }
