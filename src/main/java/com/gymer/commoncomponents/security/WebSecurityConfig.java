@@ -37,12 +37,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers(HttpMethod.GET, "/api/populate").permitAll()
 
+                .antMatchers(HttpMethod.POST, "/api/slotuser/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/slotemployee/**").authenticated()
+
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/**").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
-                .antMatchers("/api/slotuser/**").permitAll()
-                .antMatchers("/api/slotemployee/**").authenticated()
+
                 .anyRequest().authenticated();
 
         loginAndLogoutConfig.configureLoginAndLogout(http, super.authenticationManager());
