@@ -37,4 +37,9 @@ public class Address {
         this.zipCode = addressDTO.getZipCode();
     }
 
+    @Override
+    public String toString() {
+        return zipCode + " " + city + ", " + street + " " + number;
+    }
+
 }
