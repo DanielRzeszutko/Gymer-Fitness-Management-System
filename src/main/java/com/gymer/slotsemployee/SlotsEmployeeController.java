@@ -1,5 +1,6 @@
 package com.gymer.slotsemployee;
 
+import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.employee.entity.Employee;
 import com.gymer.commonresources.slot.entity.Slot;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 class SlotsEmployeeController {
 
     private final SlotsEmployeeService service;
+    private final LanguageComponent language;
 
     /**
      * Controller endpoint that change selected employee in selected slot. Method provides
@@ -33,22 +35,22 @@ class SlotsEmployeeController {
     @PreAuthorize("hasRole('ADMIN') or (hasRole('PARTNER') and @accountOwnerValidator.isOwnerManipulatingSlot(#slotId))")
     public void updateEmployeeInSlot(@RequestBody SlotsEmployeeDetails details, @PathVariable Long slotId) {
         if (!details.getSlotId().equals(slotId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid slot id.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidSlotId());
         }
 
         if (details.isRemoveEmployee()) {
             service.clearSlot(details.getSlotId());
-            throw new ResponseStatusException(HttpStatus.OK, "Successfully removed Employee from slot.");
+            throw new ResponseStatusException(HttpStatus.OK, language.employeeRemoved());
         }
 
         Slot slot = service.getSlotById(slotId);
         Employee employee = service.getEmployeeById(details.getEmployeeId());
         if (service.isPartnerNotContainsThisEmployee(slot, employee)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't add Employee because he's not working for you.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, language.invalidEmployee());
         }
 
         service.saveUpdatedSlotInDatabase(slot, employee);
-        throw new ResponseStatusException(HttpStatus.OK, "Successfully changed Employee in Slot.");
+        throw new ResponseStatusException(HttpStatus.OK, language.employeeChanged());
     }
 
 }
