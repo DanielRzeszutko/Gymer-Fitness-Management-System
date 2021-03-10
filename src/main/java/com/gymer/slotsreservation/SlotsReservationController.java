@@ -31,7 +31,6 @@ class SlotsReservationController {
      * message and invalid status if any error occurs during reading the text files.
      */
     @PostMapping("/api/slotuser/{slotId}/reservation/guest")
-    @PreAuthorize("hasRole('ADMIN') or @accountOwnerValidator.isGuest()")
     public void reserveAsGuest(@RequestBody GuestReservationDetails details, @PathVariable Long slotId) {
         if (!details.getSlotId().equals(slotId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidSlotId());

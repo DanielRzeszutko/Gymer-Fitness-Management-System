@@ -39,5 +39,7 @@ mvnw.cmd
 /.mvn/wrapper/maven-wrapper.properties
 /.mvn/wrapper/MavenWrapperDownloader.java
 
+### MacOS
+**/.DS_Store
 # Custom
 src/main/resources/credentials.json
