@@ -1,6 +1,5 @@
 package com.gymer.slotsreservation;
 
-import com.gymer.commoncomponents.googlecalendar;
 import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.slot.entity.Slot;
 import com.gymer.commonresources.user.entity.User;
@@ -18,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 @AllArgsConstructor
 class SlotsReservationController {
 
-    private final GoogleCalendarOperationService operationService;
     private final SlotsReservationService reservationService;
     private final LanguageComponent language;
 
@@ -78,14 +76,14 @@ class SlotsReservationController {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.tooLateToDropVisit());
             }
             reservationService.removeUserFromSlot(slot, user);
-            operationService.manipulateWithEvent(slot, CalendarOperation.REMOVE);
+
             throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
         validateIfSlotTaken(slot);
         validateIfUserAlreadyExistInSlot(user, slot);
 
         reservationService.reserveUserInSlot(slot, user);
-        operationService.manipulateWithEvent(slot, CalendarOperation.INSERT);
+
         throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
     }
 
