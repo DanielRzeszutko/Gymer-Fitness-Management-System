@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -149,8 +150,6 @@ class RandomDataGenerator {
     }
 
     private Slot getRandomSlot(Employee employee) {
-        Timestamp time = new Timestamp(System.currentTimeMillis());
-        Date dateNow = new Date(time.getTime());
         int startHour = new Random().nextInt(12) + 6;
         int endHour = startHour + 1;
         String startHourString = startHour < 10 ? "0" + startHour : Integer.toString(startHour);
@@ -158,13 +157,18 @@ class RandomDataGenerator {
         boolean isPrivate = startHour > 12;
         Integer size = isPrivate ? 1 : 10;
         String description = isPrivate ? "Personal Training" : getRandomSlotDescription();
-        return new Slot(description, getRandomDateForGivenMonth("03"), Time.valueOf(startHourString + ":00:00"),
-                Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, "Full body workout", isPrivate, size);
+
+        return new Slot(description, getRandomDateFromNow(), Time.valueOf(startHourString + ":00:00"),
+                Time.valueOf(endHourString + ":00:00"), Collections.emptyList(), employee, description, isPrivate, size);
     }
 
-    private Date getRandomDateForGivenMonth(String month) {
-        int day = getRandomNumberBetween(1, 30);
-        String date = "2021-" + month + "-" + day;
+    private Date getRandomDateFromNow() {
+        int howMuchDayBack = 15;
+        int howMuchDayForth = 30;
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        LocalDate now = time.toLocalDateTime().toLocalDate();
+        int dayToAdd = getRandomNumberBetween(-howMuchDayBack, howMuchDayForth);
+        LocalDate date = now.plusDays(dayToAdd);
         return Date.valueOf(date);
     }
 
