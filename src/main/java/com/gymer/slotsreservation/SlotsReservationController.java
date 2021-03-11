@@ -1,5 +1,6 @@
 package com.gymer.slotsreservation;
 
+import com.gymer.commoncomponents.googlecalendar;
 import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.slot.entity.Slot;
 import com.gymer.commonresources.user.entity.User;
@@ -12,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
 class SlotsReservationController {
 
+    private final GoogleCalendarOperationService operationService;
     private final SlotsReservationService reservationService;
     private final LanguageComponent language;
 
@@ -68,10 +69,7 @@ class SlotsReservationController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public void reserveAsUser(@RequestBody UserReservationDetails details, @PathVariable Long slotId) {
         validateIfSlotIdIsCorrect(details.getSlotId(), slotId);
-
-        if (!reservationService.isUserLoggedAsActiveUser(details.getUserId())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, language.signInAsValidUser());
-        }
+        validateIfUserLoggedIn(details);
 
         Slot slot = reservationService.getSlotFromSlotServiceById(details.getSlotId());
         User user = reservationService.getUserFromUserServiceById(details.getUserId());
@@ -80,14 +78,21 @@ class SlotsReservationController {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.tooLateToDropVisit());
             }
             reservationService.removeUserFromSlot(slot, user);
+            operationService.manipulateWithEvent(slot, CalendarOperation.REMOVE);
             throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
-
         validateIfSlotTaken(slot);
         validateIfUserAlreadyExistInSlot(user, slot);
 
         reservationService.reserveUserInSlot(slot, user);
+        operationService.manipulateWithEvent(slot, CalendarOperation.INSERT);
         throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
+    }
+
+    private void validateIfUserLoggedIn(UserReservationDetails details) {
+        if (!reservationService.isUserLoggedAsActiveUser(details.getUserId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, language.signInAsValidUser());
+        }
     }
 
     private void validateIfSlotIdIsCorrect(Long givenSlotId, Long slotId) {
