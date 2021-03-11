@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 class SlotsReservationController {
@@ -44,15 +46,10 @@ class SlotsReservationController {
             reservationService.cancelReservationAsGuest(slot, details.getEmail());
             throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
-
-        if (reservationService.isUserExistByEmail(details.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.userAlreadyExists());
-        }
+        validateIfSlotTaken(slot);
 
         User user = reservationService.createGuestAccount(details);
-        if (slot.getUsers().contains(user)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.alreadyReserved());
-        }
+        validateIfUserAlreadyExistInSlot(user, slot);
 
         reservationService.reserveUserInSlot(slot, user);
         throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
@@ -90,12 +87,28 @@ class SlotsReservationController {
             throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
 
-        if (slot.getUsers().contains(user)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.alreadyReserved());
-        }
+        validateIfSlotTaken(slot);
+        validateIfUserAlreadyExistInSlot(user, slot);
 
         reservationService.reserveUserInSlot(slot, user);
         throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
+    }
+
+    private void validateIfUserAlreadyExistInSlot(User user, Slot slot) {
+        String email = user.getCredential().getEmail();
+        boolean emailExist = slot.getUsers().stream().anyMatch(el -> el.getCredential().getEmail().equals(email));
+        if (emailExist) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.alreadyReserved());
+        }
+    }
+
+    private void validateIfSlotTaken(Slot slot) {
+        if (slot.isPrivate() && slot.getUsers().size() == 1) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.alreadyTakenSlot());
+        }
+        if (!slot.isPrivate() && slot.getUsers().size() == 10) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.alreadyFullSlot());
+        }
     }
 
 }
