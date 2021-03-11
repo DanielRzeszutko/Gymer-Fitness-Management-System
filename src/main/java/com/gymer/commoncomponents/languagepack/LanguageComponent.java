@@ -11,6 +11,8 @@ public interface LanguageComponent {
 
     String testDataNotInitialized();
 
+    String successfullySynchronized();
+
     String youDontHaveRightsToDoThat();
 
     String partnerDoesntExists();

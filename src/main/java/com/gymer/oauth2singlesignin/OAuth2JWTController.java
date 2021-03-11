@@ -46,7 +46,7 @@ class OAuth2JWTController {
     }
 
     @GetMapping("/api/google-auth")
-    public void redirectToGoogleLoginPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void authorizeViaGoogle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         redirectStrategy.sendRedirect(request, response, "../oauth2/authorization/google");
     }
 

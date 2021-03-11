@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Collections;
@@ -36,11 +37,14 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final PartnerService partnerService;
     private final Environment environment;
     private final LanguageComponent language;
+    private final HttpSession session;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
+        session.setAttribute("userToken", token);
+
         String userEmail = token.getPrincipal().getAttribute("email");
         String providerId = token.getPrincipal().getAttribute("sub");
 

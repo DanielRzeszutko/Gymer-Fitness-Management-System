@@ -157,6 +157,10 @@ public class EnLanguageComponent implements LanguageComponent {
         return "Successfully removed reservation.";
     }
 
+    public String successfullySynchronized() {
+        return "Successfully synchronized.";
+    }
+
     public String cannotSignInViaOAuth2BecauseOfBeingPartner() {
         return "You can't login via single Sign-In because you already have partner's account. Please use your standard account.";
     }

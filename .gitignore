@@ -41,3 +41,5 @@ mvnw.cmd
 
 ### MacOS
 **/.DS_Store
+# Custom
+src/main/resources/credentials.json
