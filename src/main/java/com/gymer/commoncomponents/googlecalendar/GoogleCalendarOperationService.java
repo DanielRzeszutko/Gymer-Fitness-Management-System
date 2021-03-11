@@ -81,6 +81,11 @@ public class GoogleCalendarOperationService {
 
     }
 
+    public boolean isUserLoggedByOAuth2WithGoogleCalendar() {
+        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) session.getAttribute("userToken");
+        return session.getAttributeNames().hasMoreElements() && oauthToken != null;
+    }
+
     private OAuth2AuthenticationToken checkIfUserIsLoggedByOAuth2() {
         OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) session.getAttribute("userToken");
         if (!session.getAttributeNames().hasMoreElements() || oauthToken == null)

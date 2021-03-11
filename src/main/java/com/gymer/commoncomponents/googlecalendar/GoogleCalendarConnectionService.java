@@ -28,7 +28,6 @@ class GoogleCalendarConnectionService {
     private static final String APPLICATION_NAME = "Google Calendar API Gymer";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
-    private final LanguageComponent language;
     private final OAuth2AuthorizedClientService authClientService;
 
     public Calendar connectToGoogleCalendar(OAuth2AuthenticationToken oauthToken) throws GeneralSecurityException, IOException {
