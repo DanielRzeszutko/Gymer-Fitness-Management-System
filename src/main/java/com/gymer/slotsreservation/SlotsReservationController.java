@@ -36,6 +36,8 @@ class SlotsReservationController {
         validateIfSlotIdIsCorrect(details.getSlotId(), slotId);
 
         Slot slot = reservationService.getSlotFromSlotServiceById(details.getSlotId());
+        validateIfSlotIsDeprecated(slot);
+
         if (details.isCancel()) {
             if (!reservationService.isMoreThan24HBeforeVisit(slot)) {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.tooLateToDropVisit());
@@ -70,6 +72,8 @@ class SlotsReservationController {
         validateIfUserLoggedIn(details);
 
         Slot slot = reservationService.getSlotFromSlotServiceById(details.getSlotId());
+        validateIfSlotIsDeprecated(slot);
+
         User user = reservationService.getUserFromUserServiceById(details.getUserId());
         if (details.isCancel()) {
             if (!reservationService.isMoreThan24HBeforeVisit(slot)) {
@@ -101,8 +105,7 @@ class SlotsReservationController {
 
     private void validateIfUserAlreadyExistInSlot(User user, Slot slot) {
         String email = user.getCredential().getEmail();
-        boolean emailExist = slot.getUsers().stream().anyMatch(el -> el.getCredential().getEmail().equals(email));
-        if (emailExist) {
+        if (reservationService.isUserInSlotByEmail(email, slot)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, language.alreadyReserved());
         }
     }
@@ -113,6 +116,12 @@ class SlotsReservationController {
         }
         if (!slot.isPrivate() && slot.getUsers().size() == 10) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.alreadyFullSlot());
+        }
+    }
+
+    private void validateIfSlotIsDeprecated(Slot slot) {
+        if (reservationService.isSlotDeprecated(slot)) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.slotIsDeprecated());
         }
     }
 

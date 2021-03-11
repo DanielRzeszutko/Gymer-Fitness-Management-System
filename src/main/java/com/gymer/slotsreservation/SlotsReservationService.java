@@ -45,10 +45,6 @@ class SlotsReservationService {
         return slotService.getElementById(slotId);
     }
 
-    public boolean isUserExistByEmail(String email) {
-        return userService.isUserExistsByEmail(email);
-    }
-
     public User getUserFromUserServiceById(Long userId) {
         return userService.getElementById(userId);
     }
@@ -84,4 +80,14 @@ class SlotsReservationService {
         return now.isBefore(visitTime);
     }
 
+    public boolean isUserInSlotByEmail(String email, Slot slot) {
+        return slot.getUsers().stream().anyMatch(el -> el.getCredential().getEmail().equals(email));
+    }
+
+    public boolean isSlotDeprecated(Slot slot) { //todo think about refactor with upper method
+        Timestamp timestampNow = new Timestamp(new Date().getTime());
+        LocalDateTime now = timestampNow.toLocalDateTime().plusHours(1);
+        LocalDateTime visitTime = LocalDateTime.of(slot.getDate().toLocalDate(), slot.getStartTime().toLocalTime());
+        return visitTime.isBefore(now);
+    }
 }
