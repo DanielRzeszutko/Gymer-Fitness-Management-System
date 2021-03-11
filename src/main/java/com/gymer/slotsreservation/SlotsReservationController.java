@@ -34,9 +34,7 @@ class SlotsReservationController {
      */
     @PostMapping("/api/slotuser/{slotId}/reservation/guest")
     public void reserveAsGuest(@RequestBody GuestReservationDetails details, @PathVariable Long slotId) {
-        if (!details.getSlotId().equals(slotId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidSlotId());
-        }
+        validateIfSlotIdIsCorrect(details.getSlotId(), slotId);
 
         Slot slot = reservationService.getSlotFromSlotServiceById(details.getSlotId());
         if (details.isCancel()) {
@@ -69,9 +67,7 @@ class SlotsReservationController {
     @PostMapping("/api/slotuser/{slotId}/reservation/user")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public void reserveAsUser(@RequestBody UserReservationDetails details, @PathVariable Long slotId) {
-        if (!details.getSlotId().equals(slotId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidSlotId());
-        }
+        validateIfSlotIdIsCorrect(details.getSlotId(), slotId);
 
         if (!reservationService.isUserLoggedAsActiveUser(details.getUserId())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, language.signInAsValidUser());
@@ -92,6 +88,12 @@ class SlotsReservationController {
 
         reservationService.reserveUserInSlot(slot, user);
         throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
+    }
+
+    private void validateIfSlotIdIsCorrect(Long givenSlotId, Long slotId) {
+        if (!givenSlotId.equals(slotId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidSlotId());
+        }
     }
 
     private void validateIfUserAlreadyExistInSlot(User user, Slot slot) {
