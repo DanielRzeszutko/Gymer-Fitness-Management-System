@@ -77,7 +77,7 @@ class SlotsReservationService {
         return slot.getUsers().stream().anyMatch(el -> el.getCredential().getEmail().equals(email));
     }
 
-    public boolean isMoreThan24HBeforeVisit(Slot slot) {
+    public boolean isLessThan24HBeforeVisit(Slot slot) {
         return isTooLateFromNow(slot, 24L);
     }
 
