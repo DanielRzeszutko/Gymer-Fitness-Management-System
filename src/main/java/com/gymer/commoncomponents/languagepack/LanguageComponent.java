@@ -59,6 +59,10 @@ public interface LanguageComponent {
 
     String alreadyReserved();
 
+    String alreadyTakenSlot();
+
+    String alreadyFullSlot();
+
     String successfullyReservedNewSlot();
 
     String signInAsValidUser();

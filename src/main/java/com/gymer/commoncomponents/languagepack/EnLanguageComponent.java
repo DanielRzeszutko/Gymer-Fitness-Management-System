@@ -149,6 +149,14 @@ public class EnLanguageComponent implements LanguageComponent {
         return "Already reserved this slot.";
     }
 
+    public String alreadyTakenSlot() {
+        return "This slot is already taken.";
+    }
+
+    public String alreadyFullSlot() {
+        return "This slot is already full.";
+    }
+
     public String successfullyReservedNewSlot() {
         return "Successfully added reservation details.";
     }
