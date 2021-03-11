@@ -45,7 +45,7 @@ class SlotsReservationController {
             reservationService.cancelReservationAsGuest(slot, details.getEmail());
             throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
-        validateIfSlotTaken(slot);
+        validateIfSlotHasPlace(slot);
 
         User user = reservationService.createGuestAccount(details);
         validateIfUserAlreadyExistInSlot(user, slot);
@@ -83,7 +83,7 @@ class SlotsReservationController {
 
             throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
-        validateIfSlotTaken(slot);
+        validateIfSlotHasPlace(slot);
         validateIfUserAlreadyExistInSlot(user, slot);
 
         reservationService.reserveUserInSlot(slot, user);
@@ -110,11 +110,11 @@ class SlotsReservationController {
         }
     }
 
-    private void validateIfSlotTaken(Slot slot) {
-        if (slot.isPrivate() && slot.getUsers().size() == 1) {
+    private void validateIfSlotHasPlace(Slot slot) {
+        if (slot.isPrivate() && slot.getUsers().size() >= slot.getSize()) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.alreadyTakenSlot());
         }
-        if (!slot.isPrivate() && slot.getUsers().size() == 10) {
+        if (!slot.isPrivate() && slot.getUsers().size() >= slot.getSize()) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.alreadyFullSlot());
         }
     }
