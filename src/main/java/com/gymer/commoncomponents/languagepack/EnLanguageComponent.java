@@ -37,6 +37,10 @@ public class EnLanguageComponent implements LanguageComponent {
         return "Invalid slot Id";
     }
 
+    public String slotIsDeprecated() {
+        return "Slot is Deprecated";
+    }
+
     public String cannotAuthorizeSingleSignIn() {
         return "Can't authorize single sign-in.";
     }

@@ -69,6 +69,8 @@ public interface LanguageComponent {
 
     String invalidSlotId();
 
+    String slotIsDeprecated();
+
     String getTitleFromUserToPartner();
 
     String fieldsCannotBeEmpty();
