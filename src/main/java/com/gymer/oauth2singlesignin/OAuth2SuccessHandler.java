@@ -1,14 +1,20 @@
 package com.gymer.oauth2singlesignin;
 
+import com.gymer.commoncomponents.googlecalendar.CalendarOperation;
+import com.gymer.commoncomponents.googlecalendar.GoogleCalendarOperationService;
 import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.credential.CredentialService;
 import com.gymer.commonresources.credential.entity.Credential;
 import com.gymer.commonresources.credential.entity.Role;
 import com.gymer.commonresources.partner.PartnerService;
+import com.gymer.commonresources.slot.SlotService;
+import com.gymer.commonresources.slot.entity.Slot;
 import com.gymer.commonresources.user.UserService;
 import com.gymer.commonresources.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,6 +44,8 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final Environment environment;
     private final LanguageComponent language;
     private final HttpSession session;
+    private final SlotService slotService;
+    private final GoogleCalendarOperationService operationService;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Override
@@ -81,6 +89,11 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
         Authentication authentication = new UsernamePasswordAuthenticationToken(userEmail, null, Collections.singletonList(authority));
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Credential credential = credentialService.getCredentialByEmail(userEmail);
+        User user = userService.getByCredentials(credential);
+        Page<Slot> slots = slotService.findAllSlotsForUser(Pageable.unpaged(), user);
+        operationService.insertAllEvents(slots.toList());
 
         String redirectUrl = environment.getProperty("server.address.frontend") + "/google";
         redirectStrategy.sendRedirect(request, response, redirectUrl);

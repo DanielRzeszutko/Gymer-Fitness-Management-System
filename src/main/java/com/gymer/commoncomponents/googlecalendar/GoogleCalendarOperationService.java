@@ -1,5 +1,6 @@
 package com.gymer.commoncomponents.googlecalendar;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
@@ -23,6 +24,7 @@ import java.security.GeneralSecurityException;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,19 +33,17 @@ public class GoogleCalendarOperationService {
     private final HttpSession session;
     private final LanguageComponent language;
 
+    private final String EVENT_NAME_ADDON = "agmc";
+
     private final PartnerService partnerService;
     private final GoogleCalendarConnectionService connectionService;
 
     public void manipulateWithEvent(Slot slot, CalendarOperation operation) {
-        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) session.getAttribute("userToken");
-        if (!session.getAttributeNames().hasMoreElements() || oauthToken == null)
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, language.userNotLoggedViaSingleSignIn());
+        OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2();
 
         try {
             Calendar calendar = connectionService.connectToGoogleCalendar(oauthToken);
-            System.out.println("Kalendarz jest");
             Partner partner = partnerService.findPartnerContainingSlot(slot);
-            System.out.println("Partner jest");
 
             switch (operation) {
                 case INSERT -> insertNewEvent(calendar, partner, slot);
@@ -56,19 +56,53 @@ public class GoogleCalendarOperationService {
 
     }
 
+    public void insertAllEvents(List<Slot> slots) {
+        OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2();
+
+        try {
+            Calendar calendar = connectionService.connectToGoogleCalendar(oauthToken);
+
+            slots.forEach(slot -> {
+                Partner partner = partnerService.findPartnerContainingSlot(slot);
+                Event event = createEvent(partner, slot);
+                event.setId(EVENT_NAME_ADDON + slot.getId());
+                try {
+                    try {
+                        Event oldEvent = calendar.events().get("primary", EVENT_NAME_ADDON + slot.getId()).execute();
+                        updateOldEvent(calendar, partner, slot);
+                    } catch (GoogleJsonResponseException e) {
+                        insertNewEvent(calendar, partner, slot);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (GeneralSecurityException | IOException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, language.thereIsNoValidCalendar());
+        }
+
+    }
+
+    private OAuth2AuthenticationToken checkIfUserIsLoggedByOAuth2() {
+        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) session.getAttribute("userToken");
+        if (!session.getAttributeNames().hasMoreElements() || oauthToken == null)
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, language.userNotLoggedViaSingleSignIn());
+        return oauthToken;
+    }
+
     private void insertNewEvent(Calendar calendar, Partner partner, Slot slot) throws IOException {
         Event event = createEvent(partner, slot);
-        event.setId("agmc" + slot.getId());
+        event.setId(EVENT_NAME_ADDON + slot.getId());
         calendar.events().insert("primary", event).execute();
     }
 
     private void updateOldEvent(Calendar calendar, Partner partner, Slot slot) throws IOException {
         Event event = createEvent(partner, slot);
-        calendar.events().update("primary", "agmc" + slot.getId(), event).execute();
+        calendar.events().update("primary", EVENT_NAME_ADDON + slot.getId(), event).execute();
     }
 
     private void removeOldEvent(Calendar calendar, Slot slot) throws IOException {
-        calendar.events().delete("primary", "agmc" + slot.getId()).execute();
+        calendar.events().delete("primary", EVENT_NAME_ADDON + slot.getId()).execute();
     }
 
     private Event createEvent(Partner partner, Slot slot) {

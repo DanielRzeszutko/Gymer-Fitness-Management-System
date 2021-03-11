@@ -1,10 +1,18 @@
 package com.gymer.oauth2singlesignin;
 
+import com.gymer.commoncomponents.googlecalendar.CalendarOperation;
+import com.gymer.commoncomponents.googlecalendar.GoogleCalendarOperationService;
 import com.gymer.commoncomponents.jwtcreator.JWTCreatorComponent;
 import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.credential.CredentialService;
 import com.gymer.commonresources.credential.entity.Credential;
+import com.gymer.commonresources.slot.SlotService;
+import com.gymer.commonresources.slot.entity.Slot;
+import com.gymer.commonresources.user.UserService;
+import com.gymer.commonresources.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
