@@ -1,6 +1,5 @@
 package com.gymer.oauth2singlesignin;
 
-import com.gymer.commoncomponents.googlecalendar.CalendarOperation;
 import com.gymer.commoncomponents.googlecalendar.GoogleCalendarOperationService;
 import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.credential.CredentialService;

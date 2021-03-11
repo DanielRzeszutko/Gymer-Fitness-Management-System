@@ -3,7 +3,6 @@ package com.gymer.slotsreservation;
 import com.gymer.commoncomponents.googlecalendar.CalendarOperation;
 import com.gymer.commoncomponents.googlecalendar.GoogleCalendarOperationService;
 import com.gymer.commoncomponents.languagepack.LanguageComponent;
-import com.gymer.commonresources.partner.PartnerService;
 import com.gymer.commonresources.slot.entity.Slot;
 import com.gymer.commonresources.user.entity.User;
 import lombok.AllArgsConstructor;
