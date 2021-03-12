@@ -45,10 +45,6 @@ class SlotsReservationService {
         return slotService.getElementById(slotId);
     }
 
-    public boolean isUserExistByEmail(String email) {
-        return userService.isUserExistsByEmail(email);
-    }
-
     public User getUserFromUserServiceById(Long userId) {
         return userService.getElementById(userId);
     }
@@ -77,11 +73,23 @@ class SlotsReservationService {
         slotService.updateElement(slot);
     }
 
-    public boolean isMoreThan24HBeforeVisit(Slot slot) {
+    public boolean isUserInSlotByEmail(String email, Slot slot) {
+        return slot.getUsers().stream().anyMatch(el -> el.getCredential().getEmail().equals(email));
+    }
+
+    public boolean isLessThan24HBeforeVisit(Slot slot) {
+        return isTooLateFromNow(slot, 24L);
+    }
+
+    public boolean isSlotDeprecated(Slot slot) {
+        return isTooLateFromNow(slot, 1L);
+    }
+
+    private boolean isTooLateFromNow(Slot slot, Long howManyHoursBefore) {
         Timestamp timestampNow = new Timestamp(new Date().getTime());
-        LocalDateTime now = timestampNow.toLocalDateTime().plusDays(1);
+        LocalDateTime now = timestampNow.toLocalDateTime().plusHours(howManyHoursBefore);
         LocalDateTime visitTime = LocalDateTime.of(slot.getDate().toLocalDate(), slot.getStartTime().toLocalTime());
-        return now.isBefore(visitTime);
+        return visitTime.isBefore(now);
     }
 
 }

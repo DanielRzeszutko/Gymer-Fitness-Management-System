@@ -61,11 +61,17 @@ public interface LanguageComponent {
 
     String alreadyReserved();
 
+    String alreadyTakenSlot();
+
+    String alreadyFullSlot();
+
     String successfullyReservedNewSlot();
 
     String signInAsValidUser();
 
     String invalidSlotId();
+
+    String slotIsDeprecated();
 
     String getTitleFromUserToPartner();
 

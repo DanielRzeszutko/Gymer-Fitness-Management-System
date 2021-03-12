@@ -37,6 +37,10 @@ public class EnLanguageComponent implements LanguageComponent {
         return "Invalid slot Id";
     }
 
+    public String slotIsDeprecated() {
+        return "Slot is Deprecated";
+    }
+
     public String cannotAuthorizeSingleSignIn() {
         return "Can't authorize single sign-in.";
     }
@@ -151,6 +155,14 @@ public class EnLanguageComponent implements LanguageComponent {
 
     public String alreadyReserved() {
         return "Already reserved this slot.";
+    }
+
+    public String alreadyTakenSlot() {
+        return "This slot is already taken.";
+    }
+
+    public String alreadyFullSlot() {
+        return "This slot is already full.";
     }
 
     public String successfullyReservedNewSlot() {

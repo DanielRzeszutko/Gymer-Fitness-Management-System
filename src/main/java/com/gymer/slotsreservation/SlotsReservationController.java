@@ -35,27 +35,21 @@ class SlotsReservationController {
      */
     @PostMapping("/api/slotuser/{slotId}/reservation/guest")
     public void reserveAsGuest(@RequestBody GuestReservationDetails details, @PathVariable Long slotId) {
-        if (!details.getSlotId().equals(slotId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidSlotId());
-        }
+        validateIfSlotIdIsCorrect(details.getSlotId(), slotId);
 
         Slot slot = reservationService.getSlotFromSlotServiceById(details.getSlotId());
         if (details.isCancel()) {
-            if (!reservationService.isMoreThan24HBeforeVisit(slot)) {
+            if (reservationService.isLessThan24HBeforeVisit(slot)) {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.tooLateToDropVisit());
             }
             reservationService.cancelReservationAsGuest(slot, details.getEmail());
             throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
-
-        if (reservationService.isUserExistByEmail(details.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.userAlreadyExists());
-        }
+        validateIfSlotIsDeprecated(slot);
+        validateIfSlotHasPlace(slot);
 
         User user = reservationService.createGuestAccount(details);
-        if (slot.getUsers().contains(user)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.alreadyReserved());
-        }
+        validateIfUserAlreadyExistInSlot(user, slot);
 
         reservationService.reserveUserInSlot(slot, user);
         throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
@@ -75,33 +69,60 @@ class SlotsReservationController {
     @PostMapping("/api/slotuser/{slotId}/reservation/user")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public void reserveAsUser(@RequestBody UserReservationDetails details, @PathVariable Long slotId) {
-        if (!details.getSlotId().equals(slotId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidSlotId());
-        }
-
-        if (!reservationService.isUserLoggedAsActiveUser(details.getUserId())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, language.signInAsValidUser());
-        }
+        validateIfSlotIdIsCorrect(details.getSlotId(), slotId);
+        validateIfUserLoggedIn(details);
 
         Slot slot = reservationService.getSlotFromSlotServiceById(details.getSlotId());
         User user = reservationService.getUserFromUserServiceById(details.getUserId());
         if (details.isCancel()) {
-            if (!reservationService.isMoreThan24HBeforeVisit(slot)) {
+            if (reservationService.isLessThan24HBeforeVisit(slot)) {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.tooLateToDropVisit());
             }
-
             reservationService.removeUserFromSlot(slot, user);
             operationService.manipulateWithEvent(slot, CalendarOperation.REMOVE);
             throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
-
-        if (slot.getUsers().contains(user)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.alreadyReserved());
-        }
+        validateIfSlotIsDeprecated(slot);
+        validateIfSlotHasPlace(slot);
+        validateIfUserAlreadyExistInSlot(user, slot);
 
         reservationService.reserveUserInSlot(slot, user);
         operationService.manipulateWithEvent(slot, CalendarOperation.INSERT);
         throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
+    }
+
+    private void validateIfUserLoggedIn(UserReservationDetails details) {
+        if (!reservationService.isUserLoggedAsActiveUser(details.getUserId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, language.signInAsValidUser());
+        }
+    }
+
+    private void validateIfSlotIdIsCorrect(Long givenSlotId, Long slotId) {
+        if (!givenSlotId.equals(slotId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidSlotId());
+        }
+    }
+
+    private void validateIfUserAlreadyExistInSlot(User user, Slot slot) {
+        String email = user.getCredential().getEmail();
+        if (reservationService.isUserInSlotByEmail(email, slot)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, language.alreadyReserved());
+        }
+    }
+
+    private void validateIfSlotHasPlace(Slot slot) {
+        if (slot.isPrivate() && slot.getUsers().size() >= slot.getSize()) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.alreadyTakenSlot());
+        }
+        if (!slot.isPrivate() && slot.getUsers().size() >= slot.getSize()) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.alreadyFullSlot());
+        }
+    }
+
+    private void validateIfSlotIsDeprecated(Slot slot) {
+        if (reservationService.isSlotDeprecated(slot)) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.slotIsDeprecated());
+        }
     }
 
 }
