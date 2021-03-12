@@ -141,6 +141,10 @@ public class EnLanguageComponent implements LanguageComponent {
         return "Registered successfully. Please check your email to verify your account.";
     }
 
+    public String thereIsNoValidCalendar() {
+        return "There is not valid calendar for existing user.";
+    }
+
     public String employeeRemoved() {
         return "Successfully removed Employee from slot.";
     }

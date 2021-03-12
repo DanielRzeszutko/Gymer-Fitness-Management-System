@@ -25,11 +25,13 @@ class HourToSlotNotificationService {
         slots.forEach(slot -> {
             List<User> users = slot.getUsers();
             users.forEach(user -> {
-                mailNotificationService.sendNotification(user, slot);
-                try {
-                    smsNotificationService.sendNotification(user, slot);
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                if (user.getProviderId() == null) {
+                    mailNotificationService.sendNotification(user, slot);
+                    try {
+                        smsNotificationService.sendNotification(user, slot);
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         });

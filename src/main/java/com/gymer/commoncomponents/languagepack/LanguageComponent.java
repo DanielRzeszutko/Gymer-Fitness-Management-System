@@ -21,6 +21,8 @@ public interface LanguageComponent {
 
     String invalidEmployee();
 
+    String thereIsNoValidCalendar();
+
     String employeeChanged();
 
     String employeeRemoved();
