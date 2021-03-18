@@ -19,11 +19,8 @@ class VerificationController {
     @GetMapping("/api/verify")
     public void verifyAccount(@RequestParam("code") String code) {
         Credential credential = verificationService.getCredentialByCode(code);
-        if (verificationService.isUnverifiedUserNotExist(credential)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, language.alreadyVerified());
-        }
-
-        if (verificationService.isUnverifiedUserActivationCodeNotEqual(credential)) {
+        if (verificationService.isUnverifiedUserNotExist(credential)
+                || verificationService.isUnverifiedUserActivationCodeNotEqual(credential)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, language.invalidVerificationCode());
         }
 
