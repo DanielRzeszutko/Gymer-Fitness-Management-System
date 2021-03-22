@@ -79,6 +79,7 @@ public class PartnerController extends AbstractRestApiController<PartnerDTO, Par
     public Partner convertToEntity(PartnerDTO partnerDTO) {
         Partner oldPartner = service.getElementById(partnerDTO.getId());
         Partner newPartner = new Partner(partnerDTO);
+        newPartner.setCredential(oldPartner.getCredential());
         newPartner.setAddress(oldPartner.getAddress());
         newPartner.setEmployees(oldPartner.getEmployees());
         newPartner.setSlots(oldPartner.getSlots());

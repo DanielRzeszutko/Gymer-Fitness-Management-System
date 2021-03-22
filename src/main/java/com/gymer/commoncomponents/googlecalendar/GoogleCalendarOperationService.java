@@ -37,9 +37,10 @@ public class GoogleCalendarOperationService {
     private final GoogleCalendarConnectionService connectionService;
 
     public void manipulateWithEvent(Slot slot, CalendarOperation operation) {
-        OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2();
 
         try {
+            OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2();
+
             Calendar calendar = connectionService.connectToGoogleCalendar(oauthToken);
             Partner partner = partnerService.findPartnerContainingSlot(slot);
 
@@ -49,15 +50,16 @@ public class GoogleCalendarOperationService {
                 case REMOVE -> removeOldEvent(calendar, slot);
             }
         } catch (IOException | GeneralSecurityException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, language.thereIsNoValidCalendar());
+            throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
         }
 
     }
 
     public void insertAllEvents(List<Slot> slots) {
-        OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2();
 
         try {
+            OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2();
+
             Calendar calendar = connectionService.connectToGoogleCalendar(oauthToken);
 
             slots.forEach(slot -> {
@@ -76,7 +78,7 @@ public class GoogleCalendarOperationService {
                 }
             });
         } catch (GeneralSecurityException | IOException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, language.thereIsNoValidCalendar());
+            throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
         }
 
     }
