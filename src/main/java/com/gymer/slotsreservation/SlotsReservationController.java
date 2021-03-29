@@ -79,7 +79,7 @@ class SlotsReservationController {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.tooLateToDropVisit());
             }
             reservationService.removeUserFromSlot(slot, user);
-            if (operationService.isUserLoggedByOAuth2WithGoogleCalendar()){
+            if (operationService.isUserLoggedByOAuth2WithGoogleCalendar()) {
                 operationService.manipulateWithEvent(slot, CalendarOperation.REMOVE);
             }
             throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
