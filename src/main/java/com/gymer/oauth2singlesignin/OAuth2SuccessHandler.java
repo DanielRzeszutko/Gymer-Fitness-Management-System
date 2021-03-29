@@ -2,6 +2,7 @@ package com.gymer.oauth2singlesignin;
 
 import com.gymer.commoncomponents.googlecalendar.GoogleCalendarOperationService;
 import com.gymer.commoncomponents.languagepack.LanguageComponent;
+import com.gymer.commonresources.authorize.OAuth2AuthorizeService;
 import com.gymer.commonresources.credential.CredentialService;
 import com.gymer.commonresources.credential.entity.Credential;
 import com.gymer.commonresources.credential.entity.Role;
@@ -28,7 +29,6 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Collections;
@@ -42,7 +42,7 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final PartnerService partnerService;
     private final Environment environment;
     private final LanguageComponent language;
-    private final HttpSession session;
+    private final OAuth2AuthorizeService authorizeService;
     private final SlotService slotService;
     private final GoogleCalendarOperationService operationService;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -50,14 +50,12 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
-        session.setAttribute("userToken", token);
-
         String userEmail = token.getPrincipal().getAttribute("email");
         String providerId = token.getPrincipal().getAttribute("sub");
 
         User userByProvider = userService.findByProviderId(providerId);
         if (userByProvider != null) {
-            continueSettingAuthentication(request, response, userEmail);
+            continueSettingAuthentication(request, response, token);
             return;
         }
 
@@ -75,24 +73,28 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             User userByEmail = userService.getByCredentials(credential);
             userByEmail.setProviderId(providerId);
             userService.updateElement(userByEmail);
-            continueSettingAuthentication(request, response, userEmail);
+            continueSettingAuthentication(request, response, token);
             return;
         }
 
         User newUser = createNewUser(token);
         userService.updateElement(newUser);
-        continueSettingAuthentication(request, response, userEmail);
+        continueSettingAuthentication(request, response, token);
     }
 
-    private void continueSettingAuthentication(HttpServletRequest request, HttpServletResponse response, String userEmail) throws IOException {
+    private void continueSettingAuthentication(HttpServletRequest request, HttpServletResponse response, OAuth2AuthenticationToken token) throws IOException {
         GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
+        String userEmail = token.getPrincipal().getAttribute("email");
+
         Authentication authentication = new UsernamePasswordAuthenticationToken(userEmail, null, Collections.singletonList(authority));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         Credential credential = credentialService.getCredentialByEmail(userEmail);
         User user = userService.getByCredentials(credential);
         Page<Slot> slots = slotService.findAllSlotsForUser(Pageable.unpaged(), user);
-        operationService.insertAllEvents(slots.toList());
+
+        authorizeService.saveAuthorizationObject(user, token);
+        operationService.insertAllEvents(slots.toList(), user);
 
         String redirectUrl = environment.getProperty("server.address.frontend") + "/google";
         redirectStrategy.sendRedirect(request, response, redirectUrl);
