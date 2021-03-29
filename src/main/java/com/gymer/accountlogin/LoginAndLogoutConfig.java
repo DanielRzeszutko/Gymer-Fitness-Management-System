@@ -7,6 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -25,11 +26,15 @@ public class LoginAndLogoutConfig {
 
     public void configureLoginAndLogout(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http.addFilter(authenticationFilter(authenticationManager))
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and()
                 .addFilter(authorizationFilter(authenticationManager))
                 .logout()
                 .logoutUrl("/api/logout")
                 .clearAuthentication(true)
                 .logoutSuccessHandler(logoutSuccessHandler)
+                .deleteCookies("JSESSIONID")
                 .logoutSuccessUrl(environment.getProperty("server.address.frontend"));
     }
 
