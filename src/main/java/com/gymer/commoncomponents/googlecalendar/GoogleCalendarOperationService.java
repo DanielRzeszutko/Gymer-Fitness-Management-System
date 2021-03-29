@@ -1,5 +1,6 @@
 package com.gymer.commoncomponents.googlecalendar;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
@@ -7,16 +8,19 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
 import com.gymer.commoncomponents.languagepack.LanguageComponent;
+import com.gymer.commonresources.authorize.OAuth2AuthorizeService;
 import com.gymer.commonresources.partner.PartnerService;
 import com.gymer.commonresources.partner.entity.Partner;
 import com.gymer.commonresources.slot.entity.Slot;
+import com.gymer.commonresources.user.entity.User;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.sql.Date;
@@ -28,7 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GoogleCalendarOperationService {
 
-    private final HttpSession session;
+    private final OAuth2AuthorizeService authorizeService;
     private final LanguageComponent language;
 
     private final String EVENT_NAME_ADDON = "agmc";
@@ -36,10 +40,10 @@ public class GoogleCalendarOperationService {
     private final PartnerService partnerService;
     private final GoogleCalendarConnectionService connectionService;
 
-    public void manipulateWithEvent(Slot slot, CalendarOperation operation) {
+    public void manipulateWithEvent(Slot slot, User user, CalendarOperation operation) {
 
         try {
-            OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2();
+            OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2(user);
 
             Calendar calendar = connectionService.connectToGoogleCalendar(oauthToken);
             Partner partner = partnerService.findPartnerContainingSlot(slot);
@@ -55,10 +59,10 @@ public class GoogleCalendarOperationService {
 
     }
 
-    public void insertAllEvents(List<Slot> slots) {
-
+    public void insertAllEvents(List<Slot> slots, User user) {
         try {
-            OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2();
+            OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2(user);
+            if (oauthToken == null) return;
 
             Calendar calendar = connectionService.connectToGoogleCalendar(oauthToken);
 
@@ -67,32 +71,37 @@ public class GoogleCalendarOperationService {
                 Event event = createEvent(partner, slot);
                 event.setId(EVENT_NAME_ADDON + slot.getId());
                 try {
-                    try {
-                        Event oldEvent = calendar.events().get("primary", EVENT_NAME_ADDON + slot.getId()).execute();
-                        updateOldEvent(calendar, partner, slot);
-                    } catch (GoogleJsonResponseException e) {
-                        insertNewEvent(calendar, partner, slot);
-                    }
+                    Event oldEvent = calendar.events().get("primary", EVENT_NAME_ADDON + slot.getId()).execute();
+                    updateOldEvent(calendar, partner, slot);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    try {
+                        insertNewEvent(calendar, partner, slot);
+                    } catch (IOException ioException) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, language.userNotLoggedViaSingleSignIn());
+                    }
                 }
             });
-        } catch (GeneralSecurityException | IOException e) {
-            throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
+        } catch (ResponseStatusException | GeneralSecurityException | IOException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, language.userNotLoggedViaSingleSignIn());
         }
 
     }
 
-    public boolean isUserLoggedByOAuth2WithGoogleCalendar() {
-        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) session.getAttribute("userToken");
-        return session.getAttributeNames().hasMoreElements() && oauthToken != null;
+    public boolean isUserLoggedByOAuth2WithGoogleCalendar(User user) {
+        try {
+            OAuth2AuthenticationToken oauthToken = authorizeService.getAuthorizationObject(user);
+            return oauthToken != null;
+        } catch (NotFoundException | JsonProcessingException e) {
+            return false;
+        }
     }
 
-    private OAuth2AuthenticationToken checkIfUserIsLoggedByOAuth2() {
-        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) session.getAttribute("userToken");
-        if (!session.getAttributeNames().hasMoreElements() || oauthToken == null)
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, language.userNotLoggedViaSingleSignIn());
-        return oauthToken;
+    private OAuth2AuthenticationToken checkIfUserIsLoggedByOAuth2(User user) {
+        try {
+            return authorizeService.getAuthorizationObject(user);
+        } catch (JsonProcessingException | NotFoundException e) {
+            return null;
+        }
     }
 
     private void insertNewEvent(Calendar calendar, Partner partner, Slot slot) throws IOException {
