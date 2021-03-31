@@ -79,9 +79,7 @@ class SlotsReservationController {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, language.tooLateToDropVisit());
             }
             reservationService.removeUserFromSlot(slot, user);
-            if (operationService.isUserLoggedByOAuth2WithGoogleCalendar()) {
-                operationService.manipulateWithEvent(slot, CalendarOperation.REMOVE);
-            }
+            operationService.manipulateWithEvent(slot, user, CalendarOperation.REMOVE);
             throw new ResponseStatusException(HttpStatus.OK, language.reservationRemoved());
         }
         validateIfSlotIsDeprecated(slot);
@@ -89,9 +87,7 @@ class SlotsReservationController {
         validateIfUserAlreadyExistInSlot(user, slot);
 
         reservationService.reserveUserInSlot(slot, user);
-        if (operationService.isUserLoggedByOAuth2WithGoogleCalendar()) {
-            operationService.manipulateWithEvent(slot, CalendarOperation.INSERT);
-        }
+        operationService.manipulateWithEvent(slot, user, CalendarOperation.INSERT);
         throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
     }
 

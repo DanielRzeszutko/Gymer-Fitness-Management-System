@@ -1,22 +1,22 @@
 package com.gymer.commoncomponents.googlecalendar;
 
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
 import com.gymer.commoncomponents.languagepack.LanguageComponent;
+import com.gymer.commonresources.authorize.OAuth2AuthorizeService;
 import com.gymer.commonresources.partner.PartnerService;
 import com.gymer.commonresources.partner.entity.Partner;
 import com.gymer.commonresources.slot.entity.Slot;
+import com.gymer.commonresources.user.entity.User;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.sql.Date;
@@ -28,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GoogleCalendarOperationService {
 
-    private final HttpSession session;
+    private final OAuth2AuthorizeService authorizeService;
     private final LanguageComponent language;
 
     private final String EVENT_NAME_ADDON = "agmc";
@@ -36,10 +36,10 @@ public class GoogleCalendarOperationService {
     private final PartnerService partnerService;
     private final GoogleCalendarConnectionService connectionService;
 
-    public void manipulateWithEvent(Slot slot, CalendarOperation operation) {
-
+    public void manipulateWithEvent(Slot slot, User user, CalendarOperation operation) {
         try {
-            OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2();
+            OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2(user);
+            if (oauthToken == null) return;
 
             Calendar calendar = connectionService.connectToGoogleCalendar(oauthToken);
             Partner partner = partnerService.findPartnerContainingSlot(slot);
@@ -49,65 +49,52 @@ public class GoogleCalendarOperationService {
                 case MODIFY -> updateOldEvent(calendar, partner, slot);
                 case REMOVE -> removeOldEvent(calendar, slot);
             }
-        } catch (IOException | GeneralSecurityException e) {
-            throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
-        }
-
+        } catch (IOException | GeneralSecurityException | NotFoundException ignored) {}
     }
 
-    public void insertAllEvents(List<Slot> slots) {
-
+    public void insertAllEvents(List<Slot> slots, OAuth2AuthenticationToken token) {
         try {
-            OAuth2AuthenticationToken oauthToken = checkIfUserIsLoggedByOAuth2();
-
-            Calendar calendar = connectionService.connectToGoogleCalendar(oauthToken);
+            Calendar calendar = connectionService.connectToGoogleCalendar(token);
 
             slots.forEach(slot -> {
                 Partner partner = partnerService.findPartnerContainingSlot(slot);
                 Event event = createEvent(partner, slot);
                 event.setId(EVENT_NAME_ADDON + slot.getId());
                 try {
-                    try {
-                        Event oldEvent = calendar.events().get("primary", EVENT_NAME_ADDON + slot.getId()).execute();
-                        updateOldEvent(calendar, partner, slot);
-                    } catch (GoogleJsonResponseException e) {
-                        insertNewEvent(calendar, partner, slot);
-                    }
+                    calendar.events().get("primary", EVENT_NAME_ADDON + slot.getId()).execute();
+                    updateOldEvent(calendar, partner, slot);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    insertNewEvent(calendar, partner, slot);
                 }
             });
-        } catch (GeneralSecurityException | IOException e) {
-            throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
+        } catch (ResponseStatusException | GeneralSecurityException | IOException ignored) {}
+    }
+
+    private OAuth2AuthenticationToken checkIfUserIsLoggedByOAuth2(User user) throws NotFoundException {
+        return authorizeService.getAuthorizationObject(user.getId());
+    }
+
+    private void insertNewEvent(Calendar calendar, Partner partner, Slot slot) {
+        try {
+            Event event = createEvent(partner, slot);
+            event.setId(EVENT_NAME_ADDON + slot.getId());
+            calendar.events().insert("primary", event).execute();
+        } catch (IOException e) {
+            updateOldEvent(calendar, partner, slot);
         }
-
     }
 
-    public boolean isUserLoggedByOAuth2WithGoogleCalendar() {
-        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) session.getAttribute("userToken");
-        return session.getAttributeNames().hasMoreElements() && oauthToken != null;
+    private void updateOldEvent(Calendar calendar, Partner partner, Slot slot) {
+        try {
+            Event event = createEvent(partner, slot);
+            calendar.events().update("primary", EVENT_NAME_ADDON + slot.getId(), event).execute();
+        } catch (IOException ignore) {}
     }
 
-    private OAuth2AuthenticationToken checkIfUserIsLoggedByOAuth2() {
-        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) session.getAttribute("userToken");
-        if (!session.getAttributeNames().hasMoreElements() || oauthToken == null)
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, language.userNotLoggedViaSingleSignIn());
-        return oauthToken;
-    }
-
-    private void insertNewEvent(Calendar calendar, Partner partner, Slot slot) throws IOException {
-        Event event = createEvent(partner, slot);
-        event.setId(EVENT_NAME_ADDON + slot.getId());
-        calendar.events().insert("primary", event).execute();
-    }
-
-    private void updateOldEvent(Calendar calendar, Partner partner, Slot slot) throws IOException {
-        Event event = createEvent(partner, slot);
-        calendar.events().update("primary", EVENT_NAME_ADDON + slot.getId(), event).execute();
-    }
-
-    private void removeOldEvent(Calendar calendar, Slot slot) throws IOException {
-        calendar.events().delete("primary", EVENT_NAME_ADDON + slot.getId()).execute();
+    private void removeOldEvent(Calendar calendar, Slot slot) {
+        try {
+            calendar.events().delete("primary", EVENT_NAME_ADDON + slot.getId()).execute();
+        } catch (IOException ignore) {}
     }
 
     private Event createEvent(Partner partner, Slot slot) {
