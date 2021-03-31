@@ -10,6 +10,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.Base64;
 import java.util.Date;
 
 @Component
@@ -37,17 +41,27 @@ public class JWTCreatorComponent {
                 .sign(algorithm);
     }
 
-    public String createOAuth2Token(OAuth2AuthenticationToken authentication) throws JsonProcessingException {
+    public String createOAuth2Token(OAuth2AuthenticationToken authentication) {
         String secretKey = environment.getProperty("jwt.secret.password");
         secretKey = secretKey != null ? secretKey : "";
         Algorithm algorithm = Algorithm.HMAC512(secretKey);
         long now = System.currentTimeMillis();
-        String authenticationObject = objectMapper.writeValueAsString(authentication);
-        return JWT.create()
-                .withSubject(authenticationObject)
-                .withIssuedAt(new Date(now))
-                .withExpiresAt(new Date(now + 864000000))
-                .sign(algorithm);
+
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            ObjectOutputStream so = new ObjectOutputStream(bo);
+            so.writeObject(authentication);
+            so.close();
+            String serializableAuthentication = Base64.getEncoder().encodeToString(bo.toByteArray());
+
+            return JWT.create()
+                    .withSubject(serializableAuthentication)
+                    .withIssuedAt(new Date(now))
+                    .withExpiresAt(new Date(now + 864000000))
+                    .sign(algorithm);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
 }

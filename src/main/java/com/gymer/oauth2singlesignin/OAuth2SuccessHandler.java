@@ -53,12 +53,13 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         String userEmail = token.getPrincipal().getAttribute("email");
         String providerId = token.getPrincipal().getAttribute("sub");
 
-        User userByProvider = userService.findByProviderId(providerId);
-        if (userByProvider != null) {
+        // if user in database with google account exists
+        if (userService.findByProviderId(providerId) != null) {
             continueSettingAuthentication(request, response, token);
             return;
         }
 
+        // if partner with same email address exists in database
         if (partnerService.isUserExistsByEmail(userEmail)) {
             String errorMessage = language.cannotSignInViaOAuth2BecauseOfBeingPartner();
             String redirectUrl = environment.getProperty("server.address.frontend") + "/login?error=" + errorMessage;
@@ -68,15 +69,19 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             return;
         }
 
+        // if user with same email address exists in database
         if (userService.isUserExistsByEmail(userEmail)) {
             Credential credential = credentialService.getCredentialByEmail(userEmail);
-            User userByEmail = userService.getByCredentials(credential);
-            userByEmail.setProviderId(providerId);
-            userService.updateElement(userByEmail);
+            User user = userService.getByCredentials(credential);
+            Page<Slot> slots = slotService.findAllSlotsForUser(Pageable.unpaged(), user);
+            user.setProviderId(providerId);
+
+            operationService.insertAllEvents(slots.toList(), token);
             continueSettingAuthentication(request, response, token);
             return;
         }
 
+        // if user not exists
         User newUser = createNewUser(token);
         userService.updateElement(newUser);
         continueSettingAuthentication(request, response, token);
@@ -91,10 +96,7 @@ class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         Credential credential = credentialService.getCredentialByEmail(userEmail);
         User user = userService.getByCredentials(credential);
-        Page<Slot> slots = slotService.findAllSlotsForUser(Pageable.unpaged(), user);
-
         authorizeService.saveAuthorizationObject(user, token);
-        operationService.insertAllEvents(slots.toList(), user);
 
         String redirectUrl = environment.getProperty("server.address.frontend") + "/google";
         redirectStrategy.sendRedirect(request, response, redirectUrl);
