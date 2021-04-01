@@ -54,16 +54,6 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
     }
 
     /**
-     * Service method returning Credential from database if exists, when one is no found new credential is created and returned
-     */
-    public Credential getCredentialFromEmailPhoneAndRoleOrCreateNewOne(String email, String phoneNumber, Role role) {
-        Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
-        return ((CredentialRepository) repository).findByEmailAndPhoneNumberAndRoleAndActivatedIsTrue(email, phoneNumber, role).orElse(
-                new Credential(email, null, phoneNumber, Role.GUEST, false, timestamp)
-        );
-    }
-
-    /**
      * Service method returning boolean if Credential with given email exists and account is activated.
      */
     public boolean isActivatedCredentialExistsByEmail(String email) {
