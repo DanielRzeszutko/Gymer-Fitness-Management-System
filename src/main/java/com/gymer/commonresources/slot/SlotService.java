@@ -68,4 +68,8 @@ public class SlotService extends AbstractRestApiService<Slot, Long> {
         return ((SlotRepository) repository).findAllByDateAndStartTimeBetween(dateNow, Time.valueOf(startTime), Time.valueOf(endTime));
     }
 
+    public Iterable<Slot> findAllSlotsForGuest(User user) {
+        return ((SlotRepository) repository).findAllByUsersContains(user);
+    }
+
 }

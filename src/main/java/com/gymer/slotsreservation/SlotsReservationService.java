@@ -1,7 +1,6 @@
 package com.gymer.slotsreservation;
 
 import com.gymer.commoncomponents.accountvalidator.AccountOwnerValidator;
-import com.gymer.commonresources.credential.CredentialService;
 import com.gymer.commonresources.credential.entity.Credential;
 import com.gymer.commonresources.credential.entity.Role;
 import com.gymer.commonresources.slot.SlotService;
@@ -24,7 +23,6 @@ class SlotsReservationService {
 
     private final UserService userService;
     private final SlotService slotService;
-    private final CredentialService credentialService;
     private final AccountOwnerValidator accountOwnerValidator;
     private final GuestVerifyEmailService emailService;
 
