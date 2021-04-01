@@ -165,8 +165,12 @@ public class EnLanguageComponent implements LanguageComponent {
         return "This slot is already full.";
     }
 
+    public String pleaseVerifySlotReservation() {
+        return "Please verify your reservation. We send activation link to your email.";
+    }
+
     public String successfullyReservedNewSlot() {
-        return "Successfully added reservation details.";
+        return "Your reservation has been added successfully.";
     }
 
     public String reservationRemoved() {
@@ -214,6 +218,21 @@ public class EnLanguageComponent implements LanguageComponent {
     public String getVerificationEmail(Credential credential, String verifyURL) {
         String content = "Dear " + credential.getRole() + ",<br>"
                 + "Please click the link below to verify your registration:<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
+                + "Thank you,<br>"
+                + "Team Gymer.";
+        return content.replace("[[URL]]", verifyURL);
+    }
+
+    public String getGuestVerificationTitle(Slot slot) {
+        return "Reservation to " + slot.getDescription();
+    }
+
+    public String getGuestVerificationEmail(Credential credential, String verifyURL, Slot slot) {
+        String content = "Dear " + credential.getRole() + ",<br>"
+                + "Please click the link below to confirm your reservation to slot:<br>"
+                + slot.getDescription() + " with "
+                + slot.getEmployee().getFirstName() + " " + slot.getEmployee().getLastName()
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
                 + "Thank you,<br>"
                 + "Team Gymer.";
