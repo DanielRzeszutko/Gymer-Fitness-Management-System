@@ -9,6 +9,7 @@ import com.gymer.commonresources.slot.entity.Slot;
 import com.gymer.commonresources.user.UserService;
 import com.gymer.commonresources.user.entity.User;
 import lombok.AllArgsConstructor;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -25,6 +26,7 @@ class SlotsReservationService {
     private final SlotService slotService;
     private final CredentialService credentialService;
     private final AccountOwnerValidator accountOwnerValidator;
+    private final GuestVerifyEmailService emailService;
 
     /**
      * Service method that returns response in JSON format and adds guest to slot and saves this in database
@@ -54,8 +56,10 @@ class SlotsReservationService {
     }
 
     public User createGuestAccount(GuestReservationDetails details) {
-        Credential credential = credentialService.getCredentialFromEmailPhoneAndRoleOrCreateNewOne(
-                details.getEmail(), details.getPhoneNumber(), Role.GUEST);
+        Credential credential = new Credential(details.getEmail(), null, details.getPhoneNumber(),
+                Role.GUEST, false, new Timestamp(new java.util.Date().getTime()));
+
+        credential.setVerificationCode(RandomString.make(10));
         User user = new User(details.getFirstName(), details.getLastName(), credential);
         userService.updateElement(user);
         return user;
@@ -83,6 +87,10 @@ class SlotsReservationService {
 
     public boolean isSlotDeprecated(Slot slot) {
         return isTooLateFromNow(slot, 1L);
+    }
+
+    public void sendGuestVerificationEmail(Credential credential, Slot slot) {
+        emailService.sendGuestVerificationEmail(credential, slot);
     }
 
     private boolean isTooLateFromNow(Slot slot, Long howManyHoursBefore) {
