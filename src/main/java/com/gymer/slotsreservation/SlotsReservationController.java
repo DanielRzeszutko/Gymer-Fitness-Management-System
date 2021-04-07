@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @RestController
 @AllArgsConstructor
 class SlotsReservationController {
@@ -47,6 +50,7 @@ class SlotsReservationController {
         }
         validateIfSlotIsDeprecated(slot);
         validateIfSlotHasPlace(slot);
+        validateEmptyCredentials(details);
 
         User user = reservationService.createGuestAccount(details);
         validateIfUserAlreadyExistInSlot(user, slot);
@@ -89,6 +93,22 @@ class SlotsReservationController {
         reservationService.reserveUserInSlot(slot, user);
         operationService.manipulateWithEvent(slot, user, CalendarOperation.INSERT);
         throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
+    }
+
+    private void validateEmptyCredentials(GuestReservationDetails details) {
+        String email = details.getEmail();
+        String name = details.getFirstName();
+        String surname = details.getLastName();
+        String phone = details.getPhoneNumber();
+
+        Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+        Matcher mat = pattern.matcher(email);
+        if (email.length() < 3 || name.length() < 3 || surname.length() < 3 || phone.length() < 9) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, language.fieldsCannotBeEmpty());
+        }
+        if (!mat.matches() || !phone.matches("^[0-9]*$")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, language.invalidInput());
+        }
     }
 
     private void validateIfUserLoggedIn(UserReservationDetails details) {

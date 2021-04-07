@@ -105,6 +105,10 @@ public class EnLanguageComponent implements LanguageComponent {
         return "Fields cannot be empty!";
     }
 
+    public String invalidInput() {
+        return "Invalid input. Please try again with valid data.";
+    }
+
     public String accountAlreadyExists() {
         return "Account with this email already exists.";
     }

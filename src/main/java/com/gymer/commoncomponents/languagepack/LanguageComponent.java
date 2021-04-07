@@ -77,6 +77,8 @@ public interface LanguageComponent {
 
     String fieldsCannotBeEmpty();
 
+    String invalidInput();
+
     String accountAlreadyExists();
 
     String activationMailSend();
