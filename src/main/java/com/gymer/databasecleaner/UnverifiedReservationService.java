@@ -7,9 +7,12 @@ import com.gymer.commonresources.slot.entity.Slot;
 import com.gymer.commonresources.user.UserService;
 import com.gymer.commonresources.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,26 +22,30 @@ class UnverifiedReservationService {
     private final CredentialService credentialService;
     private final UserService userService;
 
-//    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 10000)
     public void deleteUnverifiedReservation() {
         System.out.println("START");
 
-        Iterable<Credential> credentials = credentialService.getGuestCredentialsOlderThan10Minutes();
+        Iterable<User> users = userService.findAllGuestOlderThan10Minutes();
+        System.out.println(users);
+
+        //TODO Not working too.
+//        User juzer = userService.findbyuserid(24L);
+//        Iterable<Slot> slots = slotService.findAllSlotsForGuest(juzer);
+//        System.out.println(slots);
 
         //TODO not working. LAZY INITIALIZATION BUG
+//        users.forEach(user -> {
+//            Iterable<Slot> slots = slotService.findAllSlotsForGuest(user);
+//            System.out.println(slots);
+//        });
 
-        for (Credential credential : credentials) {
-            User user = userService.getByCredentials(credential);
-            Iterable<Slot> slots = slotService.findAllSlotsForGuest(user);
-            for (Slot slot : slots) {
-                List<User> users = slot.getUsers();
-                users.remove(user);
-                slot.setUsers(users);
 
-                slotService.updateElement(slot);
-            }
-        }
+    }
 
+    public void removeUserFromSlot(Slot slot, User user) {
+        slot.getUsers().remove(user);
+        slotService.updateElement(slot);
     }
 
 }

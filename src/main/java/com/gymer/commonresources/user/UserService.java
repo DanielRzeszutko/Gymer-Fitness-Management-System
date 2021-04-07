@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -98,6 +100,16 @@ public class UserService extends AbstractRestApiService<User, Long> {
      */
     public User findByProviderId(String providerId) {
         return ((UserRepository) repository).findByProviderId(providerId).orElse(null);
+    }
+
+    public Iterable<User> findAllGuestOlderThan10Minutes() {
+        LocalDateTime startTime = LocalDateTime.now().minusMinutes(10);
+        Timestamp tenMinutesAgo = Timestamp.valueOf(startTime);
+        return ((UserRepository) repository).findAllByCredential_RegistrationTimeIsBeforeAndCredential_ActivatedIsFalse(tenMinutesAgo);
+    }
+
+    public User findbyuserid(Long id) {
+        return ((UserRepository) repository).findById(id).orElse(null);
     }
 
 }

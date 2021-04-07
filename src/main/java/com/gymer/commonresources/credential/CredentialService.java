@@ -9,9 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
 @Service
 public class CredentialService extends AbstractRestApiService<Credential, Long> {
 
@@ -81,13 +78,6 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
 
     public Credential getCredentialByVerificationCode(String code) {
         return ((CredentialRepository) repository).findCredentialByVerificationCode(code).orElse(null);
-    }
-
-    public Iterable<Credential> getGuestCredentialsOlderThan10Minutes() {
-        LocalDateTime startTime = LocalDateTime.now().minusMinutes(10);
-        Timestamp tenMinutesAgo = Timestamp.valueOf(startTime);
-
-        return ((CredentialRepository) repository).findAllByActivatedIsFalseAndRegistrationTimeIsBefore(tenMinutesAgo);
     }
 
 }

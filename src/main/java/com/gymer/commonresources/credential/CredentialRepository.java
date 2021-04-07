@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
 import java.util.Optional;
 
 @Repository
@@ -30,7 +29,5 @@ interface CredentialRepository extends PagingAndSortingRepository<Credential, Lo
     Optional<Credential> getCredentialByEmail(String email);
 
     Optional<Credential> findCredentialByVerificationCode(String code);
-
-    Iterable<Credential> findAllByActivatedIsFalseAndRegistrationTimeIsBefore(Timestamp registrationTime);
 
 }
