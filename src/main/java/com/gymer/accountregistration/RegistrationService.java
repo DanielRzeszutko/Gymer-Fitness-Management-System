@@ -4,17 +4,25 @@ import com.gymer.commonresources.address.entity.Address;
 import com.gymer.commonresources.credential.CredentialService;
 import com.gymer.commonresources.credential.entity.Credential;
 import com.gymer.commonresources.credential.entity.Role;
+import com.gymer.commonresources.employee.entity.Employee;
 import com.gymer.commonresources.partner.PartnerService;
 import com.gymer.commonresources.partner.entity.Partner;
+import com.gymer.commonresources.slot.entity.Slot;
 import com.gymer.commonresources.user.UserService;
 import com.gymer.commonresources.user.entity.User;
+import com.gymer.commonresources.workinghours.entity.Day;
+import com.gymer.commonresources.workinghours.entity.WorkingHour;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 @Service
 @AllArgsConstructor
@@ -95,9 +103,11 @@ class RegistrationService {
 
     private Partner createNewPartner(RegistrationDetails details) {
         Credential credential = createCredentialBy(details, Role.PARTNER);
+        List<Employee> employees = new LinkedList<>();
+        List<Slot> slots = new LinkedList<>();
         Address address = new Address("", "", "", "");
         return new Partner("", "", "", "", "", credential, address,
-                Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+                employees, slots, createWorkingHours());
     }
 
     private Credential createCredentialBy(RegistrationDetails userDetails, Role role) {
@@ -106,6 +116,14 @@ class RegistrationService {
         Credential credential = new Credential(userDetails.getEmail(), codedPassword, "", role, false, timestamp);
         credential.setVerificationCode(RandomString.make(64));
         return credential;
+    }
+
+    private List<WorkingHour> createWorkingHours() {
+        List<WorkingHour> workingHours = new LinkedList<>();
+        for (int i = 0; i < Day.values().length; i++) {
+            workingHours.add(new WorkingHour(Day.values()[i], Time.valueOf("00:00:00"), Time.valueOf("00:00:00")));
+        }
+        return workingHours;
     }
 
 }
