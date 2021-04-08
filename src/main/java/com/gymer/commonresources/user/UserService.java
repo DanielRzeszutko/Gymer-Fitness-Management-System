@@ -102,14 +102,15 @@ public class UserService extends AbstractRestApiService<User, Long> {
         return ((UserRepository) repository).findByProviderId(providerId).orElse(null);
     }
 
-    public Iterable<User> findAllGuestOlderThan10Minutes() {
-        LocalDateTime startTime = LocalDateTime.now().minusMinutes(10);
-        Timestamp tenMinutesAgo = Timestamp.valueOf(startTime);
-        return ((UserRepository) repository).findAllByCredential_RegistrationTimeIsBeforeAndCredential_ActivatedIsFalse(tenMinutesAgo);
-    }
+    /**
+     * Service method that returns all users when registration time is between 10 and 15 minutes old
+     */
 
-    public User findbyuserid(Long id) {
-        return ((UserRepository) repository).findById(id).orElse(null);
+    public Iterable<User> findAllGuestOlderThan10MinutesYoungerThan15Minutes() {
+        LocalDateTime now = LocalDateTime.now();
+        Timestamp fifteenMinutesAgo = Timestamp.valueOf(now.minusMinutes(15));
+        Timestamp tenMinutesAgo = Timestamp.valueOf(now.minusMinutes(10));
+        return ((UserRepository) repository).findAllByCredential_RegistrationTimeIsBetweenAndCredential_ActivatedIsFalse(fifteenMinutesAgo, tenMinutesAgo);
     }
 
 }

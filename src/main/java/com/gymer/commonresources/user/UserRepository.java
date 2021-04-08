@@ -27,8 +27,6 @@ interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
     Optional<User> findByProviderId(String providerId);
 
-    Iterable<User> findAllByCredential_RegistrationTimeIsBeforeAndCredential_ActivatedIsFalse(Timestamp time);
-
-    Optional<User> findById(Long id);
+    Iterable<User> findAllByCredential_RegistrationTimeIsBetweenAndCredential_ActivatedIsFalse(Timestamp start, Timestamp end);
 
 }
