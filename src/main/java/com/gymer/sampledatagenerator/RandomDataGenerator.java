@@ -58,6 +58,8 @@ class RandomDataGenerator {
      */
     public void init() throws FileNotFoundException {
         fillListsWithData();
+
+        addTestPartner();
         addAdminIfDoesntExists();
         User testUser = getUserIfExist();
 
@@ -70,6 +72,24 @@ class RandomDataGenerator {
                 slot.setUsers(List.of(user));
             }
             partner.getSlots().get(i).setUsers(List.of(testUser));
+            partnerService.updateElement(partner);
+        }
+    }
+
+    private void addTestPartner() {
+        Timestamp time = new Timestamp(new java.util.Date().getTime());
+        Credential credential = new Credential("testpartner@gmail.com", "$2a$10$7aFEbq/nmgvT1kuMhjXUc.g3jlk4.Bt7FfQMAF61m1Y78MhdS/6b2",
+                "999999999", Role.PARTNER, true, time);
+
+        List<Employee> employees = getRandomEmployees(getRandomNumberBetween(1, 3));
+        List<Slot> slots = new LinkedList<>();
+        for (Employee employee : employees) {
+            slots.addAll(getRandomSlots(employee));
+        }
+
+        Partner partner = new Partner("TESTPARTNER", "logo", "image", "TEST OPIS", "website",
+                credential, getRandomAddress(), employees, slots, getRandomWorkingHours());
+        if (!credentialservice.isCredentialExistsByEmail(partner.getCredential().getEmail())) {
             partnerService.updateElement(partner);
         }
     }
