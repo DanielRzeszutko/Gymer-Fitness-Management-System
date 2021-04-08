@@ -18,7 +18,7 @@ class UnverifiedReservationService {
     private final UserService userService;
 
     @Transactional
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 60000)
     public void deleteUnverifiedReservation() {
         Iterable<User> users = userService.findAllGuestOlderThan10MinutesYoungerThan15Minutes();
         users.forEach(user -> {
