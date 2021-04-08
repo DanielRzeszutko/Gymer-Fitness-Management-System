@@ -56,7 +56,8 @@ class SlotsReservationController {
         validateIfUserAlreadyExistInSlot(user, slot);
 
         reservationService.reserveUserInSlot(slot, user);
-        throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
+        reservationService.sendGuestVerificationEmail(user.getCredential(), slot);
+        throw new ResponseStatusException(HttpStatus.OK, language.pleaseVerifySlotReservation());
     }
 
     /**

@@ -2,6 +2,7 @@ package com.gymer.accountverification;
 
 import com.gymer.commoncomponents.languagepack.LanguageComponent;
 import com.gymer.commonresources.credential.entity.Credential;
+import com.gymer.commonresources.credential.entity.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,11 @@ class VerificationController {
         }
 
         verificationService.changeActivationAttributesAndUpdateInDatabase(credential);
-        throw new ResponseStatusException(HttpStatus.OK, language.successfullyVerified());
+        if (credential.getRole()== Role.GUEST) {
+            throw new ResponseStatusException(HttpStatus.OK, language.successfullyReservedNewSlot());
+        } else {
+            throw new ResponseStatusException(HttpStatus.OK, language.successfullyVerified());
+        }
     }
 
 }

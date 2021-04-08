@@ -2,15 +2,12 @@ package com.gymer.commonresources.credential;
 
 import com.gymer.commonresources.common.service.AbstractRestApiService;
 import com.gymer.commonresources.credential.entity.Credential;
-import com.gymer.commonresources.credential.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.sql.Timestamp;
 
 @Service
 public class CredentialService extends AbstractRestApiService<Credential, Long> {
@@ -51,16 +48,6 @@ public class CredentialService extends AbstractRestApiService<Credential, Long> 
     @Override
     public Page<Credential> findAllContaining(Pageable pageable, String searchBy) {
         return ((CredentialRepository) repository).findAllByEmailContainsOrPhoneNumberContainsAndActivatedIsTrue(searchBy, searchBy, pageable);
-    }
-
-    /**
-     * Service method returning Credential from database if exists, when one is no found new credential is created and returned
-     */
-    public Credential getCredentialFromEmailPhoneAndRoleOrCreateNewOne(String email, String phoneNumber, Role role) {
-        Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
-        return ((CredentialRepository) repository).findByEmailAndPhoneNumberAndRoleAndActivatedIsTrue(email, phoneNumber, role).orElse(
-                new Credential(email, null, phoneNumber, Role.GUEST, false, timestamp)
-        );
     }
 
     /**

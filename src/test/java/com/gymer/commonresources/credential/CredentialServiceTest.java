@@ -44,16 +44,6 @@ public class CredentialServiceTest {
     }
 
     @Test
-    public void should_returnPageOfCredentials_when_getCredentialFromEmailPhoneAndRoleOrCreateNewOneWithValidData() {
-        Credential credential = new Credential("", "", "", Role.USER, true, timestamp);
-        given(credentialRepository.findByEmailAndPhoneNumberAndRoleAndActivatedIsTrue("", "", Role.USER)).willReturn(Optional.of(credential));
-
-        Credential obtainedCredential = credentialService.getCredentialFromEmailPhoneAndRoleOrCreateNewOne("", "", Role.USER);
-
-        assertEquals(credential, obtainedCredential);
-    }
-
-    @Test
     public void should_returnPageWithCredentials_when_getAllElementsWithValidData() {
         given(credentialRepository.findAll(pageable)).willReturn(page);
 

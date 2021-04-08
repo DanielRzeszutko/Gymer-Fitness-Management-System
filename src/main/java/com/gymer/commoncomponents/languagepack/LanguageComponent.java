@@ -65,6 +65,8 @@ public interface LanguageComponent {
 
     String alreadyFullSlot();
 
+    String pleaseVerifySlotReservation();
+
     String successfullyReservedNewSlot();
 
     String signInAsValidUser();
@@ -100,6 +102,10 @@ public interface LanguageComponent {
     String getSmsTitleWhenSlotStartsInAnHour();
 
     String getVerificationTitle();
+
+    String getGuestVerificationTitle(Slot slot);
+
+    String getGuestVerificationEmail(Credential credential, String verifyURL, Slot slot);
 
     String getMailNotificationWhenSlotStartsInAnHour(User user, Slot slot);
 
